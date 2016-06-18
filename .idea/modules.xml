@@ -2,12 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/src/spark-hit_local/Sparkhit-local.iml" filepath="$PROJECT_DIR$/src/spark-hit_local/Sparkhit-local.iml" />
       <module fileurl="file://$PROJECT_DIR$/src/spark-hit/spark-hit.iml" filepath="$PROJECT_DIR$/src/spark-hit/spark-hit.iml" />
       <module fileurl="file://$PROJECT_DIR$/sparkhit.iml" filepath="$PROJECT_DIR$/sparkhit.iml" />
-      <module fileurl="file://$PROJECT_DIR$/src/spark-hit/sparkhit (1).iml" filepath="$PROJECT_DIR$/src/spark-hit/sparkhit (1).iml" />
-      <module fileurl="file://$PROJECT_DIR$/src/sparkhit-hadoopDecompresser/sparkhit-hadoopDecompressor.iml" filepath="$PROJECT_DIR$/src/sparkhit-hadoopDecompresser/sparkhit-hadoopDecompressor.iml" />
-      <module fileurl="file://$PROJECT_DIR$/src/sparkhit-local/sparkhit-local.iml" filepath="$PROJECT_DIR$/src/sparkhit-local/sparkhit-local.iml" />
     </modules>
   </component>
 </project>

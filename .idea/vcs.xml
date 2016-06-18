@@ -2,8 +2,5 @@
 <project version="4">
   <component name="VcsDirectoryMappings">
     <mapping directory="" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/src/spark-hit" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/src/sparkhit-hadoopDecompresser" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/src/sparkhit-local" vcs="Git" />
   </component>
 </project>
