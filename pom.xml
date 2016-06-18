@@ -11,9 +11,9 @@
     <packaging>pom</packaging>
 
     <modules>
-        <module>src/spark-hit</module> <!-- sparkhit source code -->
-        <module>src/sparkhit-local</module> <!-- sparkhit local aligner -->
-        <module>src/sparkhit-hadoopDecompresser</module> <!-- hadoop decompresser -->
+        <module>project/sparkhit-cluster</module> <!-- sparkhit source code -->
+        <module>project/sparkhit-local</module> <!-- sparkhit local aligner -->
+        <module>project/sparkhit-hadoop</module> <!-- hadoop decompresser -->
     </modules>
 
 </project>
