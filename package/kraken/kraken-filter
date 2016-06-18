@@ -1,0 +1,146 @@
+#!/usr/bin/perl
+
+# Copyright 2013, Derrick Wood <dwood@cs.jhu.edu>
+#
+# This file is part of the Kraken taxonomic sequence classification system.
+#
+# Kraken is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# Kraken is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with Kraken.  If not, see <http://www.gnu.org/licenses/>.
+
+# Adjusts Kraken output and classifications to require a specified
+# proportion of k-mers map to LCAs at or below a given node.
+
+use strict;
+use warnings;
+use File::Basename;
+use Getopt::Long;
+
+my $PROG = basename $0;
+my $KRAKEN_DIR = "/mnt/software/sparkhit/package/kraken";
+
+# Test to see if the executables got moved, try to recover if we can
+if (! -e "$KRAKEN_DIR/classify") {
+  use Cwd 'abs_path';
+  $KRAKEN_DIR = dirname abs_path($0);
+}
+
+require "$KRAKEN_DIR/krakenlib.pm";
+
+my $threshold = 0;
+my $db_prefix;
+
+GetOptions(
+  "help" => \&display_help,
+  "version" => \&display_version,
+  "threshold=f" => \$threshold,
+  "db=s" => \$db_prefix,
+) or usage();
+
+eval { $db_prefix = krakenlib::find_db($db_prefix); };
+if ($@) {
+  die "$PROG: $@";
+}
+
+if ($threshold < 0 || $threshold > 1) {
+  print STDERR "$PROG: threshold must be in the interval [0,1].\n";
+  exit 64;
+}
+
+sub usage {
+  my $exit_code = @_ ? shift : 64;
+  print STDERR "Usage: $PROG [--db KRAKEN_DB_NAME] [--threshold NUM] <kraken output file(s)>\n";
+  my $default_db;
+  eval { $default_db = krakenlib::find_db(); };
+  if (defined $default_db) {
+    print STDERR "\n   Default database is \"$default_db\"\n";
+  }
+  exit $exit_code;
+}
+
+sub display_help {
+  usage(0);
+}
+
+sub display_version {
+  print "Kraken version 0.10.6-unreleased\n";
+  print "Copyright 2013-2015, Derrick Wood (dwood\@cs.jhu.edu)\n";
+  exit 0;
+}
+
+my %parent_map;
+load_taxonomy($db_prefix);
+
+while (<>) {
+  chomp;
+  my @fields = split /\t/;
+  my ($code, $seqid, $called_taxon, $len, $hit_list) = @fields;
+  my @hits = split " ", $hit_list;
+  my %hit_counts;
+  for (@hits) {
+    my ($taxid, $ct) = split /:/;
+    $hit_counts{$taxid} += $ct;
+  }
+
+  # maps nodes to count of hits at or below node
+  my %hit_sums;
+
+  my $total_kmers = 0;
+  my $total_unambig = 0;
+  my $total_hits = 0;
+  for (keys %hit_counts) {
+    my $count = $hit_counts{$_};
+    $total_kmers += $count;
+    if ($_ ne "A") {
+      $total_unambig += $count;
+      if ($_ > 0) {
+        $total_hits += $count;
+        my $taxid = $_;
+        while ($taxid > 0) {
+          $hit_sums{$taxid} += $count;
+          $taxid = $parent_map{$taxid};
+        }
+      }
+    }
+  }
+
+  my $pct = 0;
+  # starting at called node, run up tree until threshold met
+  my $new_taxon = $called_taxon;
+  while ($new_taxon > 0) {
+    $pct = $hit_sums{$new_taxon} / $total_unambig;
+    if ($pct >= $threshold - 1e-5) {  # epsilon check w/ float equality
+      last;
+    }
+    $new_taxon = $parent_map{$new_taxon};
+  }
+  printf "%s\t$seqid\t$new_taxon\t$len\tP=%0.3f\t$hit_list\n", 
+    $new_taxon > 0 ? "C" : "U",
+    $pct;
+}
+
+sub load_taxonomy {
+  my $prefix = shift;
+
+  open NODES, "<", "$prefix/taxonomy/nodes.dmp"
+    or die "$PROG: can't open nodes file: $!\n";
+  while (<NODES>) {
+    chomp;
+    my @fields = split /\t\|\t/;
+    my ($node_id, $parent_id) = @fields[0,1];
+    if ($node_id == 1) {
+      $parent_id = 0;
+    }
+    $parent_map{$node_id} = $parent_id;
+  }
+  close NODES;
+}

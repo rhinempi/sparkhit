@@ -1,0 +1,47 @@
+This program performs taxonomy binning using output from FR-HIT.
+The algorithm is based on LCA (Lowest Common Ancestor).
+
+=== File list ===
+README: this file.
+binning.py: the program file
+bacteria_gitax.pkl: GI to taxonomy ID mapping for bacteria sequences
+                    in Python pickle format.
+tax.pkl: Entire NCBI Taxonomy tree in Python pickle format.
+example.sh: example script to run the program.
+example.frhit: example FR-HIT output file as input to this program.
+example.binning: binning output for input example.frhit
+
+=== Requirements ===
+Because this program relies on GI numbers to get taxonomy information
+of hits, the hit names in column 9 of FR-HIT's output must contain
+    gi|#####|
+where ##### is the gi number.
+
+=== How to run it ===
+python binning.py [options] input_file output_file
+
+Running the program itself without any arguments
+    python binning.py
+or
+    python binning.py -h
+shows the help message.
+
+=== Output format ===
+Each output line is in the following format:
+    READ_NAME    DETERMINED_TAXONOMY_LEVEL   COMPLETE_TAXONOMY_LINEAGE
+where
+
+DETERMINED_TAXONOMY_LEVEL is the lowest taxonomy level we can determine
+for each read, in the following format:
+    (Taxonomy ID:Taxonomy Name:Rank)
+
+COMPLETE_TAXONOMY_LINEAGE is the lineage for the determined taxonomy
+level starting from 'root', in the following format:
+    [Taxonomy ID:Taxonomy Name:Rank|...|...|Taxonomy ID:Taxonomy Name:Rank]
+
+=== Limitations ===
+-Due to file size limit, we only provide GI to Taxonomy mapping for
+bacteria sequences.
+-The current algorithm is very simplistic without considering statistical
+distribution of species. We'll use a more sophisticated algorithm in
+future versions.

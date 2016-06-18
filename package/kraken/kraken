@@ -1,0 +1,293 @@
+#!/usr/bin/perl
+
+# Copyright 2013-2015, Derrick Wood <dwood@cs.jhu.edu>
+#
+# This file is part of the Kraken taxonomic sequence classification system.
+#
+# Kraken is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# Kraken is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with Kraken.  If not, see <http://www.gnu.org/licenses/>.
+
+# Wrapper for Kraken's classifier
+
+use strict;
+use warnings;
+use File::Basename;
+use Getopt::Long;
+
+my $PROG = basename $0;
+my $KRAKEN_DIR = "/mnt/software/sparkhit/package/kraken";
+
+# Test to see if the executables got moved, try to recover if we can
+if (! -e "$KRAKEN_DIR/classify") {
+  use Cwd 'abs_path';
+  $KRAKEN_DIR = dirname abs_path($0);
+}
+
+require "$KRAKEN_DIR/krakenlib.pm";
+$ENV{"KRAKEN_DIR"} = $KRAKEN_DIR;
+$ENV{"PATH"} = "$KRAKEN_DIR:$ENV{PATH}";
+
+my $CLASSIFY = "$KRAKEN_DIR/classify";
+my $GZIP_MAGIC = chr(hex "1f") . chr(hex "8b");
+my $BZIP2_MAGIC = "BZ";
+
+my $quick = 0;
+my $min_hits = 1;
+my $fasta_input = 0;
+my $fastq_input = 0;
+my $db_prefix;
+my $threads;
+my $preload = 0;
+my $gunzip = 0;
+my $bunzip2 = 0;
+my $paired = 0;
+my $check_names = 0;
+my $only_classified_output = 0;
+my $unclassified_out;
+my $classified_out;
+my $outfile;
+
+GetOptions(
+  "help" => \&display_help,
+  "version" => \&display_version,
+  "db=s" => \$db_prefix,
+  "threads=i" => \$threads,
+  "fasta-input" => \$fasta_input,
+  "fastq-input" => \$fastq_input,
+  "quick" => \$quick,
+  "min-hits=i" => \$min_hits,
+  "unclassified-out=s" => \$unclassified_out,
+  "classified-out=s" => \$classified_out,
+  "output=s" => \$outfile,
+  "preload" => \$preload,
+  "paired" => \$paired,
+  "check-names" => \$check_names,
+  "gzip-compressed" => \$gunzip,
+  "bzip2-compressed" => \$bunzip2,
+  "only-classified-output" => \$only_classified_output,
+);
+
+if (! defined $threads) {
+  $threads = $ENV{"KRAKEN_NUM_THREADS"} || 1;
+}
+
+if (! @ARGV) {
+  print STDERR "Need to specify input filenames!\n";
+  usage();
+}
+eval { $db_prefix = krakenlib::find_db($db_prefix); };
+if ($@) {
+  die "$PROG: $@";
+}
+
+my $taxonomy = "$db_prefix/taxonomy/nodes.dmp";
+if ($quick) {
+  undef $taxonomy;  # Skip loading nodes file, not needed in quick mode
+}
+
+my $kdb_file = "$db_prefix/database.kdb";
+my $idx_file = "$db_prefix/database.idx";
+if (! -e $kdb_file) {
+  die "$PROG: $kdb_file does not exist!\n";
+}
+if (! -e $idx_file) {
+  die "$PROG: $idx_file does not exist!\n";
+}
+
+if ($min_hits > 1 && ! $quick) {
+  die "$PROG: --min_hits requires --quick to be specified\n";
+}
+
+if ($paired && @ARGV != 2) {
+  die "$PROG: --paired requires exactly two filenames\n";
+}
+
+my $compressed = $gunzip || $bunzip2;
+if ($gunzip && $bunzip2) {
+  die "$PROG: can't use both gzip and bzip2 compression flags\n";
+}
+if ($fasta_input && $fastq_input) {
+  die "$PROG: can't use both FASTA and FASTQ input flags\n";
+}
+
+my $auto_detect = 1;
+if ($fasta_input || $fastq_input || $compressed) {
+  $auto_detect = 0;
+}
+if (! -f $ARGV[0]) {
+  $auto_detect = 0;
+}
+if ($auto_detect) {
+  auto_detect_file_format();
+}
+
+# set flags for classifier
+my @flags;
+push @flags, "-d", $kdb_file;
+push @flags, "-i", $idx_file;
+push @flags, "-t", $threads if $threads > 1;
+push @flags, "-n", $taxonomy if defined $taxonomy;
+push @flags, "-q" if $quick;
+push @flags, "-m", $min_hits if $min_hits > 1;
+push @flags, "-f" if $fastq_input && ! $paired;  # merger always outputs FASTA
+push @flags, "-U", $unclassified_out if defined $unclassified_out;
+push @flags, "-C", $classified_out if defined $classified_out;
+push @flags, "-o", $outfile if defined $outfile;
+push @flags, "-c", if $only_classified_output;
+push @flags, "-M" if $preload;
+
+# handle piping for decompression/merging
+my @pipe_argv;
+if ($paired) {
+  my @merge_flags;
+  push @merge_flags, "--fa" if $fasta_input;
+  push @merge_flags, "--fq" if $fastq_input;
+  push @merge_flags, "--gz" if $gunzip;
+  push @merge_flags, "--bz2" if $bunzip2;
+  push @merge_flags, "--check-names" if $check_names;
+  @pipe_argv = ("read_merger.pl", @merge_flags, @ARGV);
+}
+elsif ($compressed) {
+  if ($gunzip) {
+    @pipe_argv = ("gzip", "-dc", @ARGV);
+  }
+  elsif ($bunzip2) {
+    @pipe_argv = ("bzip2", "-dc", @ARGV);
+  }
+  else {
+    die "$PROG: unrecognized compression program! This is a Kraken bug.\n";
+  }
+}
+
+# if args exist, set up the pipe/fork/exec 
+if (@pipe_argv) {
+  pipe RD, WR;
+  my $pid = fork();
+  if ($pid < 0) {
+    die "$PROG: fork error: $!\n";
+  }
+  if ($pid) {
+    open STDIN, "<&RD"
+      or die "$PROG: can't dup stdin to read end of pipe: $!\n";
+    close RD;
+    close WR;
+    @ARGV = ("/dev/fd/0");  # make classifier read from pipe
+  }
+  else {
+    open STDOUT, ">&WR"
+      or die "$PROG: can't dup stdout to write end of pipe: $!\n";
+    close RD;
+    close WR;
+    exec @pipe_argv
+      or die "$PROG: can't exec $pipe_argv[0]: $!\n";
+  }
+}
+
+exec $CLASSIFY, @flags, @ARGV;
+die "$PROG: exec error: $!\n";
+
+sub usage {
+  my $exit_code = @_ ? shift : 64;
+  my $default_db = "none";
+  eval { $default_db = '"' . krakenlib::find_db() . '"'; };
+  my $def_thread_ct = exists $ENV{"KRAKEN_NUM_THREADS"} ? (0 + $ENV{"KRAKEN_NUM_THREADS"}) : 1;
+  print STDERR <<EOF;
+Usage: $PROG [options] <filename(s)>
+
+Options:
+  --db NAME               Name for Kraken DB
+                          (default: $default_db)
+  --threads NUM           Number of threads (default: $def_thread_ct)
+  --fasta-input           Input is FASTA format
+  --fastq-input           Input is FASTQ format
+  --gzip-compressed       Input is gzip compressed
+  --bzip2-compressed      Input is bzip2 compressed
+  --quick                 Quick operation (use first hit or hits)
+  --min-hits NUM          In quick op., number of hits req'd for classification
+                          NOTE: this is ignored if --quick is not specified
+  --unclassified-out FILENAME
+                          Print unclassified sequences to filename
+  --classified-out FILENAME
+                          Print classified sequences to filename
+  --output FILENAME       Print output to filename (default: stdout); "-" will
+                          suppress normal output
+  --only-classified-output
+                          Print no Kraken output for unclassified sequences
+  --preload               Loads DB into memory before classification
+  --paired                The two filenames provided are paired-end reads
+  --check-names           Ensure each pair of reads have names that agree
+                          with each other; ignored if --paired is not specified
+  --help                  Print this message
+  --version               Print version information
+
+If none of the *-input or *-compressed flags are specified, and the 
+file is a regular file, automatic format detection is attempted.
+EOF
+  exit $exit_code;
+}
+
+sub display_help {
+  usage(0);
+}
+
+sub display_version {
+  print "Kraken version 0.10.6-unreleased\n";
+  print "Copyright 2013-2015, Derrick Wood (dwood\@cs.jhu.edu)\n";
+  exit 0;
+}
+
+sub auto_detect_file_format {
+  my $magic;
+  my $filename = $ARGV[0];
+
+  # read 2-byte magic number to determine type of compression (if any)
+  open FILE, "<", $filename;
+  read FILE, $magic, 2;
+  close FILE;
+  if ($magic eq $GZIP_MAGIC) {
+    $compressed = 1;
+    $gunzip = 1;
+  }
+  elsif ($magic eq $BZIP2_MAGIC) {
+    $compressed = 1;
+    $bunzip2 = 1;
+  }
+  else {
+    # if no compression, just look at first char
+    chop $magic;
+  }
+
+  # uncompress to stream and read first char
+  if ($gunzip) {
+    open FILE, "-|", "gzip", "-dc", $filename
+      or die "$PROG: can't determine format of $filename (gzip error): $!\n";
+    read FILE, $magic, 1;
+    close FILE;
+  }
+  elsif ($bunzip2) {
+    open FILE, "-|", "bzip2", "-dc", $ARGV[0]
+      or die "$PROG: can't determine format of $filename (bzip2 error): $!\n";
+    read FILE, $magic, 1;
+    close FILE;
+  }
+
+  if ($magic eq ">") {
+    $fasta_input = 1;
+  }
+  elsif ($magic eq "@") {
+    $fastq_input = 1;
+  }
+  else {
+    die "$PROG: can't determine what format $filename is!\n";
+  }
+}

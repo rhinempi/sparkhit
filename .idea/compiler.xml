@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <resourceExtensions />
+    <wildcardResourcePatterns>
+      <entry name="!?*.java" />
+      <entry name="!?*.form" />
+      <entry name="!?*.class" />
+      <entry name="!?*.groovy" />
+      <entry name="!?*.scala" />
+      <entry name="!?*.flex" />
+      <entry name="!?*.kt" />
+      <entry name="!?*.clj" />
+      <entry name="!?*.aj" />
+    </wildcardResourcePatterns>
+    <annotationProcessing>
+      <profile default="true" name="Default" enabled="false">
+        <processorPath useClasspath="true" />
+      </profile>
+      <profile default="false" name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="true" />
+        <module name="spark-hit" />
+        <module name="sparkhit (1)" />
+        <module name="sparkhit-hadoopDecompressor" />
+        <module name="sparkhit-local" />
+        <module name="Sparkhit-local" />
+      </profile>
+    </annotationProcessing>
+    <bytecodeTargetLevel target="1.7">
+      <module name="spark-hit" target="1.5" />
+      <module name="sparkhit" target="1.5" />
+      <module name="sparkhit (1)" target="1.5" />
+      <module name="sparkhit-hadoopDecompressor" target="1.5" />
+      <module name="Sparkhit-local" target="1.5" />
+      <module name="sparkhit-local" target="1.5" />
+    </bytecodeTargetLevel>
+  </component>
+</project>
