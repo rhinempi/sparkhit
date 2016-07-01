@@ -123,6 +123,13 @@ a {
   width:50px;
   background:#F0F8FF;
 }
+div.sidebar {
+  position:fixed;
+  bottom: 0;
+  right: 0;
+  width:50px;
+  background:#F0F8FF;
+}
 .main-content code {
   padding: 2px 4px;
   font-family: Consolas, "Liberation Mono", Menlo, Courier, monospace;
