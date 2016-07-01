@@ -117,8 +117,8 @@ a {
   margin-bottom: 1em; }
   /* add sidebar */
 .main-content sidebar {
-  position:fixed;
-  float:left;
+  position:absolute;
+  top:0; bottom:0; left:0;
   display:table-cell;
   width:50px;
   background:#F0F8FF;
