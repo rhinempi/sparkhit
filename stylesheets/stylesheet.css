@@ -116,10 +116,11 @@ a {
 .main-content p {
   margin-bottom: 1em; }
   /* add sidebar */
-.main-content sidebar {
+.container { position:relative; padding:0 0 0 55px; }
+#sidebar {
   position:fixed;
-  bottom: 0;
-  right: 0;
+  top: 0;
+  left: 0;
   width:50px;
   background:#F0F8FF;
 }
