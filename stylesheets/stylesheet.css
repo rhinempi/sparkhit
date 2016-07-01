@@ -50,6 +50,8 @@ a {
 }
 
 #main {
+  position:fixed;
+  bottom:100px;
     transition: margin-left .5s;
     padding: 16px;
 }
