@@ -115,6 +115,13 @@ a {
   color: #159957; }
 .main-content p {
   margin-bottom: 1em; }
+  /* add sidebar */
+.main-content sidebar {
+  position:fixed;
+  width:50px;
+  background:#000;
+  margin-left:10px;
+}
 .main-content code {
   padding: 2px 4px;
   font-family: Consolas, "Liberation Mono", Menlo, Courier, monospace;
