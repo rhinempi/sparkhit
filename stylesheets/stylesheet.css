@@ -118,9 +118,10 @@ a {
   /* add sidebar */
 .main-content sidebar {
   position:fixed;
+  float:left;
+  display:table-cell;
   width:50px;
   background:#F0F8FF;
-  margin-left:10px;
 }
 .main-content code {
   padding: 2px 4px;
