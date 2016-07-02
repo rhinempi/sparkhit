@@ -51,7 +51,7 @@ a {
 
 #main {
   position:fixed;
-  top:430px;
+  bottom:0px;
     transition: margin-left .5s;
     padding: 16px;
 }
