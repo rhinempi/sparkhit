@@ -27,10 +27,12 @@
 
 <div id="mySidenav" class="sidenav">
   <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">×</a>
-  <a href="#welcome-to-sparkhit">Welcome</a>
-  <a href="#how-it-works">About</a>
-  <a href="#">Clients</a>
-  <a href="#">Contact</a>
+  <a href="#welcome-to-sparkhit" style="font-size:18px">Welcome</a>
+  <a href="#how-it-works" style="font-size:18px">About</a>
+  <a href="#setup-cluster" style="font-size:18px" >Setup cluster</a>
+  <a href="#use-your-tool"style="font-size:18px" >Use your own tool</a>
+  <a href="#support-or-contact" style="font-size:18px">Support or Contact</a>
+  <a href="#acknowledgement" style="font-size:18px">Acknowledgement</a>
 </div>
 
 <div id="main">
@@ -55,10 +57,10 @@ function closeNav() {
       <h3>
 <a id="welcome-to-sparkhit" class="anchor" href="#welcome-to-sparkhit" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Welcome to Sparkhit.</h3>
 
-<p><b>Sparkhit</b> is an open source distributed computating platform for analyzing large-scale genomic datasets. It is build on top of Apache <a href="http://spark.apache.org/">Spark</a> and <a href="http://hadoop.apache.org/">Hadoop</a> framework with an implementation of different bioinformatics tools and methods. Here you can parallelize your workload such as sequence mapping, genotyping, gene expressiong quantification and taxonomy profiling. You can also use your own tools without changing your code.</p>
+<p><b>Sparkhit</b> is an open source distributed computing platform for analyzing large-scale genomic datasets. It is build on top of Apache <a href="http://spark.apache.org/">Spark</a> and <a href="http://hadoop.apache.org/">Hadoop</a> framework with an implementation of different bioinformatics tools and methods. Here you can parallelize your workload such as sequence mapping, genotyping, gene expressiong quantification and taxonomy profiling. You can also use your own tools without changing your code.</p>
 
 <h3>
-<a id="designer-templates" class="anchor" href="how-it-works" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>How it works</h3>
+<a id="how-it-works" class="anchor" href="#how-it-works" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>How it works</h3>
 
         <p>Sparkhit uses Spark <a href="http://www.tutorialspoint.com/apache_spark/apache_spark_rdd.htm">RDD</a> (resilient distributed dataset) to distribute genomic datasets: sequenced reads, mapped hits, genotype Alleles or expression data of genes or microbiomes. These datasets are, then, processed in parallel using <a href="https://en.wikipedia.org/wiki/MapReduce">MapReduce</a> paradigm.</p>
         <p>
@@ -75,20 +77,21 @@ function closeNav() {
                     <code><small>
                 JavaRDD&lt;String&gt; FastqRDD = sc.textFile("/vol/human-microbiome-project/SRS00001.tar.bz2"); <br>
                 &nbsp;&nbsp;refIndex.build("vol/mybucket/singlecell/genome.fa").broadcast; <br>
+                &nbsp;&nbsp;MappingAlgorithm(new sparkInterface).getBroadcastValue; <br>
                 &nbsp;&nbsp;JavaRDD&lt;String&gt; resultRDD = FastqRDD.map(MappingAlgorithm);<br>
-                &nbsp;&nbsp;resultRDD.saveAsTextFile("s3n://mypersonalbucket/sparkhit/result");<br>
+                &nbsp;&nbsp;resultRDD.saveAsTextFile("/vol/mybucket/sparkhit/result");<br>
                 </small>
             </code>
         </p>
         Read <a href="manual.html">more</a>
 
 <h3>
-<a id="creating-pages-manually" class="anchor" href="#setup-cluster" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Setup cluster</h3>
+<a id="setup-cluster" class="anchor" href="#setup-cluster" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Setup cluster</h3>
 
         <p>A spark cluster is essential to scale-out (multiple computer nodes) sparkhit workloads. There are three tools at your disposal: Spark-ec2, BiBiGrid, EMR. Follow a <a href="manual.html">tutorial</a> to setup a small cluster on amazon cloud or local cluster.</p>
 
 <h3>
-<a id="authors-and-contributors" class="anchor" href="#authors-and-contributors" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Use your own tools</h3>
+<a id="use-your-tool" class="anchor" href="#use-your-tool" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Use your own tool</h3>
 
 <p>Sparkhit enables user to use their own tools without changing their code.</p>
  <p>
@@ -107,7 +110,7 @@ function closeNav() {
                 JavaRDD&lt;String&gt; FastqRDD = sc.textFile("/vol/human-microbiome-project/SRS00001.tar.bz2"); <br>
                         &nbsp;&nbsp;String command = "-tool" + "-toolparam"; <br>
                 &nbsp;&nbsp;JavaRDD&lt;String&gt; resultRDD = FastqRDD.pipe(command);<br>
-                &nbsp;&nbsp;resultRDD.saveAsTextFile("s3n://mypersonalbucket/sparkhit/result");<br>
+                &nbsp;&nbsp;resultRDD.saveAsTextFile("/vol/mybucket/sparkhit/result");<br>
                 </small>
             </code>
         </p>
@@ -118,10 +121,10 @@ function closeNav() {
 <p>Having trouble with Sparkhit? Check out our <a href="https://rhinempi.github.io/sparkhit/manual">manual</a> or <a href="mailto:huanglr@cebitec.uni-bielefeld.de">contact support</a> and we’ll help you sort it out.</p>
         
 <h3>
-<a id="support-or-contact" class="anchor" href="#acknowledgement" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Acknowledgement</h3>
+<a id="acknowledgement" class="anchor" href="#acknowledgement" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Acknowledgement</h3>
         
 <p>We acknowledge all developers whose tools are used by sparkhit.</p>
-        <a href="http://www.didy.uni-bielefeld.de/"><img src="https://github.com/rhinempi/sparkhit/blob/gh-pages/images/didy-logo.png" style="width:259px;height:53px;"></a>
+        <a href="http://www.didy.uni-bielefeld.de/"><img src="images/didy-logo.png" style="width:259px;height:53px;"></a>
         <a href="https://www.denbi.de/"><img src="images/deNBI-Logo.png" style="width:202px;height:53px;"></a>
         <a href="https://aws.amazon.com/grants/"><img src="images/aws-logo.png" style="width:145px;height:53px;"></a>
 
