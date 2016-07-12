@@ -63,33 +63,13 @@ function closeNav() {
 <a id="how-it-works" class="anchor" href="#how-it-works" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>How it works</h3>
 
         <p>Sparkhit uses Spark <a href="http://www.tutorialspoint.com/apache_spark/apache_spark_rdd.htm">RDD</a> (resilient distributed dataset) to distribute genomic datasets: sequenced reads, mapped hits, genotype Alleles or expression data of genes or microbiomes. These datasets are, then, processed in parallel using <a href="https://en.wikipedia.org/wiki/MapReduce">MapReduce</a> paradigm.</p>
-        <p>
-            Command: <br>
-            <code>
-                <small>
-                /usr/bin/sparkhit mapper \ <br>
-                &nbsp;&nbsp;-cluster clusterConfiguration.txt \ <br>
-                &nbsp;&nbsp;-input /vol/human-microbiome-project/SRSXXXXX.tar.bz2 \ <br>
-                &nbsp;&nbsp;-output /vol/mybucket/sparkhit/result \ <br>
-                &nbsp;&nbsp;-reference /vol/mybucket/singlecell/genome.fa <br>
-                </small></code>
-            Code: <br>
-                    <code><small>
-                JavaRDD&lt;String&gt; FastqRDD = sc.textFile("/vol/human-microbiome-project/SRS00001.tar.bz2"); <br>
-                &nbsp;&nbsp;refIndex.build("vol/mybucket/singlecell/genome.fa").broadcast; <br>
-                &nbsp;&nbsp;MappingAlgorithm(new sparkInterface).getBroadcastValue; <br>
-                &nbsp;&nbsp;JavaRDD&lt;String&gt; resultRDD = FastqRDD.map(MappingAlgorithm);<br>
-                &nbsp;&nbsp;resultRDD.saveAsTextFile("/vol/mybucket/sparkhit/result");<br>
-                </small>
-            </code>
-        </p>
         Read <a href="manual.html">more</a>
 
 <h3>
 <a id="setup-cluster" class="anchor" href="#setup-cluster" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Setup cluster</h3>
 
         <p>A spark cluster is essential to scale-out (multiple computer nodes) sparkhit workloads. There are three tools at your disposal: Spark-ec2, BiBiGrid, EMR. Follow a <a href="manual.html">tutorial</a> to setup a small cluster on amazon cloud or local cluster.</p>
-
+<p>Read <a href="manual.html">more</a></p>
 <h3>
 <a id="use-your-tool" class="anchor" href="#use-your-tool" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Use your own tool</h3>
 
@@ -105,14 +85,6 @@ function closeNav() {
                      &nbsp;&nbsp;-toolparam " -input /dev/stdin -output /dev/stdout -refrence /vol/singlecell/genome.fa" \ <br>
                 &nbsp;&nbsp;-output /vol/mybucket/sparkhit/result <br>
                 </small></code>
-            Code: <br>
-                    <code><small>
-                JavaRDD&lt;String&gt; FastqRDD = sc.textFile("/vol/human-microbiome-project/SRS00001.tar.bz2"); <br>
-                        &nbsp;&nbsp;String command = "-tool" + "-toolparam"; <br>
-                &nbsp;&nbsp;JavaRDD&lt;String&gt; resultRDD = FastqRDD.pipe(command);<br>
-                &nbsp;&nbsp;resultRDD.saveAsTextFile("/vol/mybucket/sparkhit/result");<br>
-                </small>
-            </code>
         </p>
         Read <a href="manual.html">more</a>
 <h3>
