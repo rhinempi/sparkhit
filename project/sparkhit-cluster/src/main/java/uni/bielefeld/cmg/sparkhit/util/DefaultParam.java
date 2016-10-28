@@ -36,8 +36,12 @@ public class DefaultParam implements Serializable{
     public String inputBuildPath;  // build reference data index, used by builder
 
     public String inputResultPath; // report recruitment statistics, used by reporter
+    public String word;
+    public int count = 0;
     public int outputformat = 0; // used by converter
     public String inputFqPath; // input query file, used by main program and converter
+
+    public String inputTabPath;
 
     public String inputFqLinePath;  // input query file, one line per unit
     public String inputFaPath; // input reference file, used by main program
@@ -49,7 +53,21 @@ public class DefaultParam implements Serializable{
     public boolean filterToFasta = false;
     public boolean lineToFasta = false;
 
-    public int window=10000;
+    public int window=0;
+    public boolean horizontal=false;
+    public String columns="2-3";
+    public String columns2="4-5";
+    public int columnStart=2;
+    public int columnEnd=3;
+    public int column2Start=4;
+    public int column2End=5;
+    public int clusterNum=1;
+    public int iterationNum=20;
+    public int model=0;
+    public String inputTrainPath;
+
+    public boolean cache=false;
+    public int componentNum=3;
 
     public String inputList;
     public int inputNodes;

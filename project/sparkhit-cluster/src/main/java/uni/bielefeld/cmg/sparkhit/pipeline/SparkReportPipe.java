@@ -91,6 +91,54 @@ public class SparkReportPipe implements Serializable{
         countsRDD1.saveAsTextFile(param.outputPath);
     }
 
+    public void sparkSpecific() {
+        SparkConf conf = setSparkConfiguration();
+        info.readMessage("Initiating Spark context ...");
+        info.screenDump();
+        info.readMessage("Start Spark framework");
+        info.screenDump();
+        JavaSparkContext sc = new JavaSparkContext(conf);
+
+        JavaRDD<String> hitsRDD = sc.textFile(param.inputResultPath); // not a fastq file any more
+
+        if (param.partitions != 0) {
+            hitsRDD = hitsRDD.repartition(param.partitions);
+        }
+
+        class HitsToPairs implements PairFunction<String, String, Integer>{
+            public Tuple2<String, Integer> call(String s){
+                String[] textResult = s.split("\\t");
+                String[] columnsKey = param.word.split(",");
+                int columnsValue = 1;
+                if(param.count!=0) {
+                    columnsValue = Integer.decode(textResult[param.count-1]);
+                }
+                String myKey = "";
+                for (String column : columnsKey){
+                    int index = Integer.decode(column)-1;
+                    myKey += textResult[index] + "|";
+                }
+                return new Tuple2<String, Integer>(myKey, columnsValue);
+            }
+        }
+
+        class PairsToCount implements Function2<Integer, Integer, Integer>{
+            public Integer call(Integer i1, Integer i2){
+                return i1 + i2;
+            }
+        }
+
+        HitsToPairs RDDToPairs = new HitsToPairs();
+        JavaPairRDD<String, Integer> hitsPairRDD = hitsRDD.mapToPair(RDDToPairs);
+
+        PairsToCount PairRDDToCount = new PairsToCount();
+        JavaPairRDD<String, Integer> countsRDD = hitsPairRDD.reduceByKey(PairRDDToCount);
+
+        JavaPairRDD<String, Integer> countsRDD1 = countsRDD.coalesce(1);
+        countsRDD1.saveAsTextFile(param.outputPath);
+        sc.stop();
+    }
+
     public void setParam(DefaultParam param){
         this.param = param;
     }

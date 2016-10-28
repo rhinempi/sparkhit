@@ -28,6 +28,18 @@ public class Statistic implements ShAlgorithm{
          */
     }
 
+    public static String calculateHWEP(int obs_hets, int obs_hom1, int obs_hom2) {
+        int total = 2*obs_hets + 2*obs_hom1 + 2*obs_hom2;
+        int A = obs_hom1*2+obs_hets;
+        double AFreq = ((double)A)/total;
+        int a = obs_hom2*2+obs_hets;
+        double aFreq = ((double)a)/total;
+
+        String head = "HWE expect : ";
+
+        return AFreq*AFreq*total + "\t" + 2*AFreq*aFreq*total + "\t" + aFreq*aFreq*total;
+    }
+
     public static double calculateExactHWEPValue(int obs_hets, int obs_hom1, int obs_hom2) {
         //System.out.println("Starting exact HWE:\t" + obs_hets + "\t" + obs_hom1 + "\t" + obs_hom2);
 

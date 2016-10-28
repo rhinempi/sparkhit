@@ -43,7 +43,10 @@ public class ParameterForStatisticer {
     /* parameter IDs */
     private static final String
             INPUT_VCF = "vcf",
+            INPUT_TAB = "tab",
             OUTPUT_LINE = "outfile",
+            COLUMN = "column",
+            CACHE = "cache",
             PARTITIONS = "partition",
             VERSION = "version",
             HELP2 = "h",
@@ -56,7 +59,10 @@ public class ParameterForStatisticer {
         int o =0;
 
         parameterMap.put(INPUT_VCF, o++);
+        parameterMap.put(INPUT_TAB, o++);
         parameterMap.put(OUTPUT_LINE, o++);
+        parameterMap.put(COLUMN, o++);
+        parameterMap.put(CACHE, o++);
         parameterMap.put(PARTITIONS, o++);
         parameterMap.put(VERSION, o++);
         parameterMap.put(HELP, o++);
@@ -72,9 +78,21 @@ public class ParameterForStatisticer {
                 .hasArg().withDescription("Input vcf file containing variation info")
                 .create(INPUT_VCF));
 
+        parameter.addOption(OptionBuilder.withArgName("input tabular file")
+                .hasArg().withDescription("Input tabular file containing variation info")
+                .create(INPUT_TAB));
+
         parameter.addOption(OptionBuilder.withArgName("output file")
                 .hasArg().withDescription("Output alleles p value")
                 .create(OUTPUT_LINE));
+
+        parameter.addOption(OptionBuilder.withArgName("Columns for Alleles")
+                .hasArg().withDescription("columns where allele info is set")
+                .create(COLUMN));
+
+        parameter.addOption(OptionBuilder.withArgName("Cache data")
+                .hasArg(false).withDescription("weather to cache data in memory or not, default no")
+                .create(CACHE));
 
         parameter.addOption(OptionBuilder.withArgName("re-partition num")
                 .hasArg().withDescription("even the load of each task, 1 partition for a task or 4 partitions for a task is recommended. Default, not re-partition")
@@ -117,12 +135,12 @@ public class ParameterForStatisticer {
 			/* Set Object cl of CommandLine class for Parameter storage */
             CommandLine cl = parser.parse(parameter, arguments, true);
             if (cl.hasOption(HELP)) {
-                help.printScriptPiperHelp();
+                help.printStatisticerHelp();
                 System.exit(0);
             }
 
             if (cl.hasOption(HELP2)){
-                help.printScriptPiperHelp();
+                help.printStatisticerHelp();
                 System.exit(0);
             }
 
@@ -138,10 +156,25 @@ public class ParameterForStatisticer {
                 param.partitions = Integer.decode(value);
             }
 
+            if ((value = cl.getOptionValue(COLUMN)) != null){
+                param.columns = value;
+                param.columnStart = Integer.decode(value.split("-")[0]);
+                param.columnEnd = Integer.decode(value.split("-")[1]);
+            }else{
+                param.columnStart = Integer.decode(param.columns.split("-")[0]);
+                param.columnEnd = Integer.decode(param.columns.split("-")[1]);
+            }
+
+            if (cl.hasOption(CACHE)){
+                param.cache =true;
+            }
+
             if ((value = cl.getOptionValue(INPUT_VCF)) != null) {
                 param.inputFqPath = value;
+            }else if ((value = cl.getOptionValue(INPUT_TAB)) != null) {
+                param.inputFqPath = value;
             }else {
-                help.printScriptPiperHelp();
+                help.printStatisticerHelp();
                 System.exit(0);
 //                throw new IOException("Input file not specified.\nUse -help for list of options");
             }
@@ -157,7 +190,7 @@ public class ParameterForStatisticer {
             if ((value = cl.getOptionValue(OUTPUT_LINE)) != null){
                 param.outputPath = value;
             }else{
-                help.printScriptPiperHelp();
+                help.printStatisticerHelp();
                 info.readMessage("Output file not set with -outfile options");
                 info.screenDump();
                 System.exit(0);

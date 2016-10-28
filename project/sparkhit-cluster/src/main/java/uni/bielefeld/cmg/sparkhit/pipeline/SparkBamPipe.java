@@ -93,7 +93,7 @@ public class SparkBamPipe implements Serializable{
 
         vcfRDD.saveAsTextFile(param.outputPath);
 
-
+        sc.stop();
     }
 
     public void setParam(DefaultParam param){

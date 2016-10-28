@@ -43,6 +43,8 @@ public class ParameterForReporter {
     /* parameter IDs */
     private static final String
             INPUT_HIT = "input",
+            INPUT_KEY = "word",
+            INPUT_VALUE = "count",
             OUTPUT_REPORT = "outfile",
             PARTITIONS = "partition",
             VERSION = "version",
@@ -56,6 +58,8 @@ public class ParameterForReporter {
         int o =0;
 
         parameterMap.put(INPUT_HIT, o++);
+        parameterMap.put(INPUT_KEY, o++);
+        parameterMap.put(INPUT_VALUE, o++);
         parameterMap.put(OUTPUT_REPORT, o++);
         parameterMap.put(PARTITIONS, o++);
         parameterMap.put(VERSION, o++);
@@ -68,9 +72,17 @@ public class ParameterForReporter {
 
 		/* use Object parameter of Options class to store parameter information */
 
-        parameter.addOption(OptionBuilder.withArgName("input sparkhit file")
+        parameter.addOption(OptionBuilder.withArgName("input sparkhit result file")
                 .hasArg().withDescription("Input spark hit result file in tabular format. Accept wild card, s3n schema, hdfs schema")
                 .create(INPUT_HIT));
+
+        parameter.addOption(OptionBuilder.withArgName("columns for identifier")
+                .hasArg().withDescription("a list of column number used to represent a category you want to summarize. eg, 1,3,8 means counting column 1 (chr), column 3 (strain), column 8 (identity)")
+                .create(INPUT_KEY));
+
+        parameter.addOption(OptionBuilder.withArgName("column for count number")
+                .hasArg().withDescription("the number of column value which will be used to aggregate for the report. set to 0 the value will be 1 for every identifier")
+                .create(INPUT_VALUE));
 
         parameter.addOption(OptionBuilder.withArgName("output report file")
                 .hasArg().withDescription("Output report file in text format")
@@ -138,6 +150,13 @@ public class ParameterForReporter {
                 param.partitions = Integer.decode(value);
             }
 
+            if ((value = cl.getOptionValue(INPUT_KEY)) != null){
+                param.word = value;
+            }
+
+            if ((value = cl.getOptionValue(INPUT_VALUE)) != null){
+                param.count = Integer.decode(value);
+            }
 
             if ((value = cl.getOptionValue(INPUT_HIT)) != null) {
                 param.inputResultPath = value;

@@ -59,7 +59,7 @@ public class SparkHWEPipe implements Serializable{
         class VariantToPValue implements Function<String, String> {
             public String call(String s) {
 
-                double pHWE;
+                String HWE;
 
                 if (s.startsWith("#")) {
                     return null;
@@ -67,22 +67,26 @@ public class SparkHWEPipe implements Serializable{
 
                 String[] array = s.split("\\t");
 
-                if (array.length <= 9) {
+                if (array.length < param.columnEnd) {
                     return null;
                 }
 
-                int p2 = 0, q2 = 0, pq = 0;
-                for (int i = 9; i < 9 + 1000; i++) {
-                    if (array[i].equals("0|0")) {
-                        p2++;
-                    } else if (array[i].equals("0|1") || array[i].equals("1|0")) {
+                int pp = 0, qq = 0, pq = 0;
+                for (int i = param.columnStart-1; i < param.columnEnd; i++) {
+                    if (array[i].startsWith("0|0")) {
+                        pp++;
+                    } else if (array[i].startsWith("0|1") || array[i].startsWith("1|0")) {
                         pq++;
-                    } else if (array[i].equals("1|1")) {
-                        q2++;
+                    } else if (array[i].startsWith("1|1")) {
+                        qq++;
                     }
                 }
-                pHWE = Statistic.calculateExactHWEPValue(pq, p2, q2);
-                return array[0] + "\t" + array[1] + "\t" + pHWE;
+
+                if (pp+pq+qq ==0){
+                    return array[0] + "\t" + array[1] + "\t" + array[2] + "\t" + 1;
+                }
+                HWE = Statistic.calculateHWEP(pq, pp, qq);
+                return array[0] + "\t" + array[1] + "\t" + array[2] + "\t" + HWE;
             }
         }
 
@@ -108,8 +112,11 @@ public class SparkHWEPipe implements Serializable{
         Filter RDDFilter = new Filter();
         pValueRDD = pValueRDD.filter(RDDFilter);
 
+        //pValueRDD.count();
+
         pValueRDD.saveAsTextFile(param.outputPath);
 
+        sc.stop();
     }
 
     public void setParam(DefaultParam param){

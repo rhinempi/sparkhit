@@ -1,0 +1,275 @@
+#! /bin/bash
+
+ #-----------------------------------------------------------------------------
+ # Created by rhinempi on 23/01/16.
+ #
+ #      SparkHit
+ #
+ # Copyright (c) 2015-2015
+ #      Liren Huang      <huanglr at cebitec.uni-bielefeld.de>
+ #
+ # SparkHit is free software: you can redistribute it and/or modify it
+ # under the terms of the GNU General Public License as published by the Free
+ # Software Foundation, either version 3 of the License, or (at your option)
+ # any later version.
+ #
+ # This program is distributed in the hope that it will be useful, but WITHOUT
+ # ANY WARRANTY; Without even the implied warranty of MERCHANTABILITY or
+ # FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
+ # more detail.
+ #
+ # You should have received a copy of the GNU General Public License along
+ # with this program. If not, see <http://www.gnu.org/licenses>.
+ #-----------------------------------------------------------------------------
+
+NAME="sparkhit"
+VERSION="0.8"
+
+SPARKHIT=$(pwd -P)
+SH_BIN="$SPARKHIT"
+SH_HOME="$(dirname "$SH_BIN")"
+SH_LIB=${SH_LIB:-$SH_HOME/lib}
+SH_JAR=${SH_JAR:-$SH_LIB/original-$NAME-$VERSION.jar}
+SH_PACKAGE=${SH_PACKAGE:-$SH_HOME/package}
+SH_SBIN=${SH_SBIN:-$SH_HOME/sbin}
+SH_OPT=""
+SH_URL="https://github.com/rhinempi/sparkhit/zipball/master"
+
+SPARK_URL="http://d3kbcqa49mib13.cloudfront.net/spark-1.6.0-bin-hadoop2.6.tgz"  # 1.6.0 version
+SPARK_CMD=""  # in case no spark home was found, please manually paste the "spark-submit" file path
+SPARK_OPT=""
+
+
+if [[ $TERM && $TERM != 'dumb' ]];
+then
+    GREEN=$(tput setaf 2; tput bold)
+    YELLOW=$(tput setaf 3)
+    RED=$(tput setaf 1)
+    NORMAL=$(tput sgr0)
+fi
+
+function echo_red() {
+    echo -e "$RED$*$NORMAL"
+}
+
+function echo_green() {
+    echo -e "$GREEN$*$NORMAL"
+}
+
+function echo_yellow() {
+    echo -e "$YELLOW$8$YELLOW"
+}
+
+function die() {
+    echo_red "$*"
+    exit 1
+}
+
+function get_spark() {
+    if command -v wget &>/dev/null; then
+        GET="wget -q $1 -O $2"
+    elif command -v curl &>/dev/null; then
+        GET="curl $1 -o $2"
+    else
+        echo_red "Sparkhit initiation error: cannot find 'curl' nor 'wget' utility --  please install one of them"
+        exit 1
+    fi
+
+    printf "Downloading Apache Spark framework. It may require a few seconds, please wait .. "
+    $GET; status=$?
+    printf "\r\033[K"
+    if [ $status -ne 0 ]; then
+        echo_red "Sparkhit initiation error: cannot download Apache Spark  -- make sure you can connect the internet"
+        echo ""
+        echo "Alternatively you can download Apache Spark package"
+        echo ""
+        echo "And save it to $SH_PACKAGE"
+        echo ""
+        exit 1
+    fi
+}
+
+function untar_spark() {
+    TAR="tar zxvf $1 -C $2"
+    $TAR; status=$?
+    printf "\r\033[K"
+    if [ $status -ne 0 ]; then
+        echo_red "Sparkhit initiation error: cannot decompress Spark package  -- make sure it is located at:"
+        echo ""
+        echo "$1"
+        echo ""
+        exit 1
+    fi
+}
+
+get_abs_filename() {
+    echo "$(cd "$(dirname "$1")" && pwd)/$(basename "$1")"
+}
+
+# Find java executable
+if [ ! -x "$JAVA_CMD" ] ; then
+    if [ -d "$JAVA_HOME" ] ; then
+        if [ -x "$JAVA_HOME/jre/sh/java" ] ; then
+            # IBM's JDK on AIX uses strange locations for the executables
+            JAVA_CMD="$JAVA_HOME/jre/sh/java"
+        else
+            JAVA_CMD="$JAVA_HOME/bin/java"
+        fi
+    elif [ -x /usr/libexec/java_home ]; then
+        JAVA_CMD="$(/usr/libexec/java_home -v 1.7+)/bin/java"
+    else
+        JAVA_CMD="$(which java)"
+    fi
+fi
+
+# Verify installed Java version
+if [ ! -d "$SH_LAUNCHER" ]; then # <-- only the first time
+    $JAVA_CMD -version 2>&1 | awk '/version/ {print $3}' | grep '"1\.[7|8]\..*"' > /dev/null
+    if [ $? -ne 0 ]; then
+         echo_red "Sparkhit initiation error: cannot find Java or it's a wrong version -- please make sure that Java 7 or higher is installed"
+         echo_red "Info: Sparkhit is trying to use the Java VM defined by the following environment variables:\n JAVA_CMD: $JAVA_CMD\n JAVA_HOME: $JAVA_HOME\n"
+         exit 1
+    fi
+fi
+
+# Find Spark framework
+    which spark-submit
+    rc=$?
+
+    if [ -d "$SPARK_HOME" ] ; then
+        if [ -x "$SPARK_HOME/bin/spark-submit" ] ; then
+            # IBM's JDK on AIX uses strange locations for the executables
+            SPARK_CMD="$SPARK_HOME/bin/spark-submit"
+        fi
+    elif [ $rc == 0 ]; then
+        SPARK_CMD= "$(which spark-submit)"
+    elif [ -x "$SPARK_CMD" ]; then
+        continue
+    elif [ -x "$SH_PACKAGE/spark-1.6.0-bin-hadoop2.6/bin/spark-submit" ]; then
+            SPARK_CMD="$SH_PACKAGE/spark-1.6.0-bin-hadoop2.6/bin/spark-submit"
+    else
+        get_spark "$SPARK_URL" "$SH_PACKAGE/spark-1.6.0-bin-hadoop2.6.tgz"
+        untar_spark "$SH_PACKAGE/spark-1.6.0-bin-hadoop2.6.tgz" "$SH_PACKAGE"
+        SPARK_CMD= "$SH_PACKAGE/spark-1.6.0-bin-hadoop2.6/bin/spark-submit"
+    fi
+
+# Verify sparkhit jar is available
+if [ ! -f "$SH_JAR" ]; then
+    echo_red "Sparkhit initiation error: cannot find sparkhit main jar file in: $SH_JAR"
+    exit 1
+fi
+
+# dump help info
+function dump_help() {
+    echo ""
+    echo "$NAME - on the cloud."
+    echo "Version: $VERSION"
+    echo ""
+    echo "Commands:"
+    echo "  mapper         Fragment recruitment"
+    echo "  reporter       Summarize recruitment result"
+    echo "  piper          Send data to external tools, eg. bwa, bowtie2 and fr-hit"
+    echo "  parallelizer   Parallel a task to each worker node"
+    echo "  cluster        Run cluster to a table"
+    echo "  tester         Run Chi-square test"
+    echo "  converter      Convert different file format: fastq, fasta or line based"
+    echo "  correlationer  Run Correlation test"
+    echo "  decompresser   Parallel decompression to splitable compressed files, eg. bzip2"
+    echo "  reductioner    Run Principle component analysis"
+    echo "  regressioner   Run logistic regression"
+    echo "  statisticer    Run Hardy–Weinberg Equilibrium"
+    echo "  variationer    Genotype with samtools mpileup"
+    echo "Type each command to view its options, eg. Usage: ./sparkhit mapper"
+    echo ""
+    echo "Spark cluster configuration:"
+    echo "  --spark-conf       Spark cluster configuration file or spark input parameters"
+    echo "  --spark-param      Spark cluster parameters in quotation marks \"--driver-memory 4G --executor-memory 16G\""
+    echo "  --spark-help       View spark-submit options. You can include spark\`s options directly."
+    echo ""
+    echo "Usage: sparkhit [commands] --spark-conf spark_cluster_default.conf [option...]"
+    echo "       sparkhit [commands] --spark-param \"--driver-memory 4G --executor-memory 16G\" [option...]"
+    echo "       sparkhit [commands] --driver-memory 4G --executor-memory 16G --executor-cores 2 [option...]"
+    echo ""
+    echo "For detailed cluster submission, please refer to scripts located in:"
+    echo "$SH_SBIN"
+}
+
+function dump_spark_help() {
+    ${SPARK_CMD}
+}
+
+function parse_param() {
+
+    for i in "${!args[@]}"; do
+        if [[ "${args[$i]}" == "--spark-conf" ]]; then
+            SPARK_OPT+="--conf ${args[$i+1]} "
+        elif [[ "${args[$i]}" == "--spark-param" ]]; then
+            SPARK_OPT+="${args[$i+1]} "
+        elif [[ "${args[$i]}" == "--spark-help" ]]; then
+            dump_spark_help
+            exit 1;
+        elif [[ ${args[$i]} == "--class" ]]; then
+            echo "--class option will be chosen by correspond [command]"
+        elif [[ ${args[$i]} == --* ]]; then
+            SPARK_OPT+="${args[$i]} ${args[$i+1]} "
+        elif [[ ${args[$i]} == -* ]]; then
+            SH_OPT+="${args[$i]} ${args[$i+1]} "
+        fi
+    done
+}
+
+# Sparkhit options
+declare -a args=("$@")
+MODULE="${args[0]}"
+mainClass="uni.bielefeld.cmg.sparkhit.main.Main"
+
+# if no input options
+if [[ ! ${MODULE} ]]; then
+    dump_help
+    exit 1;
+fi
+
+# parse input options
+parse_param
+
+# check command modules
+if [[ ${MODULE} == "mapper" ]]; then
+    mainClass="uni.bielefeld.cmg.sparkhit.main.Main"
+elif [[ ${MODULE} == "piper" ]]; then
+    mainClass="uni.bielefeld.cmg.sparkhit.main.MainOfPiper"
+elif [[ ${MODULE} == "parallelizer" ]]; then
+    mainClass="uni.bielefeld.cmg.sparkhit.main.MainOfParallelizer"
+elif [[ ${MODULE} == "reporter" ]]; then
+    mainClass="uni.bielefeld.cmg.sparkhit.main.MainOfReporter"
+elif [[ ${MODULE} == "tester" ]]; then
+    mainClass="uni.bielefeld.cmg.sparkhit.main.MainOfChisquareTester"
+elif [[ ${MODULE} == "cluster" ]]; then
+    mainClass="uni.bielefeld.cmg.sparkhit.main.MainOfCluster"
+elif [[ ${MODULE} == "converter" ]]; then
+    mainClass="uni.bielefeld.cmg.sparkhit.main.MainOfConverter"
+elif [[ ${MODULE} == "correlationer" ]]; then
+    mainClass="uni.bielefeld.cmg.sparkhit.main.MainOfCorrelationer"
+elif [[ ${MODULE} == "decompresser" ]]; then
+    mainClass="uni.bielefeld.cmg.sparkhit.main.MainOfDecompresser"
+elif [[ ${MODULE} == "reductioner" ]]; then
+    mainClass="uni.bielefeld.cmg.sparkhit.main.MainOfReductioner"
+elif [[ ${MODULE} == "regressioner" ]]; then
+    mainClass="uni.bielefeld.cmg.sparkhit.main.MainOfRegressioner"
+elif [[ ${MODULE} == "statisticer" ]]; then
+    mainClass="uni.bielefeld.cmg.sparkhit.main.MainOfStatisticer"
+elif [[ ${MODULE} == "variantcaller" ]]; then
+    mainClass="uni.bielefeld.cmg.sparkhit.main.MainOfVariantCaller"
+else
+    dump_help
+    exit 1;
+fi
+
+# Assemble the command line
+cmdline="$SPARK_CMD $SPARK_OPT --class $mainClass $SH_JAR $SH_OPT"
+
+# launch command
+function launch_sparkhit() {
+  exec bash -c "exec $cmdline"
+}
+
+launch_sparkhit

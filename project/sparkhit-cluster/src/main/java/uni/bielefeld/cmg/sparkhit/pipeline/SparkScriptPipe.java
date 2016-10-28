@@ -59,17 +59,31 @@ public class SparkScriptPipe implements Serializable{
             public String call(String s){
                 String[] fourMusketeers = s.split("\\t");
                 if (fourMusketeers[3]!=null) {
-                    String unit = fourMusketeers[0] + "\n" + fourMusketeers[1] + "\n" + fourMusketeers[2] + "\n" + fourMusketeers[3];
-                    return unit;
-                }else{
-                    return null;
+                    if (fourMusketeers[0].startsWith("@")) {
+                        if (fourMusketeers[1].length() == fourMusketeers[3].length()) {
+                            String unit = fourMusketeers[0] + "\n" + fourMusketeers[1] + "\n" + fourMusketeers[2] + "\n" + fourMusketeers[3];
+                            return unit;
+                        }
+                    }
                 }
+                return null;
             }
         }
 
         class RDDUnitFilter implements Function<String, Boolean>, Serializable{
             public Boolean call(String s){
-                if (s != null){
+                if (s != null) {
+                    return true;
+                }
+                else {
+                    return false;
+                }
+            }
+        }
+
+        class FastqUnitFilter implements Function<String, Boolean>, Serializable{
+            public Boolean call(String s){
+                if (s.startsWith("@")){
                     return true;
                 }else{
                     return false;
@@ -138,6 +152,8 @@ public class SparkScriptPipe implements Serializable{
             LineToFastq RDDLineToFastq = new LineToFastq();
             FastqRDD = FastqRDD.map(RDDLineToFastq);
 
+            RDDUnitFilter FastqUnitFilter = new RDDUnitFilter();
+            FastqRDD = FastqRDD.filter(FastqUnitFilter);
         }
 
         if (param.lineToFasta == true){
@@ -174,7 +190,7 @@ public class SparkScriptPipe implements Serializable{
 
         FastqRDD.saveAsTextFile(param.outputPath);
 
-
+        sc.stop();
     }
 
     public void setParam(DefaultParam param){

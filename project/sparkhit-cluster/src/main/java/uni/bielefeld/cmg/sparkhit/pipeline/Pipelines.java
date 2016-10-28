@@ -274,7 +274,11 @@ public class Pipelines implements Pipeline, Serializable{
     public void sparkReporter(){
         SparkReportPipe sRPipe = new SparkReportPipe();
         sRPipe.setParam(param);
-        sRPipe.spark();
+        if (param.word == null) {
+            sRPipe.spark();
+        }else{
+            sRPipe.sparkSpecific();
+        }
     }
 
     public void sparkConverter(){
@@ -317,6 +321,30 @@ public class Pipelines implements Pipeline, Serializable{
         SparkDecompressPipe sDPipe = new SparkDecompressPipe();
         sDPipe.setParam(param);
         sDPipe.spark();
+    }
+
+    public void sparkCluster(){
+        SparkClusterPipe sCPipe = new SparkClusterPipe();
+        sCPipe.setParam(param);
+        sCPipe.spark();
+    }
+
+    public void sparkCorrelationer(){
+        SparkCorrelationPipe sCPipe = new SparkCorrelationPipe();
+        sCPipe.setParam(param);
+        sCPipe.spark();
+    }
+
+    public void sparkChisquareTester(){
+        SparkChiSquarePipe sCPipe = new SparkChiSquarePipe();
+        sCPipe.setParam(param);
+        sCPipe.spark();
+    }
+
+    public void sparkRegressioner(){
+        SparkReductionPipe sRPipe = new SparkReductionPipe();
+        sRPipe.setParam(param);
+        sRPipe.spark();
     }
 
     public void setFastqUnitBuffer(FastqUnitBuffer inputFastqUnitBuffer){

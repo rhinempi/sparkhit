@@ -317,6 +317,7 @@ public class SparkPipe implements Serializable {
          * action operation of spark
          */
         FastqRDD.saveAsTextFile(param.outputPath);
+        sc.stop();
     }
 
     public void setParam(DefaultParam param){

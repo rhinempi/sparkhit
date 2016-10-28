@@ -5,6 +5,7 @@ import org.apache.spark.SparkConf;
 import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.api.java.JavaSparkContext;
 import org.apache.spark.api.java.function.FlatMapFunction;
+import org.apache.spark.api.java.function.Function;
 import org.apache.spark.mllib.linalg.Matrix;
 import org.apache.spark.mllib.linalg.Vector;
 import org.apache.spark.mllib.linalg.Vectors;
@@ -66,41 +67,45 @@ public class SparkReductionPipe implements Serializable{
 
         class PartitionIterator implements FlatMapFunction<Iterator<String>, Vector> {
             public Iterable<Vector> call(Iterator<String> input) {
-                ArrayList<ArrayList<Integer>> snps = new ArrayList<ArrayList<Integer>>();
+                ArrayList<ArrayList<Double>> snps = new ArrayList<ArrayList<Double>>();
                 ArrayList<Vector> snpsVector = new ArrayList<Vector>();
 
-                for (int i = 0 ; i < 1000; i++){
-                    snps.add(new ArrayList<Integer>());
+                for (int i = 0 ; i <= param.columnEnd - param.columnStart; i++){
+                    snps.add(new ArrayList<Double>());
                 }
 
                 while (input.hasNext()) {
                     String line = input.next();
                     if (line.startsWith("#")) {
-                        line = input.next();
+                        continue;
                     }
 
                     String[] array = line.split("\\t");
 
-                    if (array.length <= 9){continue;}
+                    if (array.length < param.columnEnd){continue;}
 
-                    int feature = 0;
-                    for (int i = 9; i < 9 + 1000; i++) {
-                        if (array[i].equals("0|0")) {
-                            feature = 0;
-                        } else if (array[i].equals("0|1") || array[i].equals("1|0")) {
-                            feature = 1;
-                        } else if (array[i].equals("1|1")) {
-                            feature = 2;
+                    double feature = 0;
+                    for (int i = param.columnStart-1; i <param.columnEnd; i++) {
+                        if (param.inputTabPath!=null){
+                            snps.get(i - param.columnStart + 1).add(Double.parseDouble(array[i]));
+                        }else {
+                            if (array[i].startsWith("0|0")) {
+                                feature = 0;
+                            } else if (array[i].startsWith("0|1") || array[i].startsWith("1|0")) {
+                                feature = 1;
+                            } else if (array[i].startsWith("1|1")) {
+                                feature = 2;
+                            }
+                            snps.get(i - param.columnStart + 1).add(feature);
                         }
-                        snps.get(i-9).add(feature);
                     }
 
                 }
 
-                for (int i = 0; i < 1000; i++){
+                for (int i = 0; i <= param.columnEnd - param.columnStart; i++){
                     double[] vector = new double[snps.get(i).size()];
                     for (int j=0; j< snps.get(i).size(); j++){
-                        vector[j] = (double)(snps.get(i).get(j));
+                        vector[j] = snps.get(i).get(j);
                     }
                     snpsVector.add(Vectors.dense(vector));
                 }
@@ -114,42 +119,43 @@ public class SparkReductionPipe implements Serializable{
 
                 ArrayList<ArrayList<Integer>> snps = new ArrayList<ArrayList<Integer>>();
                 ArrayList<Vector> snpsVector = new ArrayList<Vector>();
-                int lineMark=0;
+                int lineMark=-1;
                 int p2 = 0, pq = 0, q2 = 0;
 
-                for (int i = 0 ; i < 1000; i++){
+                for (int i = 0 ; i <= param.columnEnd-param.columnStart; i++){
                     snps.add(new ArrayList<Integer>());
                 }
 
                 while (input.hasNext()) {
                     String line = input.next();
                     if (line.startsWith("#")) {
-                        line = input.next();
+                        continue;
                     }
 
                     String[] array = line.split("\\t");
 
-                    lineMark++;
-
-                    if (array.length <= 9) {
+                    if (array.length < param.columnEnd) {
                         continue;
                     }
 
-                    if (lineMark % param.window == 0){p2 = 0; pq = 0; q2 = 0;}
+                    lineMark++;
 
-                    for (int i = 9; i < 9 + 1000; i++) {
-                        if (array[i].equals("0|0")) {
-                            p2++;
-                        } else if (array[i].equals("0|1") || array[i].equals("1|0")) {
-                            pq++;
-                        } else if (array[i].equals("1|1")) {
-                            q2++;
+                    if (lineMark % param.window == 0){p2 = 0; pq = 0; q2 = 0;}
+                    int blockNum = 3 * (lineMark / param.window);
+
+                    for (int i = param.columnStart-1; i < param.columnEnd; i++) {
+                        if (lineMark % param.window == 0) {
+                            snps.get(i - param.columnStart+1).add(p2);
+                            snps.get(i - param.columnStart+1).add(pq);
+                            snps.get(i - param.columnStart+1).add(q2);
                         }
 
-                        if (lineMark % param.window == 0) {
-                            snps.get(i - 9).add(p2);
-                            snps.get(i - 9).add(pq);
-                            snps.get(i - 9).add(q2);
+                        if (array[i].startsWith("0|0")) {
+                            snps.get(i - param.columnStart + 1).set(blockNum ,snps.get(i - param.columnStart + 1).get(blockNum) + 1);
+                        } else if (array[i].startsWith("0|1") || array[i].startsWith("1|0")) {
+                            snps.get(i - param.columnStart + 1).set(blockNum+1 ,snps.get(i - param.columnStart + 1).get(blockNum+1) + 1);
+                        } else if (array[i].startsWith("1|1")) {
+                            snps.get(i - param.columnStart + 1).set(blockNum+2 ,snps.get(i - param.columnStart + 1).get(blockNum+2) + 1);
                         }
 
                     }
@@ -157,16 +163,17 @@ public class SparkReductionPipe implements Serializable{
                 }
 
                 /* add last block */
-                for (int i = 9; i < 9 + 1000; i++) {
-                        snps.get(i - 9).add(p2);
-                        snps.get(i - 9).add(pq);
-                        snps.get(i - 9).add(q2);
+                /*
+                for (int i = param.columnStart; i <= param.columnEnd; i++) {
+                        snps.get(i - param.columnStart).add(p2);
+                        snps.get(i - param.columnStart).add(pq);
+                        snps.get(i - param.columnStart).add(q2);
                 }
-
-                for (int i = 0; i < 1000; i++){
+*/
+                for (int i = 0; i <= param.columnEnd - param.columnStart; i++){
                     double[] vector = new double[snps.get(i).size()];
                     for (int j=0; j< snps.get(i).size(); j++){
-                        vector[j] = (double)(snps.get(i).get(j));
+                        vector[j] = ((double)snps.get(i).get(j))/param.window;
                     }
                     snpsVector.add(Vectors.dense(vector));
                 }
@@ -175,40 +182,133 @@ public class SparkReductionPipe implements Serializable{
             }
         }
 
-        JavaRDD<Vector> ListRDD;
-        if (param.window == 0) {
-            PartitionIterator VCFToVectorRDD = new PartitionIterator();
-            ListRDD = vcfRDD.mapPartitions(VCFToVectorRDD);
-        }else{
-            PartitionIteratorBlock VCFToVectorBlockRDD = new PartitionIteratorBlock();
-            ListRDD = vcfRDD.mapPartitions(VCFToVectorBlockRDD);
+        class VariantToVector implements Function<String, Vector> {
+            public Vector call(String s) {
+
+                if (s.startsWith("#")) {
+                    return null;
+                }
+
+                String[] array = s.split("\\t");
+                double[] vector = new double[param.columnEnd - param.columnStart + 1];
+
+                if (array.length < param.columnEnd) {
+                    return null;
+                }
+
+                for (int i = param.columnStart-1; i < param.columnEnd; i++) {
+                    if (param.inputTabPath!=null){
+                        vector[i-param.columnStart + 1] = Double.parseDouble(array[i]);
+                    }else {
+                        if (array[i].startsWith("0|0")) {
+                            vector[i - param.columnStart + 1] = 0;
+                        } else if (array[i].startsWith("0|1") || array[i].startsWith("1|0")) {
+                            vector[i - param.columnStart + 1] = 1;
+                        } else if (array[i].startsWith("1|1")) {
+                            vector[i - param.columnStart + 1] = 2;
+                        }
+                    }
+                }
+                return Vectors.dense(vector);
+            }
         }
 
-        if (param.partitions != 0) {
-            ListRDD = ListRDD.repartition(param.partitions);
+        class Filter implements Function<Vector, Boolean>, Serializable {
+            public Boolean call(Vector s) {
+                if (s != null) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
         }
 
-        ListRDD.cache();
+        if (!param.horizontal) {
 
-        RowMatrix mat = new RowMatrix(ListRDD.rdd());
+            if (param.partitions != 0) {
+                vcfRDD = vcfRDD.repartition(param.partitions);
+            }
 
-        Matrix pc = mat.computePrincipalComponents(3);
+            VariantToVector toVector = new VariantToVector();
+            JavaRDD<Vector> vectorRDD = vcfRDD.map(toVector);
 
-        RowMatrix projected = mat.multiply(pc);
+            Filter RDDFilter = new Filter();
+            vectorRDD = vectorRDD.filter(RDDFilter);
 
-        Vector[] collectPartitions = (Vector[]) projected.rows().collect();
+            if (param.cache) {
+                vectorRDD.cache();
+            }
 
-        TextFileBufferOutput output = new TextFileBufferOutput();
-        output.setOutput(param.outputPath, true);
-        BufferedWriter outputBufferWriter = output.getOutputBufferWriter();
-        for (Vector vector: collectPartitions){
+            RowMatrix mat = new RowMatrix(vectorRDD.rdd());
+
+            Matrix pc = mat.computePrincipalComponents(param.componentNum);
+
+            RowMatrix projected = mat.multiply(pc);
+
+            Vector[] collectPartitions = (Vector[]) projected.rows().collect();
+
+
+            TextFileBufferOutput output = new TextFileBufferOutput();
+            output.setOutput(param.outputPath, true);
+            BufferedWriter outputBufferWriter = output.getOutputBufferWriter();
+            for (Vector vector : collectPartitions) {
+                try {
+                    outputBufferWriter.write(vector.toString() + "\n");
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+
             try {
-                outputBufferWriter.write(vector.toString()+"\n");
+                outputBufferWriter.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }else if (param.horizontal){
+            JavaRDD<Vector> ListRDD;
+            if (param.window == 0) {
+                PartitionIterator VCFToVectorRDD = new PartitionIterator();
+                ListRDD = vcfRDD.mapPartitions(VCFToVectorRDD);
+            }else{
+                PartitionIteratorBlock VCFToVectorBlockRDD = new PartitionIteratorBlock();
+                ListRDD = vcfRDD.mapPartitions(VCFToVectorBlockRDD);
+            }
+
+            if (param.partitions != 0) {
+                ListRDD = ListRDD.repartition(param.partitions);
+            }
+
+            if (param.cache) {
+                ListRDD.cache();
+            }
+
+            RowMatrix mat = new RowMatrix(ListRDD.rdd());
+
+            Matrix pc = mat.computePrincipalComponents(param.componentNum);
+
+            RowMatrix projected = mat.multiply(pc);
+
+            Vector[] collectPartitions = (Vector[]) projected.rows().collect();
+
+
+            TextFileBufferOutput output = new TextFileBufferOutput();
+            output.setOutput(param.outputPath, true);
+            BufferedWriter outputBufferWriter = output.getOutputBufferWriter();
+            for (Vector vector : collectPartitions) {
+                try {
+                    outputBufferWriter.write(vector.toString() + "\n");
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            try {
+                outputBufferWriter.close();
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
-
+        sc.stop();
     }
 
     public void setParam(DefaultParam param){

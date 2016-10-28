@@ -141,12 +141,12 @@ public class ParameterForDecompresser {
 			/* Set Object cl of CommandLine class for Parameter storage */
             CommandLine cl = parser.parse(parameter, arguments, true);
             if (cl.hasOption(HELP)) {
-                help.printScriptPiperHelp();
+                help.printDecompresserHelp();
                 System.exit(0);
             }
 
             if (cl.hasOption(HELP2)){
-                help.printScriptPiperHelp();
+                help.printDecompresserHelp();
                 System.exit(0);
             }
 
@@ -168,7 +168,7 @@ public class ParameterForDecompresser {
                 param.inputFqLinePath = value;
                 param.inputFqPath = value;
             }else {
-                help.printScriptPiperHelp();
+                help.printDecompresserHelp();
                 System.exit(0);
 //                throw new IOException("Input file not specified.\nUse -help for list of options");
             }
@@ -184,7 +184,7 @@ public class ParameterForDecompresser {
             if ((value = cl.getOptionValue(OUTPUT_LINE)) != null){
                 param.outputPath = value;
             }else{
-                help.printScriptPiperHelp();
+                help.printDecompresserHelp();
                 info.readMessage("Output file not set with -outfile options");
                 info.screenDump();
                 System.exit(0);

@@ -168,7 +168,7 @@ public class SparkDecompressPipe implements Serializable{
 
         FastqRDD.saveAsTextFile(param.outputPath);
 
-
+        sc.stop();
     }
 
     public void setParam(DefaultParam param){
