@@ -5,8 +5,8 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>cmg</groupId>
-    <artifactId>sparkhit-hadoop</artifactId>
-    <version>0.7</version>
+    <artifactId>sparkhit-hadoopDecompressor</artifactId>
+    <version>0.2</version>
 
     <dependencies>
         <dependency>

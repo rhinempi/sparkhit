@@ -5,8 +5,8 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>cmg</groupId>
-    <artifactId>sparkhit-local</artifactId>
-    <version>0.7</version>
+    <artifactId>SparkHit</artifactId>
+    <version>0.3-STANDALONE</version>
     <dependencies>
         <dependency>
             <groupId>commons-cli</groupId>

@@ -5,23 +5,30 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>cmg</groupId>
-    <artifactId>sparkhit-cluster</artifactId>
-    <version>0.7</version>
+    <artifactId>sparkhit</artifactId>
+    <version>0.8</version>
     <dependencies>
         <dependency> <!-- Spark dependency -->
             <groupId>org.apache.spark</groupId>
             <artifactId>spark-core_2.10</artifactId>
             <version>1.6.0</version>
         </dependency>
-        <dependency>
+        <dependency> <!-- Spark machine learning library-->
             <groupId>org.apache.spark</groupId>
             <artifactId>spark-mllib_2.10</artifactId>
             <version>1.6.0</version>
         </dependency>
+        <!-- kryo serializer-->
         <dependency>
             <groupId>com.esotericsoftware</groupId>
             <artifactId>kryo</artifactId>
             <version>3.0.3</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/org.apache.commons/commons-math3 -->
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-math3</artifactId>
+            <version>3.0</version>
         </dependency>
     </dependencies>
 
