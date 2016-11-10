@@ -51,25 +51,65 @@ function closeNav() {
 
     <section class="main-content">
       <h3>
-<a id="welcome-to-sparkhit" class="anchor" href="#welcome-to-sparkhit" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Welcome to Sparkhit.</h3>
+<a id="welcome-to-sparkhit" class="anchor" href="#welcome-to-sparkhit" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Overview</h3>
 
 <p>Sparkhit webpage is now alive.
 This automatic page generator is the easiest way to create beautiful pages for all of your projects. Author your page content here <a href="https://guides.github.com/features/mastering-markdown/">using GitHub Flavored Markdown</a>, select a template crafted by a designer, and publish. After your page is generated, you can check out the new <code>gh-pages</code> branch locally. If you’re using GitHub Desktop, simply sync your repository and you’ll see the new branch.</p>
 
 <h3>
-<a id="designer-templates" class="anchor" href="#designer-templates" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Designer Templates</h3>
+<a id="Dependencies" class="anchor" href="#Dependencies" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Dependencies</h3>
 
-<p>We’ve crafted some handsome templates for you to use. Go ahead and click 'Continue to layouts' to browse through them. You can easily go back to edit your page before publishing. After publishing your page, you can revisit the page generator and switch to another theme. Your Page content will be preserved.</p>
-<code>
-if (isAwesome){
-  return true
-}
-</code>
-
+        <p><i>Sparkhit</i> is written in Java and built on top of the <i>Apache <a href="http://spark.apache.org/">Spark</a></i>. To use <i>Sparkhit</i>, make sure you have a Java-1.7 or higher version installed in your operating system, as well as <i>Spark</i> framework. Since <i>Sparkhit</i> runs on a distributed computer cluster, <i>Spark</i> cluster should also be properly configured when running <i>Sparkhit</i> on cluster mode. If you want to parallelize your own tools with <i>Sparkhit</i>, make sure they are available on all computer nodes (eg. copy your script to each node or place it in a shared file system). See <a href="">use your own tool</a>  </p>
 <h3>
-<a id="creating-pages-manually" class="anchor" href="#creating-pages-manually" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Creating pages manually</h3>
+<a id="Spark installation" class="anchor" href="#Spark installation" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Spark installation</h3>
 
-<p>If you prefer to not use the automatic generator, push a branch named <code>gh-pages</code> to your repository to create a page manually. In addition to supporting regular HTML content, GitHub Pages support Jekyll, a simple, blog aware static site generator. Jekyll makes it easy to create site-wide headers and footers without having to copy them across every page. It also offers intelligent blog support and other advanced templating features.</p>
+        <p>There are different ways to install <i>Spark</i> on your computer. Please go to <i>Spark</i>`s <a href="http://spark.apache.org/downloads.html">Download</a> page and choose a download method of your preference. If you would like to build <i>Spark</i> from source, please go to <a href="http://spark.apache.org/docs/latest/building-spark.html">Building Spark</a> page. </p>
+        <p>
+            A simple way is to download <i>Spark</i> pre-build package (version 2.0.0) using command: <br/>
+            <code>$ wget http://archive.apache.org/dist/spark/spark-2.0.0/spark-2.0.0-bin-hadoop2.6.tgz</code> 
+        </p>
+        <p>
+            Once download, untar the package: <br>
+            <code>$ tar zxvf spark-2.0.0-bin-hadoop2.6.tgz</code> <br/>
+        </p>
+        <p>
+            Go to unpacked <i>Spark</i> directory. Under <code>bin</code> folder, you should see an executable <code>spark-submit</code>. Set environmnent variable (ENV) <i>SPARK_HOME</i> to your unpacked <i>Spark</i> directory: <br/>
+            <code>$ cd ./spark-2.0.0-bin-hadoop2.6</code> <br/>
+            <code>$ pwd</code> &nbsp;Then, copy listed full path.<br/>
+            <code>$ vi /home/ec2-user/.bash_profile</code> or <code>$ vi /home/ec2-user/.profile</code> <br/>
+            Here, ec2-user refers to your user name. Paste your <i>Spark</i> full path in the file and set as ENV <i>SPARK_HOME</i>
+        </p>
+        <pre>
+# bash_profile
+export SPARK_HOME="/vol/ec2-user/spark-2.0.0-bin-hadoop2.6"</pre>
+        <p>
+            Reload changes in the file: <br/>
+            <code>$ source /home/ec2-user/.bash_profile</code>
+        </p>
+        <p>
+            Now <i>Sparkhit</i> should be able to recognize <i>Spark</i>.
+        </p>
+        <div>
+            &#9749; &nbsp;Notes
+        </div>
+        <div-content>
+            <i>Sparkhit</i> uses <code>spark-submit</code> executable to submit <i>Sparkhit</i>`s jar file to <i>Spark</i> cluster. As long as <i>Sparkhit</i> could found the full path of <code>spark-submit</code>, <i>Sparkhit</i> will work properly.
+        </div-content>
+        <br/><br/>        
+<h3>
+<a id="Sparkhit installation" class="anchor" href="#Sparkhit installation" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Sparkhit installation</h3>
+        <p>
+            Download <i>Sparkhit</i> package from github zipball: <br/>
+            <code>$ wget https://github.com/rhinempi/sparkhit/zipball/master -o ./sparkhit.zip</code> <br/>
+            Or tarball:
+            <code>$ wget https://github.com/rhinempi/sparkhit/tarball/master -o ./sparkhit.tar</code> <br/>
+            Or press the download buttom on top.
+        </p>
+        <p>
+            Once download, unzip or untar the package: <br/>
+            <code>$ tar xf ./sparkhit.tar</code> <br/>
+            <code>$ unzip ./sparkhit.zip</code> <br/>
+        </p>
 
 <h3>
 <a id="authors-and-contributors" class="anchor" href="#authors-and-contributors" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Authors and Contributors</h3>
@@ -82,9 +122,9 @@ if (isAwesome){
 <p>Having trouble with Pages? Check out our <a href="https://help.github.com/pages">documentation</a> or <a href="https://github.com/contact">contact support</a> and we’ll help you sort it out.</p>
 
       <footer class="site-footer">
-        <span class="site-footer-owner"><a href="https://github.com/rhinempi/sparkhit">Sparkhit</a> is maintained by <a href="https://github.com/rhinempi">rhinempi</a>.</span>
+        <span class="site-footer-owner"><a href="https://github.com/rhinempi/sparkhit">Sparkhit</a> is maintained by <a href="https://github.com/rhinempi">Liren Huang</a>.</span>
 
-        <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the <a href="https://github.com/jasonlong/cayman-theme">Cayman theme</a> by <a href="https://twitter.com/jasonlong">Jason Long</a>.</span>
+        <span class="site-footer-credits">This page was generated based on a template from <a href="https://pages.github.com">GitHub Pages</a> using the <a href="https://github.com/jasonlong/cayman-theme">Cayman theme</a> by <a href="https://twitter.com/jasonlong">Jason Long</a>.</span>
       </footer>
 
     </section>
