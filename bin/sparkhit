@@ -22,14 +22,27 @@
  # with this program. If not, see <http://www.gnu.org/licenses>.
  #-----------------------------------------------------------------------------
 
-NAME="sparkhit"
-VERSION="0.8"
+name="sparkhit"
+version="0.8"
 
-SPARKHIT=$(pwd -P)
-SH_BIN="$SPARKHIT"
+readlink -f 1>/dev/null 2>/dev/null
+readlinkReturn=$?
+
+if [[ $readlinkReturn == 0 ]]; then
+    sparkhit=$(readlink -f "$0")
+else
+    sparkhit=$(dirname "$0")
+fi
+
+if [[ $sparkhit == "." ]]; then
+    sparkhit=$(pwd -P)
+    sparkhit="$sparkhit/sparkhit"
+fi
+
+SH_BIN="$(dirname $sparkhit)"
 SH_HOME="$(dirname "$SH_BIN")"
 SH_LIB=${SH_LIB:-$SH_HOME/lib}
-SH_JAR=${SH_JAR:-$SH_LIB/original-$NAME-$VERSION.jar}
+SH_JAR=${SH_JAR:-$SH_LIB/original-$name-$version.jar}
 SH_PACKAGE=${SH_PACKAGE:-$SH_HOME/package}
 SH_SBIN=${SH_SBIN:-$SH_HOME/sbin}
 SH_OPT=""
@@ -133,7 +146,7 @@ if [ ! -d "$SH_LAUNCHER" ]; then # <-- only the first time
 fi
 
 # Find Spark framework
-    which spark-submit
+    which spark-submit 1>/dev/null 2>/dev/null
     rc=$?
 
     if [ -d "$SPARK_HOME" ] ; then
@@ -162,8 +175,8 @@ fi
 # dump help info
 function dump_help() {
     echo ""
-    echo "$NAME - on the cloud."
-    echo "Version: $VERSION"
+    echo "$name - on the cloud."
+    echo "Version: $version"
     echo ""
     echo "Commands:"
     echo "  mapper         Fragment recruitment"
@@ -202,7 +215,7 @@ function parse_param() {
 
     for i in "${!args[@]}"; do
         if [[ "${args[$i]}" == "--spark-conf" ]]; then
-            SPARK_OPT+="--conf ${args[$i+1]} "
+            SPARK_OPT+="--properties-file ${args[$i+1]} "
         elif [[ "${args[$i]}" == "--spark-param" ]]; then
             SPARK_OPT+="${args[$i+1]} "
         elif [[ "${args[$i]}" == "--spark-help" ]]; then
@@ -211,9 +224,17 @@ function parse_param() {
         elif [[ ${args[$i]} == "--class" ]]; then
             echo "--class option will be chosen by correspond [command]"
         elif [[ ${args[$i]} == --* ]]; then
-            SPARK_OPT+="${args[$i]} ${args[$i+1]} "
+            if [[ ${args[$i+1]} == -* ]]; then
+                SPARK_OPT+="${args[$i]} "
+            else
+                SPARK_OPT+="${args[$i]} ${args[$i+1]} "
+            fi
         elif [[ ${args[$i]} == -* ]]; then
-            SH_OPT+="${args[$i]} ${args[$i+1]} "
+            if [[ ${args[$i+1]} == -* ]]; then
+                SH_OPT+="${args[$i]} "
+            else
+                SH_OPT+="${args[$i]} ${args[$i+1]} "
+            fi
         fi
     done
 }
