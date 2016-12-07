@@ -50,18 +50,12 @@ function closeNav() {
 </script>
 
     <section class="main-content">
-      <h3>
-<a id="welcome-to-sparkhit" class="anchor" href="#welcome-to-sparkhit" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Overview</h3>
-
-<p>Sparkhit webpage is now alive.
-This automatic page generator is the easiest way to create beautiful pages for all of your projects. Author your page content here <a href="https://guides.github.com/features/mastering-markdown/">using GitHub Flavored Markdown</a>, select a template crafted by a designer, and publish. After your page is generated, you can check out the new <code>gh-pages</code> branch locally. If you’re using GitHub Desktop, simply sync your repository and you’ll see the new branch.</p>
-
 <h3>
 <a id="Dependencies" class="anchor" href="#Dependencies" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Dependencies</h3>
 
-        <p><i>Sparkhit</i> is written in Java and built on top of the <i>Apache <a href="http://spark.apache.org/">Spark</a></i>. To use <i>Sparkhit</i>, make sure you have a Java-1.7 or higher version installed in your operating system, as well as <i>Spark</i> framework. Since <i>Sparkhit</i> runs on a distributed computer cluster, <i>Spark</i> cluster should also be properly configured when running <i>Sparkhit</i> on cluster mode. If you want to parallelize your own tools with <i>Sparkhit</i>, make sure they are available on all computer nodes (eg. copy your script to each node or place it in a shared file system). See <a href="">use your own tool</a>  </p>
+        <p><i>Sparkhit</i> is written in <b>Java</b> and built on top of the <i>Apache <a href="http://spark.apache.org/">Spark</a></i>. To use <i>Sparkhit</i>, make sure you have a Java-1.7 or higher version installed in your operating system, as well as <i>Spark</i> framework. Since <i>Sparkhit</i> runs on a distributed computer cluster, <i>Spark</i> cluster should also be properly configured when running <i>Sparkhit</i> on cluster mode. If you want to parallelize your own tools with <i>Sparkhit</i>, make sure they are available on all computer nodes (eg. copy your script to each node or place it in a shared file system). See <a href="">use your own tool</a>  </p>
 <h3>
-<a id="Spark installation" class="anchor" href="#Spark installation" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Spark installation</h3>
+<a id="Spark-installation" class="anchor" href="#Spark-installation" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Spark installation</h3>
 
         <p>There are different ways to install <i>Spark</i> on your computer. Please go to <i>Spark</i>`s <a href="http://spark.apache.org/downloads.html">Download</a> page and choose a download method of your preference. If you would like to build <i>Spark</i> from source, please go to <a href="http://spark.apache.org/docs/latest/building-spark.html">Building Spark</a> page. </p>
         <p>
@@ -73,8 +67,88 @@ This automatic page generator is the easiest way to create beautiful pages for a
             <code>$ tar zxvf spark-2.0.0-bin-hadoop2.6.tgz</code> <br/>
         </p>
         <p>
-            Go to unpacked <i>Spark</i> directory. Under <code>bin</code> folder, you should see an executable <code>spark-submit</code>. Set environmnent variable (ENV) <i>SPARK_HOME</i> to your unpacked <i>Spark</i> directory: <br/>
+            Go to unpacked <i>Spark</i> directory. Under <code>bin</code> folder, you should see an executable file <code>spark-submit</code>: <br/>
             <code>$ cd ./spark-2.0.0-bin-hadoop2.6</code> <br/>
+            <code>$ ./bin/spark-submit</code>
+        </p>
+        <pre>
+Options:
+  --master MASTER_URL         spark://host:port, mesos://host:port, yarn, or local.
+  --deploy-mode DEPLOY_MODE   Whether to launch the driver program locally ("client") or
+                              on one of the worker machines inside the cluster ("cluster")
+                              (Default: client).
+  --class CLASS_NAME          Your application's main class (for Java / Scala apps).
+  --name NAME                 A name of your application.
+  --jars JARS                 Comma-separated list of local jars to include on the driver
+                              and executor classpaths.
+  --packages                  Comma-separated list of maven coordinates of jars to include
+                              on the driver and executor classpaths. Will search the local
+                              maven repo, then maven central and any additional remote
+                              repositories given by --repositories. The format for the
+                              coordinates should be groupId:artifactId:version.
+  --exclude-packages          Comma-separated list of groupId:artifactId, to exclude while
+                              resolving the dependencies provided in --packages to avoid
+                              dependency conflicts.
+  --repositories              Comma-separated list of additional remote repositories to
+                              search for the maven coordinates given with --packages.
+  --py-files PY_FILES         Comma-separated list of .zip, .egg, or .py files to place
+                              on the PYTHONPATH for Python apps.
+  --files FILES               Comma-separated list of files to be placed in the working
+                              directory of each executor.
+
+  --conf PROP=VALUE           Arbitrary Spark configuration property.
+  --properties-file FILE      Path to a file from which to load extra properties. If not
+                              specified, this will look for conf/spark-defaults.conf.
+
+  --driver-memory MEM         Memory for driver (e.g. 1000M, 2G) (Default: 1024M).
+  --driver-java-options       Extra Java options to pass to the driver.
+  --driver-library-path       Extra library path entries to pass to the driver.
+  --driver-class-path         Extra class path entries to pass to the driver. Note that
+                              jars added with --jars are automatically included in the
+                              classpath.
+
+  --executor-memory MEM       Memory per executor (e.g. 1000M, 2G) (Default: 1G).
+
+  --proxy-user NAME           User to impersonate when submitting the application.
+                              This argument does not work with --principal / --keytab.
+
+  --help, -h                  Show this help message and exit.
+  --verbose, -v               Print additional debug output.
+  --version,                  Print the version of current Spark.
+
+ Spark standalone with cluster deploy mode only:
+  --driver-cores NUM          Cores for driver (Default: 1).
+
+ Spark standalone or Mesos with cluster deploy mode only:
+  --supervise                 If given, restarts the driver on failure.
+  --kill SUBMISSION_ID        If given, kills the driver specified.
+  --status SUBMISSION_ID      If given, requests the status of the driver specified.
+
+ Spark standalone and Mesos only:
+  --total-executor-cores NUM  Total cores for all executors.
+
+ Spark standalone and YARN only:
+  --executor-cores NUM        Number of cores per executor. (Default: 1 in YARN mode,
+                              or all available cores on the worker in standalone mode)
+
+ YARN-only:
+  --driver-cores NUM          Number of cores used by the driver, only in cluster mode
+                              (Default: 1).
+  --queue QUEUE_NAME          The YARN queue to submit to (Default: "default").
+  --num-executors NUM         Number of executors to launch (Default: 2).
+                              If dynamic allocation is enabled, the initial number of
+                              executors will be at least NUM.
+  --archives ARCHIVES         Comma separated list of archives to be extracted into the
+                              working directory of each executor.
+  --principal PRINCIPAL       Principal to be used to login to KDC, while running on
+                              secure HDFS.
+  --keytab KEYTAB             The full path to the file that contains the keytab for the
+                              principal specified above. This keytab will be copied to
+                              the node running the Application Master via the Secure
+                              Distributed Cache, for renewing the login tickets and the
+                              delegation tokens periodically.</pre>
+        <p>
+            Set environment variable (ENV) <i>SPARK_HOME</i> to your unpacked <i>Spark</i> directory: <br>
             <code>$ pwd</code> &nbsp;Then, copy listed full path.<br/>
             <code>$ vi /home/ec2-user/.bash_profile</code> or <code>$ vi /home/ec2-user/.profile</code> <br/>
             Here, ec2-user refers to your user name. Paste your <i>Spark</i> full path in the file and set as ENV <i>SPARK_HOME</i>
@@ -93,33 +167,221 @@ export SPARK_HOME="/vol/ec2-user/spark-2.0.0-bin-hadoop2.6"</pre>
             &#9749; &nbsp;Notes
         </div>
         <div-content>
+            <ol type="1">
+            <li>
+            If you do not have <code>wget</code> installed, use <code>curl</code> command instead:
+            <code>curl http://archive.apache.org/dist/spark/spark-2.0.0/spark-2.0.0-bin-hadoop2.6.tgz -o spark-2.0.0-bin-hadoop2.6.tgz</code> <br/>
+            </li>
+            <li>
             <i>Sparkhit</i> uses <code>spark-submit</code> executable to submit <i>Sparkhit</i>`s jar file to <i>Spark</i> cluster. As long as <i>Sparkhit</i> could found the full path of <code>spark-submit</code>, <i>Sparkhit</i> will work properly.
+            </li>
+            </ol>
         </div-content>
-        <br/><br/>        
 <h3>
-<a id="Sparkhit installation" class="anchor" href="#Sparkhit installation" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Sparkhit installation</h3>
+<a id="Sparkhit-installation" class="anchor" href="#Sparkhit-installation" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Sparkhit installation</h3>
         <p>
             Download <i>Sparkhit</i> package from github zipball: <br/>
             <code>$ wget https://github.com/rhinempi/sparkhit/zipball/master -o ./sparkhit.zip</code> <br/>
-            Or tarball:
+            If you do not have <code>wget</code> installed: <br>
+            <code>$ curl -fsSL https://github.com/rhinempi/sparkhit/zipball/master -o ./sparkhit.zip</code> <br/>
+        </p>
+        <p>
+            Or tarball: <br/>
             <code>$ wget https://github.com/rhinempi/sparkhit/tarball/master -o ./sparkhit.tar</code> <br/>
-            Or press the download buttom on top.
+            Alternatively: <br/>
+            <code>$ curl -fsSL https://github.com/rhinempi/sparkhit/tarball/master -o ./sparkhit.tar</code> <br/>
+            Or press the download buttom on top or click <a href="https://github.com/rhinempi/sparkhit/zipball/master">Download</a>.
         </p>
         <p>
             Once download, unzip or untar the package: <br/>
-            <code>$ tar xf ./sparkhit.tar</code> <br/>
             <code>$ unzip ./sparkhit.zip</code> <br/>
+            <code>$ tar xf ./sparkhit.tar</code> <br/>
+        </p>
+        <p>
+            Go to <i>Sparkhit</i> directory, you should see an executable file <code>sparkhit</code> in <code>./bin</code> folder, set its permission to executable if it is not: <br>
+            <code>$ cd ./rhinempi-sparkhit-769845e</code> <br>
+            <code>$ chmod 755 ./bin/sparkhit</code>
+        </p>
+        <p>
+            Now, you should be able to run <i>Sparkhit</i>: <br>
+            <code>$ ./bin/sparkhit</code>
+        </p>
+            <pre>
+sparkhit - on the cloud.
+Version: 0.8
+
+Commands:
+  mapper         Fragment recruitment
+  reporter       Summarize recruitment result
+  piper          Send data to external tools, eg. bwa, bowtie2 and fr-hit
+  parallelizer   Parallel a task to each worker node
+  cluster        Run cluster to a table
+  tester         Run Chi-square test
+  converter      Convert different file format: fastq, fasta or line based
+  correlationer  Run Correlation test
+  decompresser   Parallel decompression to splitable compressed files, eg. bzip2
+  reductioner    Run Principle component analysis
+  regressioner   Run logistic regression
+  statisticer    Run Hardy–Weinberg Equilibrium
+  variationer    Genotype with samtools mpileup
+Type each command to view its options, eg. Usage: ./sparkhit mapper
+
+Spark cluster configuration:
+  --spark-conf       Spark cluster configuration file or spark input parameters
+  --spark-param      Spark cluster parameters in quotation marks "--driver-memory 4G --executor-memory 16G"
+  --spark-help       View spark-submit options. You can include spark`s options directly.
+
+Usage: sparkhit [commands] --spark-conf spark_cluster_default.conf [option...]
+       sparkhit [commands] --spark-param "--driver-memory 4G --executor-memory 16G" [option...]
+       sparkhit [commands] --driver-memory 4G --executor-memory 16G --executor-cores 2 [option...]
+
+For detailed cluster submission, please refer to scripts located in:
+./sbin</pre>
+
+        <div>
+            &#9749; &nbsp;Notes
+        </div>
+        <div-content>
+            <ol type="1">
+            <li>
+                The executable file <code>sparkhit</code> is a shell script wrapped <code>spark-sumbit</code> with <i>Sparkhit</i>`s jar file. The example of full command to submit a <i>Sparkhit</i> application can be found in <code>./sbin</code> folder. <br/>
+            </li>
+            <li>
+                The input parameters for <i>Sparkhit</i> consist of options for both <i>Spark</i> framework and correspond <i>Sparkhit</i> applications. <i>Spark</i> options are started with two dashes <code>--</code> - to configure the <i>Spark cluster</i>, whereas <i>Sparkhit</i> options are started with one dash<code>-</code> - to specify parameters for each <i>Sparkhit</i> application.
+            </li>
+            </ol>
+        </div-content>
+
+<h3>
+<a id="Test-run" class="anchor" href="#Test-run" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Test run</h3>
+        <p>
+            To test run <i>Sparkhit</i>, we prepared a small sequencing data from Human microbiome project (<a href="http://hmpdacc.org/">HMP</a>). We will try to map these sequencing data to an E. coli. genome:
+        </p>
+        <p>
+            Run <code>sparkhit</code> with correspond command to show the parameters: <br>
+            <code>$ ./bin/sparkhit mapper</code>
+        </p>
+            <pre>
+Name:
+	SparkHit Main
+
+Options:                             
+  -fastq &lt;input fastq file>          Input Next Generation Sequencing (NGS) data,
+                                     fastq file format, four line per unit
+  -line &lt;input line file>            Input NGS data, line based text file format, one
+                                     line per unit
+  -reference &lt;input reference>       Input genome reference file, usually fasta
+                                     format file, as input file
+  -outfile &lt;output file>             Output line based file in text format
+  -kmer &lt;kmer size>                  Kmer length for reads mapping
+  -evalue &lt;e-value>                  e-value threshold, default 10
+  -global &lt;global or not>            Use global alignment or not. 0 for local, 1 for
+                                     global, default 0
+  -unmask &lt;unmask>                   whether mask repeats of lower case nucleotides:
+                                     1: yes; 0 :no; default=1
+  -overlap &lt;kmer overlap>            small overlap for long read
+  -identity &lt;identity threshold>     minimal identity for recruiting a read, default
+                                     75 (sensitive mode, fast mode starts from 94)
+  -coverage &lt;coverage threshold>     minimal coverage for recruiting a read, default
+                                     30
+  -minlength &lt;minimal read length>   minimal read length required for processing
+  -attempts &lt;number attempts>        maximum number of alignment attempts for one
+                                     read to a block, default 20
+  -hits &lt;hit number>                 how many hits for output: 0:all; N: top N hits
+  -strand &lt;strand +/->
+  -thread &lt;number of threads>        How many threads to use for parallelizing
+                                     processes,default is 1 cpu. set to 0 is the
+                                     number of cpus available!local mode only, for
+                                     Spark version, use spark parameter!
+  -partition &lt;re-partition number>   re generate number of partitions for .gz data,
+                                     as .gz data only have one partition (spark
+                                     parallelization)
+  -version                           show version information
+  -help                              print and show this information
+  -h
+
+Usage:
+	run fragment recruitment : 
+spark-submit [spark parameters] --class uni.bielefeld.cmg.sparkhit.main.Main [parameters] -fastq query.fq -reference reference.fa -outfile output_file.txt
+spark-submit [spark parameters] --class uni.bielefeld.cmg.sparkhit.main.Main [parameters] -line query.txt -reference reference.fa -outfile output_file.txt</pre>
+
+        <p>
+            Follow the instruction, input the sequencing data and reference genome accordingly: <br>
+            <code>$ ./bin/sparkhit mapper --driver-memory 1G --executor-memory 1G -fastq ./example/Stool-SRS016203.fq.gz -reference ./example/Ecoli.fa -outfile ./example/stool-result</code>
+        </p>
+        <pre>
+SparkHit 16:54:44 SparkHit main initiating ... 
+SparkHit 16:54:44 interpreting parameters.
+SparkHit 16:54:44 Initiating Spark context ...
+SparkHit 16:54:44 Start Spark framework
+Using Spark's default log4j profile: org/apache/spark/log4j-defaults.properties
+16/11/11 16:54:45 INFO SparkContext: Running Spark version 2.0.0
+16/11/11 16:54:45 WARN NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable</pre>
+        <p>
+            After it finishes, you can check result in folder <code>./example/stool-result</code>: <br>
+            <code>$ ls -al ./example/stool-result</code>
+        </p>
+        <pre>
+total 130
+drwxr-xr-x 2 ec2-user users   118 Nov 11 17:45 .
+drwxr-xr-x 3 ec2-user users   135 Nov 11 17:45 ..
+-rw-r--r-- 1 ec2-user users 22246 Nov 11 17:45 part-00000
+-rw-r--r-- 1 ec2-user users   184 Nov 11 17:45 .part-00000.crc
+-rw-r--r-- 1 ec2-user users     0 Nov 11 17:45 _SUCCESS
+-rw-r--r-- 1 ec2-user users     8 Nov 11 17:45 ._SUCCESS.crc</pre>
+        <p>
+            To view the result: <br>
+            <code>$ less -S ./example/stool-result/part-00000</code> <br>
+        </p>
+        <pre>
+@HWI-EAS324_102408434:3:100:10079:21137/2       91nt    4.26e-31        88      4       91      +       89.01   NC_000913.3     2726600 2726687
+@HWI-EAS324_102408434:3:100:10079:21137/2       91nt    2.30e-29        88      4       91      +       87.91   NC_000913.3     3424199 3424286
+@HWI-EAS324_102408434:3:100:10079:21137/2       91nt    4.26e-31        88      1       88      -       89.01   NC_000913.3     228256  228343
+@HWI-EAS324_102408434:3:100:10079:21137/2       91nt    4.26e-31        88      1       88      -       89.01   NC_000913.3     4040017 4040104
+@HWI-EAS324_102408434:3:100:10079:21137/2       91nt    4.26e-31        88      1       88      -       89.01   NC_000913.3     4171138 4171225
+@HWI-EAS324_102408434:3:100:10079:21137/2       91nt    4.26e-31        88      1       88      -       89.01   NC_000913.3     4212540 4212627
+@HWI-EAS324_102408434:3:100:10079:21137/2       91nt    2.30e-29        88      1       88      -       87.91   NC_000913.3     3946201 3946288
+@HWI-EAS324_102408434:3:100:10083:8631/2        100nt   4.08e-24        88      9       96      +       77.00   NC_000913.3     224064  224151
+@HWI-EAS324_102408434:3:100:10083:8631/2        100nt   4.08e-24        88      9       96      +       77.00   NC_000913.3     3942101 3942188
+@HWI-EAS324_102408434:3:100:10083:8631/2        100nt   4.08e-24        88      9       96      +       77.00   NC_000913.3     4035824 4035911
+@HWI-EAS324_102408434:3:100:10083:8631/2        100nt   4.08e-24        88      9       96      +       77.00   NC_000913.3     4166952 4167039</pre>
+        <p>
+            These files are just intermediate result. They contain mapped information of each reads. To know more about the result, please go to <a href="https://rhinempi.github.io/sparkhit/manual">user manual</a> page.
+        </p>
+        <div>
+            &#9749; &nbsp;Notes
+        </div>
+        <div-content>
+            <ol type="1">
+            <li>
+            If you do not have <code>wget</code> installed, use <code>curl</code> command instead:
+            <code>curl http://archive.apache.org/dist/spark/spark-2.0.0/spark-2.0.0-bin-hadoop2.6.tgz -o spark-2.0.0-bin-hadoop2.6.tgz</code> <br/>
+            </li>
+            <li>
+            <i>Sparkhit</i> uses <code>spark-submit</code> executable to submit <i>Sparkhit</i>`s jar file to <i>Spark</i> cluster. As long as <i>Sparkhit</i> could found the full path of <code>spark-submit</code>, <i>Sparkhit</i> will work properly.
+            </li>
+            </ol>
+        </div-content>
+        
+<h3>
+<a id="Where-to-go" class="anchor" href="#Where-to-go" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Where to go from here</h3>
+        
+        <p>
+            Want to know how to use each module of <i>Sparkhit</i>? <br>
+            Read user <a href="manual.html">manual</a> to see specific options for each function.
         </p>
 
-<h3>
-<a id="authors-and-contributors" class="anchor" href="#authors-and-contributors" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Authors and Contributors</h3>
-
-<p>You can <a href="https://help.github.com/articles/basic-writing-and-formatting-syntax/#mentioning-users-and-teams" class="user-mention">@mention</a> a GitHub username to generate a link to their profile. The resulting <code>&lt;a&gt;</code> element will link to the contributor’s GitHub Profile. For example: In 2007, Chris Wanstrath (<a href="https://github.com/defunkt" class="user-mention">@defunkt</a>), PJ Hyett (<a href="https://github.com/pjhyett" class="user-mention">@pjhyett</a>), and Tom Preston-Werner (<a href="https://github.com/mojombo" class="user-mention">@mojombo</a>) founded GitHub.</p>
-
-<h3>
-<a id="support-or-contact" class="anchor" href="#support-or-contact" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Support or Contact</h3>
-
-<p>Having trouble with Pages? Check out our <a href="https://help.github.com/pages">documentation</a> or <a href="https://github.com/contact">contact support</a> and we’ll help you sort it out.</p>
+        <p>
+            Want to use <i>Sparkhit</i> on local cluster? <br>
+            Try setting up a <i>Spark</i> cluster on Sun Grid Engine (SGE). &nbsp;<a href="manual.html#setting-spark-sge">>>>>></a>
+        </p>
+        <p>
+            Want to use Sparkhit on Amazon <a href="https://aws.amazon.com/ec2/">Elastic Computer Cloud</a> (EC2)? <br>
+            Try setting up a cluster on Amazon AWS cloud. &nbsp;<a href="manual.html#setting-spark-ec2">>>>>></a>
+        </p>
+        <p>
+            Or check out <a href="https://github.com/rhinempi/sparkhit/tree/master/sbin">examples</a> to use different modules for different analysis
+        </p>
 
       <footer class="site-footer">
         <span class="site-footer-owner"><a href="https://github.com/rhinempi/sparkhit">Sparkhit</a> is maintained by <a href="https://github.com/rhinempi">Liren Huang</a>.</span>
