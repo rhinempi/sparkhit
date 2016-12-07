@@ -26,10 +26,25 @@
     
 <div id="mySidenav" class="sidenav">
   <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">×</a>
-  <a href="#">About</a>
-  <a href="#">Services</a>
-  <a href="#">Clients</a>
-  <a href="#">Contact</a>
+  <a href="#Overview" style="font-size:16px">Overview</a>
+  <a href="#Command" style="font-size:16px">Command</a>
+  <a href="#Spark-options" style="font-size:16px" >Spark options</a>
+  <a href="#mapper-options"style="font-size:16px" >Sparkhit mapper</a>
+  <a href="#reporter-options" style="font-size:16px">Sparkhit reporter</a>
+  <a href="#piper-options" style="font-size:16px">Sparkhit piper</a>
+  <a href="#parallelizer-options" style="font-size:16px">Sparkhit parallelizer</a>
+  <a href="#cluster-options" style="font-size:16px">Sparkhit cluster</a>
+  <a href="#tester-options" style="font-size:16px">Sparkhit tester</a>
+    <a href="#converter-options" style="font-size:16px">Sparkhit converter</a>
+    <a href="#correlationer-options" style="font-size:16px">Sparkhit correlationer</a>
+    <a href="#decompresser-options" style="font-size:16px">Sparkhit decompresser</a>
+    <a href="#reductioner-options" style="font-size:16px">Sparkhit reductioner</a>
+    <a href="#regressioner-options" style="font-size:16px">Sparkhit regressioner</a>
+    <a href="#statisticer-options" style="font-size:16px">Sparkhit statisticer</a>
+    <a href="#variationer-options" style="font-size:16px">Sparkhit variationer</a>
+    <a href="#setting-spark-sge" style="font-size:16px">Setting Spark on SGE</a>
+    <a href="#setting-spark-ec2" style="font-size:16px">Setting Spark on EC2</a>
+    <a href="#" style="font-size:16px">Helpful info</a>
 </div>
 
 <div id="main">
@@ -40,7 +55,7 @@
 function openNav() {
     document.getElementById("mySidenav").style.width = "250px";
     document.getElementById("main").style.marginLeft = "250px";
-    document.body.style.backgroundColor = "rgba(0,0,0,0.4)";
+    document.body.style.backgroundColor = "white";
 }
 
 function closeNav() {
@@ -53,35 +68,1753 @@ function closeNav() {
     <section class="main-content">
       
       <h3>
-<a id="welcome-to-sparkhit" class="anchor" href="#welcome-to-sparkhit" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Welcome to Sparkhit.</h3>
+<a id="Overview" class="anchor" href="#Overview" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Overview</h3>
 
-<p>Sparkhit webpage is now alive.
-This automatic page generator is the easiest way to create beautiful pages for all of your projects. Author your page content here <a href="https://guides.github.com/features/mastering-markdown/">using GitHub Flavored Markdown</a>, select a template crafted by a designer, and publish. After your page is generated, you can check out the new <code>gh-pages</code> branch locally. If you’re using GitHub Desktop, simply sync your repository and you’ll see the new branch.</p>
+        <p>
+            <i>Sparkhit</i> command line options are consist of four parts <br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>spark-submit</b> + <b>[spark-options]</b> +  <b>Sparkhit.jar</b> + <b>[sparkhit-options]</b>. <br>
+            <i>Sparkhit</i> executable file wrapped the command and simplified as <br>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>sparkhit</b> + <b>[command]</b> + <b>[Spark options]</b> + <b>[Sparkhit options]</b> <br>
+            where [command] is to specify a particular application (tool) or functional module. [Spark options] are parameters for <i>Spark</i> framework, eg. to configure <i>Spark</i> cluster. [Sparkhit options] are parameters for our <i>Sparkhit</i> applications.
+        </p>
+        <p>
+            The examples below show you both commands:
+        </p>
+        <pre>
+#Created by rhinempi on 23/01/16.
+ #
+ #      SparkHit
+ #
+ # Copyright (c) 2015-2015
+ #      Liren Huang      &lt;huanglr at cebitec.uni-bielefeld.de>
+ # 
+ # SparkHit is free software: you can redistribute it and/or modify it
+ # under the terms of the GNU General Public License as published by the Free
+ # Software Foundation, either version 3 of the License, or (at your option)
+ # any later version.
+ #
+ # This program is distributed in the hope that it will be useful, but WITHOUT
+ # ANY WARRANTY; Without even the implied warranty of MERCHANTABILITY or
+ # FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
+ # more detail.
+ # 
+ # You should have received a copy of the GNU General Public License along
+ # with this program. If not, see &lt;http://www.gnu.org/licenses>.
+
+
+# path
+sparkbin="/root/spark/bin"
+sparkhitlib="/mnt/software/sparkhit/lib/"        
+      
+# spark submit
+$sparkbin/spark-submit \                                           # spark-submit
+	--conf "spark.eventLog.enabled=true" \                     # [spark-options]
+	--driver-memory 15G \
+	--executor-memory 57G \
+	--class uni.bielefeld.cmg.sparkhit.main.Main \
+	$sparkhitlib/original-sparkhit-0.8.jar \                   # Sparkhit.jar
+		-line /mnt/HMP/tongue_dorsum3/part* \              # [sparkhit-options]
+		-reference /mnt/reference/reference.fa3 \
+		-outfile /mnt/sparkhit/allmappedfasttongue3 \
+		-global 1 -kmer 12 -partition 3200 \
+		> sparkhit.log 2> sparkhit.err</pre>
+        <p>
+            Where as for the second one:
+        </p>
+        <pre>
+#Created by rhinempi on 16/10/16.
+ #
+ #      SparkHit
+ #
+ # Copyright (c) 2015-2015
+ #      Liren Huang      &lt;huanglr at cebitec.uni-bielefeld.de>
+ # 
+ # SparkHit is free software: you can redistribute it and/or modify it
+ # under the terms of the GNU General Public License as published by the Free
+ # Software Foundation, either version 3 of the License, or (at your option)
+ # any later version.
+ #
+ # This program is distributed in the hope that it will be useful, but WITHOUT
+ # ANY WARRANTY; Without even the implied warranty of MERCHANTABILITY or
+ # FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
+ # more detail.
+ # 
+ # You should have received a copy of the GNU General Public License along
+ # with this program. If not, see &lt;http://www.gnu.org/licenses>.
+ 
+# path
+SPARKHIT_HOME="/vol/ec2-user/sparkhit"
+
+# sparkhit command
+$SPARKHIT_HOME/bin/sparkhit mapper \                # sparkhit + [command]
+    --driver-memory 2G \                            # [Spark options]
+    --executor-memory 4G \
+        -fastq ./example/Stool-SRS016203.fq.gz \    # [Sparkhit options]
+        -reference ./example/Ecoli.fa \
+        -outfile ./example/stool-result </pre>
+        <p>
+            
+        </p>
+<h3>
+<a id="Command" class="anchor" href="#Command" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Commands and Modules</h3>
+
+        <p>
+            <i>Sparkhit</i> implemented a dozen of methods and tools that can be applied to different genomic analysis. These functions are activated by follow a <b>Command</b> after the <i>Sparkhit</i> executable file. To see all commands and their functions, you can simply execute <code>sparkhit</code>. <br>
+            <code>$ ./bin/sparkhit</code>
+        </p>
+        
+        <pre>
+sparkhit - on the cloud.
+Version: 0.8
+
+Commands:
+  mapper         Fragment recruitment
+  reporter       Summarize recruitment result
+  piper          Send data to external tools, eg. bwa, bowtie2 and fr-hit
+  parallelizer   Parallel a task to each worker node
+  cluster        Run cluster to a table
+  tester         Run Chi-square test
+  converter      Convert different file format: fastq, fasta or line based
+  correlationer  Run Correlation test
+  decompresser   Parallel decompression to splitable compressed files, eg. bzip2
+  reductioner    Run Principle component analysis
+  regressioner   Run logistic regression
+  statisticer    Run Hardy–Weinberg Equilibrium
+  variationer    Genotype with samtools mpileup
+Type each command to view its options, eg. Usage: ./sparkhit mapper
+
+Spark cluster configuration:
+  --spark-conf       Spark cluster configuration file or spark input parameters
+  --spark-param      Spark cluster parameters in quotation marks "--driver-memory 4G --executor-memory 16G"
+  --spark-help       View spark-submit options. You can include spark`s options directly.
+
+Usage: sparkhit [commands] --spark-conf spark_cluster_default.conf [option...]
+       sparkhit [commands] --spark-param "--driver-memory 4G --executor-memory 16G" [option...]
+       sparkhit [commands] --driver-memory 4G --executor-memory 16G --executor-cores 2 [option...]
+
+For detailed cluster submission, please refer to scripts located in:
+/vol/cluster-data/huanglr/sparkhit/rhinempi-sparkhit-769845e/sbin</pre>
+        <p>
+            As you can see, there are a list of commands. Detailed description is as followed:
+        </p>
+        <table>
+            <caption>Table M-1: Sparkhit command description</caption>
+  <tr>
+    <th>Command</th>
+    <th>Description</th> 
+  </tr>
+  <tr>
+    <td><a href="#mapper-options">mapper</a></td>
+      <td>This command applies a fragment recruitment tool, it implements a more tolerant algorithm that allows much more mismatches during sequence alignment. It is often used in metagenomics.
+      </td> 
+  </tr>
+  <tr>
+    <td><a href="#reporter-options">reporter</a></td>
+    <td>This command applies a reduce methods that summarize fragment recruitment result of Sparkhit-mapper</td> 
+  </tr>
+    <tr>
+        <td><a href="#piper-options">piper</a></td>
+        <td>This command can be used to invoke other tools and scripts in a Spark cluster. It manages data distribution and send the data to invoked tools via standard input (like a pipe in Linux). The standard output of invoked tools will be send back to Spark.</td>
+    </tr>
+    <tr>
+        <td><a href="#parallelizer-options">parallelizer</a></td>
+        <td>This command parallelize a script or linux command to each Spark worker nodes. Different from piper, this operation does not have to load and distributed input data. This could be useful when you want an action on each node, eg. download reference genome to a cluster without shared file system.</td>
+    </tr>
+    <tr>
+        <td><a href="#cluster-options">cluster</a></td>
+        <td>This command applies a cluster function to a data matrix or VCF file.</td>
+    </tr>
+    <tr>
+        <td><a href="#tester-options">tester</a></td>
+        <td>This command applies chi-square test to a data matrix or VCF file.</td>
+    </tr>
+    <tr>
+        <td><a href="#converter-options">converter</a></td>
+        <td>This command converts different file format in a distributed way. This is useful when some tools only accept fasta file format as input or other tools only accept fastq file format as input.</td>
+    </tr>
+    <tr>
+        <td><a href="#correlationer-options">correlationer</a></td>
+        <td>This command applies pearson correlation test to two lists of data.</td>
+    </tr>
+    <tr>
+        <td><a href="#decompresser-options">decompressoer</a></td>
+        <td>This command applies parallel decompression to a "splitable" compressed files such as Bzip2. (Spark parallel decompression is not thread safe at 1.6.0 version, not sure if it is fixed now. Alternatively you can use Sparkhit hadoop application located in ./lib folder).</td>
+    </tr>
+    <tr>
+        <td><a href="#reductioner-options">reductioner</a></td>
+        <td>This command applies principle component analysis (dimension reduction) to a high dimensional dataset</td>
+    </tr>
+    <tr>
+        <td><a href="#regressioner-options">regressioner</a></td>
+        <td>This command applies logistic regression to a data matrix or VCF file.</td>
+    </tr>
+    <tr>
+        <td><a href="#statisticer-options">statisticer</a></td>
+        <td>This command applies Hardy–Weinberg Equilibrium to a matrix of genotype Alleles.</td>
+    </tr>
+    <tr>
+        <td><a href="#variationer-options">variationer</a></td>
+        <td>This command invoke samtools mpileup for variant detection.</td>
+    </tr>
+</table>
+         <p>
+             
+        </p>
+        <div>
+            &#9749; &nbsp;Notes
+        </div>
+        <div-content>
+            <ol type="1">
+            <li>
+                All commands here are indicators for a specific main Java class. As shown in the first script, the <code>--class</code> option passes a main Java class to <i>Spark</i> framework. Where as in the second script, <code>mapper</code> command assigns the Java class to <i>Spark</i>.
+            </li>
+            </ol>
+        </div-content>
+       
+<h3>
+<a id="Spark-options" class="anchor" href="#Spark-options" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Spark options</h3>
+
+        <p>Spark options are options for <i>Apache Spark</i> framework. You can find detail explanations for each options at <i>Spark</i> <a href="http://spark.apache.org/docs/latest/configuration.html">configuration page</a>. </p>
+        <p>
+            <i>Sparkhit</i> identifies these options through parameters start with two dashes <code>--</code>, just like the options for <i>Spark</i>. <i>Sparkhit</i> also provide three additional options for input <i>Spark</i> options. See table below:
+        </p>
+
+        <table>
+            <caption>Table M-2: Sparkhit input format for Spark options</caption>
+  <tr>
+    <th>Options</th>
+    <th>Description</th> 
+  </tr>
+  <tr>
+    <td>--spark-conf</td>
+      <td>This option specifies a configuration file for <i>Spark</i>. The same function as <code>--properties-file</code> option in <code>spark-submit</code> executable.
+      </td> 
+  </tr>
+  <tr>
+    <td>--spark-param</td>
+      <td>This option reads a series of commandline options quoted within a quotation mark. eg. <code>--spark-param "--driver-memory 2G --executor-memory 4G"</code> actually passes two parameters <code>--driver-memory</code> and <code>--executor-memory</code> to <i>Spark</i> framework.</td> 
+  </tr>
+        <tr>
+    <td>--spark-help</td>
+            <td>This option invokes <code>spark-submit</code> to list its options. This is useful when you want to check options for <i>Spark</i> directly.</td> 
+  </tr>    
+        </table>
+        <p>
+        
+        </p>
+         <div>
+            &#9749; &nbsp;Notes
+        </div>
+        <div-content>
+            <ol type="1">
+            <li>
+                In case you are not familiar with <i>Spark</i>, we recommend several important Spark options that you should pay attention to: <code>--master</code> is important if you want to submit to a cluster; <code>--driver-memory</code> sets a proper memory consumption for our main program. In the <code>sparkhit mapper</code>, driver memory is the memory for constructing reference index; <code>--executor-memory</code> sets the memory for each executor (usually the workers). You might have to increase the memory if you want to<code>cache</code> input data across cluster nodes.
+            </li>
+            </ol>
+        </div-content>
+<h3>
+<a id="mapper-options" class="anchor" href="#mapper-options" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Sparkhit mapper options</h3>
+        
+        <p>
+            <i>Sparkhit mapper</i> is a fragment recruitment application built on top of <i>Apache Spark</i> platform. The options for <i>Sparkhit mapper</i> are like most alignment tools: an input sequencing data file (usually fastq); An input reference genome to be queried; An output result file.
+        </p>
+        <p>
+            To list all options, simply type command: <br>
+            <code>$ sparkhit mapper</code>
+        </p>       
+        <pre>
+SparkHit 15:32:41 SparkHit main initiating ... 
+SparkHit 15:32:41 interpreting parameters.
+Name:
+	SparkHit Main
+
+Options:                             
+  -fastq &lt;input fastq file>          Input Next Generation Sequencing (NGS) data,
+                                     fastq file format, four line per unit
+  -line &lt;input line file>            Input NGS data, line based text file format, one
+                                     line per unit
+  -tag                               Set to tag filename to sequence id. It is useful
+                                     when you are processing lots of samples at the
+                                     same time
+  -reference &lt;input reference>       Input genome reference file, usually fasta
+                                     format file, as input file
+  -outfile &lt;output file>             Output line based file in text format
+  -kmer &lt;kmer size>                  Kmer length for reads mapping
+  -evalue &lt;e-value>                  e-value threshold, default 10
+  -global &lt;global or not>            Use global alignment or not. 0 for local, 1 for
+                                     global, default 0
+  -unmask &lt;unmask>                   whether mask repeats of lower case nucleotides:
+                                     1: yes; 0 :no; default=1
+  -overlap &lt;kmer overlap>            small overlap for long read
+  -identity &lt;identity threshold>     minimal identity for recruiting a read, default
+                                     75 (sensitive mode, fast mode starts from 94)
+  -coverage &lt;coverage threshold>     minimal coverage for recruiting a read, default
+                                     30
+  -minlength &lt;minimal read length>   minimal read length required for processing
+  -attempts &lt;number attempts>        maximum number of alignment attempts for one
+                                     read to a block, default 20
+  -hits &lt;hit number>                 how many hits for output: 0:all; N: top N hits
+  -strand &lt;strand +/->
+  -thread &lt;number of threads>        How many threads to use for parallelizing
+                                     processes,default is 1 cpu. set to 0 is the
+                                     number of cpus available!local mode only, for
+                                     Spark version, use spark parameter!
+  -partition &lt;re-partition number>   re generate number of partitions for .gz data,
+                                     as .gz data only have one partition (spark
+                                     parallelization)
+  -version                           show version information
+  -help                              print and show this information
+  -h
+
+Usage:
+	run fragment recruitment : 
+spark-submit [spark parameter] --class uni.bielefeld.cmg.sparkhit.main.Main sparkhit.jar [parameters] -fastq query.fq -reference reference.fa -outfile output_file.txt
+spark-submit [spark parameter] --class uni.bielefeld.cmg.sparkhit.main.Main sparkhit.jar [parameters] -line query.txt -reference reference.fa -outfile output_file.txt
+sparkhit [command] [spark parameter] [parameters] -fastq query.fq -reference reference.fa -outfile output_file</pre>
+        <table>
+            <caption>Table M-3: Sparkhit mapper options description</caption>
+  <tr>
+    <th>Options</th>
+    <th>Description</th> 
+  </tr>
+  <tr>
+    <td>-fastq</td>
+      <td>The input sequencing data is in fastq format. It can be compressed or uncompressed. You can also use wild card or comma seperated files to input a batch of files. eg. <code>-fastq /vol/data/samples/*.fq.bz2</code>.
+      </td> 
+  </tr>
+  <tr>
+    <td>-line</td>
+      <td>The input sequencing data is a fastq file in line format. This line based sequecing data is useful when you have uncompressed file distributed across different nodes, so that a fastq unit is intact. See below <b>Notes</b>.
+      </td> 
+  </tr>
+        <tr>
+    <td>-tag</td>
+            <td>Whether to tag file name to each sequence or not. This tag information can mark the sequence of intermediate mapping result. This information is useful when you have a bunch of samples input together and would like to summarized seperately. This parameter can increase the size of output file.
+            </td> 
+  </tr>    
+  <tr>
+    <td>-reference</td>
+            <td>Input reference genome file in fasta format. Make sure it is located in a shared file system or download to each worker node.
+            </td> 
+  </tr>    
+  <tr>
+    <td>-outfile</td>
+            <td>Output file directory.
+            </td> 
+  </tr>
+            <tr>
+    <td>-kmer</td>
+            <td>K-mer length for building reference index, from 8-12 is recommanded. Default is 12.
+            </td> 
+  </tr>
+            <tr>
+    <td>-evalue</td>
+            <td>Set a maximum E-value as a filter to remove mappings higher than the threshold.
+            </td> 
+  </tr>
+            <tr>
+    <td>-global</td>
+            <td>Whether you want a global alignment or local alignment. Set to 0 as local alignment, to 1 as global alignment. Default is 0.
+            </td> 
+  </tr>
+            <tr>
+    <td>-unmask</td>
+            <td>Whether to mask repeats in reference genome. 0 for not mask; 1 for mask. default is 1.
+            </td> 
+  </tr>
+            <tr>
+    <td>-overlap</td>
+            <td>When building a reference index, there will be a skip between k-mers. The k-mer length minus skip length is the overlap length. The more overlap between k-mers, the more sensitive the mapping result will be.
+            </td> 
+  </tr>
+            <tr>
+    <td>-identity</td>
+            <td>The mapping identity between queried sequencing read and reference genome. The identity is calculated by dividing perfectly matched nuclieotides by the total length of the sequecing read.
+            </td> 
+  </tr>
+            <tr>
+    <td>-coverage</td>
+            <td>The minimal coverage to recruit a read. Default is 30.
+            </td> 
+  </tr>
+            <tr>
+    <td>-minlength</td>
+            <td>The minmal length to recruit a read.
+            </td> 
+  </tr>
+            <tr>
+    <td>-attempts</td>
+            <td>Sparkhit mapper trys to map each sequence to a collection of q-Grams (a block of sequence that is very likely to be recuited). This parameter sets a number of failed attempts to map to q-Grams. Default is 20
+            </td> 
+  </tr>
+         <tr>
+    <td>-hits</td>
+            <td>How many hits to report in the result for each sequencing read. 0 for report all possible matches.
+            </td> 
+  </tr>
+            <tr>
+    <td>-strand</td>
+            <td>How to map the reads to the reference. 0 is for mapping to both strands of reference genome. 1 for mapping to only "+" strand. 2 for mapping to only "-". Default is 0.
+            </td> 
+  </tr>
+            <tr>
+    <td>-thread</td>
+            <td>How many threads to use for parallelization. This parameter is deprecated. Check <code>-partition</code>.
+            </td> 
+  </tr>
+            <tr>
+    <td>-partition</td>
+            <td>Re-distribute input data into a number of partitions. This is useful when you want to evenly distribute your data for paralleled computation.
+            </td> 
+  </tr>
+            <tr>
+    <td>-version</td>
+            <td>Print out Sparkhit version
+            </td> 
+  </tr>
+            <tr>
+    <td>-help</td>
+            <td>Print the help information
+            </td> 
+  </tr>
+        </table>
+        <p>
+        </p>
+        <div>
+            &#9749; &nbsp;Notes
+        </div>
+        <div-content>
+            <ol type="1">
+            <li>
+                As most of distributed storage system manages data distribution automatically, eg. Hadoop distributed file system (HDFS), uncompressed text files are usually splitted and identified by lines. Fastq files are consist of <b>4-line-units</b>, an ID header line starts with "@", a raw sequence line, an identifier starts with "+" and a sequecing quality line. Most tools have to read the complete information to apply their algorithms. So, after decompression, <i>Sparkhit</i> changes fastq file to a tabular file where each line is a complete unit consists of the four elements space out by "tab".
+            </li>
+            </ol>
+        </div-content>
+        <pre>
+    Fastq file:
+        @hiseq2000
+        ATCGGCTAATCGGCTAATCGGCTA
+        +
+        iiiibbbibibibibibbbbiiib
+    Line file:
+        @hiseq2000  ATCGGCTAATCGGCTAATCGGCTA    +   iiiibbbibibibibibbbbiiib</pre>
 
 <h3>
-<a id="designer-templates" class="anchor" href="#designer-templates" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Designer Templates</h3>
+<a id="reporter-options" class="anchor" href="#reporter-options" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Sparkhit reporter options</h3>
+        
+        <p>
+            <i>Sparkhit</i> reporter is a tool to summarize the mapping result of <code>sparkhit mapper</code>. Like normal word count appliction, it applies a simple Map-Reduce to summarize the frequency of each element. In our case, it is the mapped read number of each chromosome/contig/scaffold of reference genomes. 
+        </p>
+        <p>
+            To list all options, type command: <br>
+            <code>$ ./bin/sparkhit reporter</code>
+        </p>
+        <pre>
+SparkHit 11:48:21 SparkHit Reporter initiating ... 
+SparkHit 11:48:21 interpreting parameters.
+Name:
+	SparkHit Reporter
 
-<p>We’ve crafted some handsome templates for you to use. Go ahead and click 'Continue to layouts' to browse through them. You can easily go back to edit your page before publishing. After publishing your page, you can revisit the page generator and switch to another theme. Your Page content will be preserved.</p>
+Options:
+  -input &lt;input sparkhit result file>   Input spark hit result file in tabular
+                                        format. Accept wild card, s3n schema, hdfs
+                                        schema
+  -word &lt;columns for identifier>        a list of column number used to represent a
+                                        category you want to summarize. eg, 1,3,8
+                                        means counting column 1 (chr), column 3
+                                        (strain), column 8 (identity)
+  -count &lt;column for count number>      the number of column value which will be used
+                                        to aggregate for the report. set to 0 the
+                                        value will be 1 for every identifier
+  -outfile &lt;output report file>         Output report file in text format
+  -partition &lt;re-partition number>      re generate number of partitions for .gz
+                                        data, as .gz data only have one partition
+                                        (spark parallelization)
+  -version                              show version information
+  -help                                 print and show this information
+  -h
 
+Usage:
+	Report mapping summary
+spark-submit [spark parameter] --class uni.bielefeld.cmg.sparkhit.main.MainOfReporter Sparkhit.jar [parameters] -input ./sparkhit.out -outfile ./sparkhit.report
+sparkhit reporter [spark parameter] [parameters] -input ./sparkhit.out -outfile ./sparkhit.report</pre>
+        <p>
+            
+        </p>
+          <table>
+            <caption>Table M-4: Sparkhit reporter options description</caption>
+  <tr>
+    <th>Options</th>
+    <th>Description</th> 
+  </tr>
+  <tr>
+    <td>-input</td>
+      <td>Input fragment recruitment result file in tabular format.
+      </td> 
+  </tr>
+  <tr>
+    <td>-word</td>
+    <td>A list of column number used to represent a category you want to summarize. See <b>Notes</b> for details.</td> 
+  </tr>
+    <tr>
+        <td>-count</td>
+        <td>You can specify a column as count number. This is useful when the tabular format has a column already stating a number of matches. By default, it is always one reads per line.</td>
+    </tr>
+    <tr>
+        <td>-outfile</td>
+        <td>output result file, tabular format.</td>
+    </tr>
+    <tr>
+        <td>-partition</td>
+        <td>Re-distribute input data into a number of partitions. This is useful when you want to evenly distribute your data for paralleled computation.</td>
+    </tr>
+    <tr>
+        <td>-version</td>
+        <td>Display Sparkhit version.</td>
+    </tr>
+    <tr>
+        <td>-help</td>
+        <td>Print the help information</td>
+    </tr>
+
+</table>
+        <p>
+        </p>
+        <div>
+            &#9749; &nbsp;Notes
+        </div>
+        <div-content>
+            <ol type="1">
+            <li>
+                The reporter usually summarizes the mapped read number of a certain chromosome/contig/scaffold in a certain identity, eg. how many reads map to <code>NM_086618</code> with more than 98% identity. Some times you might want to make some changes, eg. how many reads map to <code>NM_086618</code> "+" strand with more than 97% identity. We offer a flexible option for the summarization, <code>-word</code> option. It allows you to specify the identifier with a combination of elements by selecting a list of column . Each line of the input tabular format file is a hit of a sequence. By choosing and combinig several columns, you can assemble your identifier as a key word for summarization (like a MapReduce WordCount).
+            </li>
+            </ol>
+        </div-content>
+        
+        <h3>
+<a id="piper-options" class="anchor" href="#piper-options" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Sparkhit piper options</h3>
+        <p>
+            <i>Sparkhit piper</i> is a functional module for invoking other tools and scripts at "Map" step. The "Map" step in MapReduce is usually an independent process. This process can also be finished by an external tool. As for <i>Sparkhit</i>, it loads sequencing data to an <a href="http://www.tutorialspoint.com/apache_spark/apache_spark_rdd.htm">RDD</a> and sends RDD data to external tool via STDIN. Invoked tool processes input data as programmed and sends the result back to STDOUT (a new RDD).
+        </p>
+        <p>
+            The command line of <i>Sparkhit piper</i> is consists of seven parts: <code>sparkhit piper --spark-param [input data] [external tool dependencies][external tool path] [external tool options] [output]</code>. Here in the command, [external tool dependencies], [external tools path] and [external tool options] are a combined command that will be executed in the workers independently, eg. : <br>
+            &nbsp;<code>-tooldepend "/usr/bin/java/1.7.0/jre/bin/java -jar"</code><br> 
+            &nbsp;<code>-tool /home/ec2-user/javaMapper/javaMapper.jar</code><br>
+            &nbsp;<code>-toolparam "-input /dev/stdin -reference /home/ec2-user/reference/hg19.fa -output /dev/stdout"</code> 
+        </p>
+        <p>
+            will be a combined command: <br>
+            <code>$ /usr/bin/java/1.7.0/jre/bin/java -jar /home/ec2-user/javaMapper/javaMapper.jar -input /dev/stdin -reference /home/ec2-user/reference/hg19.fa -output /dev/stdout</code> running on worker nodes as a Linux command. However, the input and output have been redirect to standard input and standard output, where data stream will be managed by <i>Sparkhit</i>.
+        </p>
+        <p>
+            To list all options, type command: <br>
+            <code>$ ./bin/sparkhit piper</code>
+        </p>
+        
+        <pre>
+SparkHit 11:34:24 SparkHit ScriptPiper initiating ... 
+SparkHit 11:34:24 interpreting parameters.
+Name:
+	SparkHit ScriptPiper (bwa, bowtie2 or other aligner)
+
+Options:
+  -fastq &lt;input fastq file>          Input spark hit result file in tabular format.
+                                     Accept wild card, s3n schema, hdfs schema
+  -line &lt;input line file>            Input NGS data, line based text file format, one
+                                     line per unit
+  -tag                               Set to tag filename to sequence id. It is useful
+                                     when you are processing lots of samples at the
+                                     same time
+  -filter                            Weather to filter input fastq file or not,
+                                     default not (big data with small error, who
+                                     knows)
+  -tofasta                           Convert input fastq file to fasta before sending
+                                     to external tool to process
+  -linetofa                          Convert input line file to fasta before sending
+                                     to external tool to process
+  -tool &lt;external tool path>         Path to an external tool you want to use, a
+                                     script or a tool
+  -toolparam &lt;external tool param>   Use "" quotation to quote Parameter for your
+                                     tool, please exclude input and output for your
+                                     tool as it should be STDIN and STDOUT for Spark
+                                     Pipe. Please include reference and place it in
+                                     the right position in your command line
+  -tooldepend &lt;tool dependencies>    Use "" quotation to quote Dependencies for your
+                                     tool. Or instead, put it in tool path in
+                                     commandline logic. Default is NONE
+  -outfile &lt;output file>             Output sequencing data directory
+  -partition &lt;re-partition num>      even the load of each task, 1 partition for a
+                                     task or 4 partitions for a task is recommended.
+                                     Default, not re-partition
+  -version                           show version information
+  -help                              print and show this information
+  -h
+
+Usage:
+	Parallelize your own tool like bwa mem:
+spark-submit [spark parameter] --class uni.bielefeld.cmg.sparkhit.main.MainOfPiper Sparkhit.jar [parameters] -fastq query.fq.tar.bz2 -outfile ./outbams_dir -tool "/mypath/bwa mem" -toolparam "/mypath/reference.fa -t 32"
+sparkhit piper [spark parameter] [parameters] -fastq query.fq.tar.bz2 -outfile ./outbams_dir -tool "/mypath/bwa mem" -toolparam "/mypath/reference.fa -t 32"</pre>
+        <table>
+            <caption>Table M-5: Sparkhit piper options description</caption>
+  <tr>
+    <th>Options</th>
+    <th>Description</th> 
+  </tr>
+  <tr>
+    <td>-fastq</td>
+      <td>The input sequencing data is in fastq format. It can be compressed or uncompressed. You can also use wild card or comma seperated files to input a batch of files. eg. <code>-fastq /vol/data/samples/*.fq.bz2</code>.
+      </td> 
+  </tr>
+  <tr>
+    <td>-line</td>
+    <td>The input sequencing data is a fastq file in line format. This line based sequecing data is useful when you have uncompressed file distributed across different nodes, so that a fastq unit is intact.
+  </tr>
+    <tr>
+        <td>-tag</td>
+        <td>Whether to tag file name to each sequence or not. This tag information can mark the sequence of intermediate mapping result. This information is useful when you have a bunch of samples input together and would like to summarized seperately. This parameter can increase the size of output file.</td>
+    </tr>
+    <tr>
+        <td>-filter</td>
+        <td>Set to filter input fastq file. This is useful when there are errors in a bunch of fastq files.</td>
+    </tr>
+    <tr>
+        <td>-tofasta</td>
+        <td>In case some tools only read fasta files. Setting this option will transfer input fastq file into fasta file format.</td>
+    </tr>
+    <tr>
+        <td>-linetofa</td>
+        <td>In combine with <code>-line</code> parameter. In case some tools only read fasta files. Setting this option will transfer input fastq file into fasta file format.</td>
+    </tr>
+    <tr>
+        <td>-tool</td>
+        <td>a script or tool which you want to use. Make sure it is accessible by each worker nodes, eg. place it in a shared file sytem or copy it to each worker nodes. If it is a script or one executable file, add <code>-copy</code> option to copy the script or executable file to each worker nodes.</td>
+    </tr>
+            <tr>
+        <td>-toolparam</td>
+        <td>The correspond parameter for the tool you invoke.</td>
+    </tr>
+            <tr>
+        <td>-tooldepend</td>
+        <td>The dependencies for the tool you invoke.</td>
+    </tr>
+            <td>-copy</td>
+        <td>Copy a script or one executable file to each worker nodes so that it can be used by each executor.</td>
+            <tr>
+        <td>-outfile</td>
+        <td>Output file directory.</td>
+    </tr>
+            <tr>
+        <td>-partition</td>
+        <td>Re-distribute input data into a number of partitions. This is useful when you want to evenly distribute your data for paralleled computation.</td>
+    </tr>
+            <tr>
+        <td>-version</td>
+        <td>Print out Sparkhit version</td>
+    </tr>
+            <tr>
+        <td>-help</td>
+        <td>Print the help information</td>
+    </tr>
+            
+</table>
+        <p>
+        </p>
+        <div>
+            &#9749; &nbsp;Notes
+        </div>
+        <div-content>
+            <ol type="1">
+            <li>
+                When invoked tools have multithreading function, say it uses 4 cores for each task of RDD, please also set <code>--conf "spark.task.cpus=4"</code> to the multithreading number on each worker node. Eg., a 32-core worker node usually allows 32 tasks running in parallel. Now you have one task invoking a 4 cores multithreading tool, the cpu number for each task is 4. So, only 8 tasks is running in parallel. Otherwise more tasks will be fighting for resource. A script example can be found in <a href="https://github.com/rhinempi/sparkhit/blob/master/sbin/sparkhit-frhit.sh">./sbin/sparkhit-frhit.sh</a>.
+            </li>
+            <li>
+                To invoke external tools, we need to make sure these tools are accessible on every worker nodes (including their dependencies). When copying them to each node or placing them on a shared file system, make sure their dependencies are also available. (we are working on container technologies, eg. <a href="https://www.docker.com/">Docker</a>)
+            </li>
+            <li>
+                The three parameters <code>-tooldepend -tool -toolparam</code> are just to combine a line of command (which means they are flexible as long as you make them a command). However, when setting <code>-copy</code> option, <code>-tool</code> will be copied to each worker nodes.
+            </li>
+            </ol>
+        </div-content>
+        
 <h3>
-<a id="creating-pages-manually" class="anchor" href="#creating-pages-manually" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Creating pages manually</h3>
+<a id="parallelizer-options" class="anchor" href="#parallelizer-options" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Sparkhit parallelizer options</h3>
+        <p>
+            <i>Sparkhit parallelizer</i> is quite similar to <i>piper</i>. They both use <i>Spark</i> <code>pipe</code> function to invoke external commands and tools. The only difference is parallelizer does not manages data distribution, but focus only on parallelize a command to each worker nodes. Thus, the options for <i>Sparkhit parallelizer</i> has no input and output. Parallelizer is designed to parallelize an action to each worker nodes, eg., download reference genome to each worker nodes. See <a href="https://github.com/rhinempi/sparkhit/blob/master/sbin/sparkhit-download.sh">./sbin/sparkhit-download.sh</a>
+        </p>
+        <p>
+            To see all options, type command: <br>
+            <code>$ ./bin/sparkhit parallelizer</code>
+        </p>
+        <pre>
+SparkHit 15:12:46 SparkHit Parallelizer (parallel operation on different nodes) initiating ... 
+SparkHit 15:12:46 interpreting parameters.
+Name:
+	SparkHit Parallelizer
 
-<p>If you prefer to not use the automatic generator, push a branch named <code>gh-pages</code> to your repository to create a page manually. In addition to supporting regular HTML content, GitHub Pages support Jekyll, a simple, blog aware static site generator. Jekyll makes it easy to create site-wide headers and footers without having to copy them across every page. It also offers intelligent blog support and other advanced templating features.</p>
+Options:
+  -nodes &lt;input nodes number>        Input nodes number for parallel action
+  -tool &lt;external tool path>         Path to an external tool you want to use, a
+                                     script or a tool
+  -toolparam &lt;external tool param>   Use "" quotation to quote Parameter for your
+                                     tool, please exclude input and output for your
+                                     tool as it should be STDIN and STDOUT for Spark
+                                     Pipe. Please include reference and place it in
+                                     the right position in your command line
+  -tooldepend &lt;tool dependencies>    Use "" quotation to quote Dependencies for your
+                                     tool. Or instead, put it in tool path in
+                                     commandline logic. Default is NONE
+  -outfile &lt;output file>             Output sequencing data directory
+  -partition &lt;re-partition num>      even the load of each task, 1 partition for a
+                                     task or 4 partitions for a task is recommended.
+                                     Default, not re-partition
+  -version                           show version information
+  -help                              print and show this information
+  -h
 
+Usage:
+	Parallelize an operation to each worker nodes:
+spark-submit [spark parameter] --class uni.bielefeld.cmg.sparkhit.main.MainOfPiper Sparkhit.jar [parameters] -nodes 10 -tool "kill -u ec2-user"
+sparkhit parallelizer [spark parameter] [parameters] -nodes 10 -tool "kill -u ec2-user"</pre>
+        
+        <table>
+            <caption>Table M-6: Sparkhit parallelizer options description</caption>
+  <tr>
+    <th>Options</th>
+    <th>Description</th> 
+  </tr>
+    <tr>
+        <td>-nodes</td>
+        <td>How many nodes are there on the spark cluster</td>
+    </tr>
+    <tr>
+        <td>-tool</td>
+        <td>a script or tool which you want to use. Make sure it is accessible by each worker nodes, eg. place it in a shared file sytem or copy it to each worker nodes. If it is a script or one executable file, add <code>-copy</code> option to copy the script or executable file to each worker nodes.</td>
+    </tr>
+            <tr>
+        <td>-toolparam</td>
+        <td>The correspond parameter for the tool you invoke.</td>
+    </tr>
+            <tr>
+        <td>-tooldepend</td>
+        <td>The dependencies for the tool you invoke.</td>
+    </tr>
+            <td>-copy</td>
+        <td>Copy a script or one executable file to each worker nodes so that it can be used by each executor.</td>
+            <tr>
+        <td>-outfile</td>
+        <td>Deprecated</td>
+    </tr>
+            <tr>
+        <td>-partition</td>
+        <td>Deprecated</td>
+    </tr>
+            <tr>
+        <td>-version</td>
+        <td>Print out Sparkhit version</td>
+    </tr>
+            <tr>
+        <td>-help</td>
+        <td>Print the help information</td>
+    </tr>
+            
+</table>
+        
+        <p>
+        </p>
+        <div>
+            &#9749; &nbsp;Notes
+        </div>
+        <div-content>
+            <ol type="1">
+            <li>
+               <code>-tool -toolparam -tooldepend</code> are options used for passing a command to <i>Sparkhit</i> to parallelize in worker nodes. You can leave either one of them empty, as long as the combined command is correct.
+            </li>
+            </ol>
+        </div-content>
 <h3>
-<a id="authors-and-contributors" class="anchor" href="#authors-and-contributors" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Authors and Contributors</h3>
+<a id="cluster-options" class="anchor" href="#cluster-options" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Sparkhit cluster options</h3>
+        <p>
+            <i>Sparkhit cluster</i> implements cluster algorithms of <i>Spark</i> Machine learning library (<a href="http://spark.apache.org/docs/latest/mllib-guide.html">mllib</a>). It can cluster biological cohorts based on their genotype information or vise versa, cluster SNPs based on their profile in different biological cohorts. For the program, it read the input file(s) as a tabular matrix, in which each line is a vector/an unit (a samlpe or a SNP) to be clustered.
+        </p>
+        <p>
+            To see all options, type command: <br>
+            <code>$ ./bin/sparkhit cluster</code>
+        </p>
+        <pre>
+SparkHit 16:21:35 SparkHit Clustering initiating ... 
+SparkHit 16:21:35 interpreting parameters.
+Name:
+	SparkHit Machine Learning library
 
-<p>You can <a href="https://help.github.com/articles/basic-writing-and-formatting-syntax/#mentioning-users-and-teams" class="user-mention">@mention</a> a GitHub username to generate a link to their profile. The resulting <code>&lt;a&gt;</code> element will link to the contributor’s GitHub Profile. For example: In 2007, Chris Wanstrath (<a href="https://github.com/defunkt" class="user-mention">@defunkt</a>), PJ Hyett (<a href="https://github.com/pjhyett" class="user-mention">@pjhyett</a>), and Tom Preston-Werner (<a href="https://github.com/mojombo" class="user-mention">@mojombo</a>) founded GitHub.</p>
+Options:
+  -vcf &lt;input VCF file>           Input vcf file containing variation info
+  -tab &lt;input tabular file>       Input tabular file containing variation info
+  -outfile &lt;output file>          Output cluster index file
+  -model &lt;cluster model>          clustering model, 0 for hierarchical, 1 for
+                                  centroid (k-mean), default is 0
+  -window &lt;SNP window size>       window size for a block of snps
+  -column &lt;Columns for Alleles>   columns where allele info is set, default is 2-3
+  -cache                          weather to cache data in memory or not, default no
+  -cluster &lt;Cluster number>       how many leaf clusters, default is 1
+  -iteration &lt;Iteration number>   how many iterations for learning, default is 20
+  -partition &lt;re-partition num>   even the load of each task, 1 partition for a task
+                                  or 4 partitions for a task is recommended. Default,
+                                  not re-partition
+  -version                        show version information
+  -help                           print and show this information
+  -h
 
+Usage:
+	Machine learning library for vcf or tabular file:
+spark-submit [spark parameter] --class uni.bielefeld.cmg.sparkhit.main.MainOfPiper Sparkhit.jar [parameters] -vcf genotype.vcf -outfile ./result -column 2-10 -cache
+sparkhit [command] [spark parameter] [parameters] -vcf genotype.vcf -outfile ./result -column 2-10 -cache</pre>
+        
+        <table>
+            <caption>Table M-7: Sparkhit cluster options description</caption>
+  <tr>
+    <th>Options</th>
+    <th>Description</th> 
+  </tr>
+    <tr>
+        <td>-vcf</td>
+        <td>Input a <a href="http://www.internationalgenome.org/wiki/Analysis/vcf4.0/">VCF</a> format file contains genotype information and annotations.
+        </td>
+    </tr>
+    <tr>
+        <td>-tab</td>
+        <td>Input a tabular file with raw data (eg. a table as matrix)</td>
+    </tr>
+            <tr>
+        <td>-outfile</td>
+        <td>Output file directory.</td>
+    </tr>
+            <tr>
+        <td>-model</td>
+        <td>Clustering model, 0 for hierarchical, 1 for centroid (k means), default is 0</td>
+    </tr>
+            <td>-window</td>
+        <td>An integer as the size of a window of SNPs. Instead of clustering based on each SNPs, the clustering will use the profile of SNPs within each window.</td>
+            <tr>
+        <td>-column</td>
+        <td>The column(s) where genotype was placed. See <b>Notes</b></td>
+    </tr>
+            <tr>
+        <td>-cache</td>
+        <td>Set to cache input data into memory.</td>
+    </tr>
+            <tr>
+        <td>-cluster</td>
+        <td>Maximum number of clusters.</td>
+    </tr>
+            <tr>
+        <td>-iteration</td>
+        <td>Maximu number of iterations for clustering. Default is 20</td>
+    </tr>
+            <tr>
+        <td>-partition</td>
+        <td>Re-distribute input data into a number of partitions. This is useful when you want to evenly distribute your data for paralleled computation.</td>
+    </tr>
+            <tr>
+        <td>-version</td>
+        <td>Print out Sparkhit version</td>
+    </tr>
+            <tr>
+        <td>-help</td>
+        <td>Print the help information</td>
+    </tr>
+            
+</table>
+        <p>
+        </p>
+        <div>
+            &#9749; &nbsp;Notes
+        </div>
+        <div-content>
+            <ol type="1">
+            <li>
+               <code>-vcf</code> is designed to read genotypes from VCF file. Genotypes are encoded to a correspond integer of a matrix: 0|0 is encoded as 0, 0|1 and 1|0 are encoded as 1; 1|1 is encoded as 2. Please see vcf file in the <code>./example</code> folder.
+            </li>
+            </ol>
+        </div-content>
 <h3>
-<a id="support-or-contact" class="anchor" href="#support-or-contact" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Support or Contact</h3>
+<a id="tester-options" class="anchor" href="#tester-options" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Sparkhit tester options</h3>
+        
+        <p>
+            <i>Sparkhit tester</i> implements Chi-square test algorithm to exam and return the P-value of each line in the input file. Thus, each line of the input file should have two groups of data that will be assigned by <code>-column</code> and <code>-column2</code> options.
+        </p>
+        <p>
+            To see all options, type command: <br>
+            <code>$ ./bin/sparkhit tester</code>
+        </p>
+        
+        <pre>
+SparkHit 18:36:41 SparkHit ChisquareTester initiating ... 
+SparkHit 18:36:41 interpreting parameters.
+Name:
+	SparkHit Machine Learning library
 
-<p>Having trouble with Pages? Check out our <a href="https://help.github.com/pages">documentation</a> or <a href="https://github.com/contact">contact support</a> and we’ll help you sort it out.</p>
+Options:
+  -vcf &lt;input VCF file>             Input vcf file containing variation info
+  -tab &lt;input tabular file>         Input tabular file containing variation info
+  -outfile &lt;output file>            Output alleles p value
+  -column &lt;Columns for Alleles>     1, columns where allele info is set, as case set
+  -column2 &lt;Columns2 for Alleles>   2, columns where allele info is set, as control
+                                    set
+  -cache                            weather to cache data in memory or not, default
+                                    no
+  -partition &lt;re-partition num>     even the load of each task, 1 partition for a
+                                    task or 4 partitions for a task is recommended.
+                                    Default, not re-partition
+  -version                          show version information
+  -help                             print and show this information
+  -h
 
+Usage:
+	Machine learning library for vcf or tabular file:
+spark-submit [spark parameter] --class uni.bielefeld.cmg.sparkhit.main.MainOfPiper Sparkhit.jar [parameters] -vcf genotype.vcf -outfile ./result -column 2-10 -cache
+sparkhit [command] [spark parameter] [parameters] -vcf genotype.vcf -outfile ./result -column 2-10 -cache
+        </pre>
+        <table>
+            <caption>Table M-8: Sparkhit tester options description</caption>
+  <tr>
+    <th>Options</th>
+    <th>Description</th> 
+  </tr>
+    <tr>
+        <td>-vcf</td>
+        <td>Input a <a href="http://www.internationalgenome.org/wiki/Analysis/vcf4.0/">VCF</a> format file contains genotype information and annotations.
+        </td>
+    </tr>
+    <tr>
+        <td>-tab</td>
+        <td>Input a tabular file with raw data (eg. a table as matrix)</td>
+    </tr>
+            <tr>
+        <td>-outfile</td>
+        <td>Output file directory.</td>
+    </tr>
+            <tr>
+        <td>-column</td>
+        <td>A block of columns where allele info or data is placed. This dataset is group A for the test.</td>
+    </tr>
+            <td>-column2</td>
+        <td>A block of columns where allele info or data is placed. This dataset is group B for the test.</td>
+            <tr>
+        <td>-cache</td>
+        <td>Set to cache the data in memory or not. Default is no.</td>
+    </tr>
+            <tr>
+        <td>-partition</td>
+        <td>Re-distribute input data into a number of partitions. This is useful when you want to evenly distribute your data for paralleled computation.</td>
+    </tr>
+            <tr>
+        <td>-version</td>
+        <td>Print out Sparkhit version</td>
+    </tr>
+            <tr>
+        <td>-help</td>
+        <td>Print the help information</td>
+    </tr>
+            
+</table>
+        <p>
+        </p>
+        <div>
+            &#9749; &nbsp;Notes
+        </div>
+        <div-content>
+            <ol type="1">
+            <li>
+               <code>-vcf</code> is designed to read genotypes from VCF file. Genotypes are encoded to a correspond integer of a matrix: 0|0 is encoded as 0, 0|1 and 1|0 are encoded as 1; 1|1 is encoded as 2. Please see vcf file in the <code>./example</code> folder.
+            </li>
+            </ol>
+        </div-content>
+        
+<h3>
+<a id="converter-options" class="anchor" href="#converter-options" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Sparkhit converter options</h3>
+        
+        <p>
+            In case some tools require a different input file format, eg., a <b>fasta</b> file rather than a <b>fastq</b> file. <i>Sparkhit converter</i> provides parallel file format converting for such case.
+        </p>
+        <p>
+            To see all options, type command: <br>
+            <code>$ ./bin/sparkhit converter </code>
+        </p>
+        
+        <pre>
+SparkHit 22:17:18 SparkHit Converter initiating ... 
+SparkHit 22:17:18 interpreting parameters.
+Name:
+	SparkHit Converter
+
+Options:
+  -fastq &lt;input fastq file>          Input Next Generation Sequencing (NGS) data, 
+                                     fastq file format, four line per unit
+  -outfile &lt;output file>             Output sequencing data directory
+  -outfm &lt;output file format>        Output sequencing data format: 0 line without
+                                     quality, 1 line with quality, 2 fasta format
+  -partition &lt;re-partition number>   re generate number of partitions for .gz data,
+                                     as .gz data only have one partition (spark
+                                     parallelization)
+  -version                           show version information
+  -help                              print and show this information
+  -h
+
+Usage:
+	Convert different file format :
+spark-submit [spark parameter] --class uni.bielefeld.cmg.sparkhit.main.MainOfConverter Sparkhit.jar [parameters] -fastq query.fq.tar.bz2 -outfile ./outdir
+sparkhit converter [spark parameter] [parameters] -fastq query.fq.tar.bz2 -outfile ./outdir</pre>
+        
+        <table>
+            <caption>Table M-9: Sparkhit converter options description</caption>
+  <tr>
+    <th>Options</th>
+    <th>Description</th> 
+  </tr>
+    <tr>
+        <td>-fastq</td>
+        <td>The input sequencing data is in fastq format. It can be compressed or uncompressed. You can also use wild card or comma seperated files to input a batch of files. eg. <code>-fastq /vol/data/samples/*.fq.bz2</code>.
+        </td>
+    </tr>
+    <tr>
+        <td>-outfile</td>
+        <td>Output file directory.</td>
+    </tr>
+            <tr>
+        <td>-outfm</td>
+        <td>Output file directory.</td>
+    </tr>
+            <tr>
+        <td>-partition</td>
+        <td>Re-distribute input data into a number of partitions. This is useful when you want to evenly distribute your data for paralleled computation.</td>
+    </tr>
+            <tr>
+        <td>-version</td>
+        <td>Print out Sparkhit version</td>
+    </tr>
+            <tr>
+        <td>-help</td>
+        <td>Print the help information</td>
+    </tr>
+            
+</table>
+<p>
+        </p>
+        <div>
+            &#9749; &nbsp;Notes
+        </div>
+        <div-content>
+            <ol type="1">
+            <li>
+                When input "splitable" compressed fastq file, eg., fastq.bz2. It will apply a parallel decompress function of  <i>Spark</i>. Until 2.0.0 version, <i>Spark`s</i> parallel decompressor has a "potential thread safty" issue. Please use the <i>Hadoop</i> based decompressor located at <code>./lib/sparkhit-hadoopDecompressor-1.0-SNAPSHOT.jar</code> for large size file decompression.
+            </ol>
+        </div-content>
+        
+<h3>
+<a id="correlationer-options" class="anchor" href="#correlationer-options" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Sparkhit correlationer options</h3>
+        
+        <p>
+            <i>Sparkhit correlationer</i> calculates the <i>Pearson</i> correlation coefficient of two datasets.
+        </p>
+        
+        <pre>
+SparkHit 22:18:45 SparkHit Correlationer initiating ... 
+SparkHit 22:18:45 interpreting parameters.
+Name:
+	SparkHit Machine Learning library
+
+Options:
+  -vcf &lt;input VCF file>           Input vcf file containing variation info
+  -tab &lt;input tabular file>       Input tabular file containing variation info
+  -outfile &lt;output file>          Output alleles p value
+  -column &lt;Columns for Alleles>   columns where allele info is set
+  -cache                          weather to cache data in memory or not, default no
+  -partition &lt;re-partition num>   even the load of each task, 1 partition for a task
+                                  or 4 partitions for a task is recommended. Default,
+                                  not re-partition
+  -version                        show version information
+  -help                           print and show this information
+  -h
+
+Usage:
+	Machine learning library for vcf or tabular file:
+spark-submit [spark parameter] --class uni.bielefeld.cmg.sparkhit.main.MainOfPiper Sparkhit.jar [parameters] -vcf genotype.vcf -outfile ./result -column 2-10 -cache
+sparkhit [command] [spark parameter] [parameters] -vcf genotype.vcf -outfile ./result -column 2-10 -cache</pre>
+        
+        <table>
+            <caption>Table M-10: Sparkhit correlationer options description</caption>
+  <tr>
+    <th>Options</th>
+    <th>Description</th> 
+  </tr>
+    <tr>
+        <td>-vcf</td>
+        <td>Input a <a href="http://www.internationalgenome.org/wiki/Analysis/vcf4.0/">VCF</a> format file contains genotype information and annotations.
+        </td>
+    </tr>
+    <tr>
+        <td>-tab</td>
+        <td>Input a tabular file with raw data (eg. a table as matrix)</td>
+    </tr>
+            <tr>
+        <td>-outfile</td>
+        <td>Output file directory.</td>
+    </tr>
+            <tr>
+        <td>-column</td>
+        <td>The column(s) where genotype was placed. </td>
+    </tr>
+            <tr>
+        <td>-cache</td>
+        <td>Set to cache input data into memory.</td>
+    </tr>
+            <tr>
+        <td>-partition</td>
+        <td>Re-distribute input data into a number of partitions. This is useful when you want to evenly distribute your data for paralleled computation.</td>
+    </tr>
+            <tr>
+        <td>-version</td>
+        <td>Print out Sparkhit version</td>
+    </tr>
+            <tr>
+        <td>-help</td>
+        <td>Print the help information</td>
+    </tr>
+            
+</table>
+        <p>
+        </p>
+        <div>
+            &#9749; &nbsp;Notes
+        </div>
+        <div-content>
+            <ol type="1">
+            <li>
+               <code>-vcf</code> is designed to read genotypes from VCF file. Genotypes are encoded to a correspond integer of a matrix: 0|0 is encoded as 0, 0|1 and 1|0 are encoded as 1; 1|1 is encoded as 2. Please see vcf file in the <code>./example</code> folder.
+            </li>
+            </ol>
+        </div-content>
+<h3>
+<a id="decompresser-options" class="anchor" href="#decompresser-options" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Sparkhit decompresser options</h3>
+        
+        <p>
+            
+        </p>
+        
+        <pre>
+SparkHit 22:20:42 SparkHit Decompresser initiating ... 
+SparkHit 22:20:42 interpreting parameters.
+Name:
+	SparkHit Decompresser
+
+Options:
+  -fastq &lt;input compressed fastq file>   Input compressed fastq file. Accept wild
+                                         card, s3n schema, hdfs schema
+  -line &lt;input compressed line file>     Input compressed line file format, one line
+                                         per unit
+  -filter                                Weather to filter input fastq file or not,
+                                         default not (big data with small error, who
+                                         knows)
+  -tofasta                               Convert input fastq file to fasta before
+                                         sending to external tool to process
+  -linetofa                              Convert input line file to fasta before
+                                         sending to external tool to process
+  -outfile &lt;output file>                 Output sequencing data directory
+  -partition &lt;re-partition num>          even the load of each task, 1 partition for
+                                         a task or 4 partitions for a task is
+                                         recommended. Default, not re-partition
+  -version                               show version information
+  -help                                  print and show this information
+  -h
+
+Usage:
+	Decomress zipball and tarball using spark codec:
+spark-submit [spark parameter] --class uni.bielefeld.cmg.sparkhit.main.MainOfPiper Sparkhit.jar sparkhit.jar [parameters] -fastq input.fq.bz2 -outfile ./decompressed
+sparkhit decompresser [spark parameter][parameters] -fastq input.fq.bz2 -outfile ./decompressed</pre>
+        
+        <table>
+            <caption>Table M-11: Sparkhit decompresser options description</caption>
+  <tr>
+    <th>Options</th>
+    <th>Description</th> 
+  </tr>
+    <tr>
+    <td>-fastq</td>
+      <td>The input sequencing data is in fastq format. It can be compressed or uncompressed. You can also use wild card or comma seperated files to input a batch of files. eg. <code>-fastq /vol/data/samples/*.fq.bz2</code>.
+      </td> 
+  </tr>
+  <tr>
+    <td>-line</td>
+    <td>The input sequencing data is a fastq file in line format. This line based sequecing data is useful when you have uncompressed file distributed across different nodes, so that a fastq unit is intact.
+  </tr>
+            <tr>
+        <td>-filter</td>
+        <td>Set to filter input fastq file. This is useful when there are errors in a bunch of fastq files.</td>
+    </tr>
+    <tr>
+        <td>-tofasta</td>
+        <td>In case some tools only read fasta files. Setting this option will transfer input fastq file into fasta file format.</td>
+    </tr>
+    <tr>
+        <td>-linetofa</td>
+        <td>In combine with <code>-line</code> parameter. In case some tools only read fasta files. Setting this option will transfer input fastq file into fasta file format.</td>
+    </tr>
+            <tr>
+                <td>
+                    -outfile
+                </td>
+                <td>
+                    Output file directory.
+                </td>
+            </tr>
+            <tr>
+        <td>-partition</td>
+        <td>Re-distribute input data into a number of partitions. This is useful when you want to evenly distribute your data for paralleled computation.</td>
+    </tr>
+            <tr>
+        <td>-version</td>
+        <td>Print out Sparkhit version</td>
+    </tr>
+            <tr>
+        <td>-help</td>
+        <td>Print the help information</td>
+    </tr>
+            
+</table>
+        <p>
+        </p>
+        <div>
+            &#9749; &nbsp;Notes
+        </div>
+        <div-content>
+            <ol type="1">
+            <li>
+                Again, parallel decompress function of <i>Spark</i>, until 2.0.0 version, has a "potential thread safty" issue. Please use the <i>Hadoop</i> based decompressor located at <code>./lib/sparkhit-hadoopDecompressor-1.0-SNAPSHOT.jar</code> for large size file decompression.
+            </ol>
+        </div-content>
+<h3>
+<a id="reductioner-options" class="anchor" href="#reductioner-options" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Sparkhit reductioner options</h3>
+        
+        <p>
+            
+        </p>
+        
+        <pre>
+SparkHit 22:22:14 SparkHit Reductioner (PCA) initiating ... 
+SparkHit 22:22:14 interpreting parameters.
+Name:
+	SparkHit Machine Learning library
+
+Options:
+  -vcf &lt;input VCF file>               Input vcf file containing variation info
+  -tab &lt;input tabular file>           Input tabular file containing variation info
+  -outfile &lt;output file>              Output major components file
+  -window &lt;SNP window size>           window size for a block of snps
+  -column &lt;Columns for Alleles>       columns where allele info is set
+  -row                                Samples listed in row or column, default is
+                                      column
+  -cache                              weather to cache data in memory or not, default
+                                      no
+  -component &lt;Number of components>   How many major components to calculate
+  -partition &lt;re-partition num>       even the load of each task, 1 partition for a
+                                      task or 4 partitions for a task is recommended.
+                                      Default, not re-partition
+  -version                            show version information
+  -help                               print and show this information
+  -h
+
+Usage:
+	Machine learning library for vcf or tabular file:
+spark-submit [spark parameter] --class uni.bielefeld.cmg.sparkhit.main.MainOfPiper Sparkhit.jar [parameters] -vcf genotype.vcf -outfile ./result -column 2-10 -cache
+sparkhit [command] [spark parameter] [parameters] -vcf genotype.vcf -outfile ./result -column 2-10 -cache</pre>
+
+        <table>
+            <caption>Table M-12: Sparkhit reductioner options description</caption>
+  <tr>
+    <th>Options</th>
+    <th>Description</th> 
+  </tr>
+    <tr>
+        <td>-vcf</td>
+        <td>Input a <a href="http://www.internationalgenome.org/wiki/Analysis/vcf4.0/">VCF</a> format file contains genotype information and annotations.
+        </td>
+    </tr>
+    <tr>
+        <td>-tab</td>
+        <td>Input a tabular file with raw data (eg. a table as matrix)</td>
+    </tr>
+            <tr>
+        <td>-outfile</td>
+        <td>Output file directory.</td>
+    </tr>
+            <td>-window</td>
+        <td>An integer as the size of a window of SNPs. Instead of clustering based on each SNPs, the clustering will use the profile of SNPs within each window.</td>
+            <tr>
+        <td>-column</td>
+        <td>The column(s) where genotype was placed.</td>
+    </tr>
+    <tr>
+        <td>-row</td>
+        <td>Choose the direction of your input table. By default, each column is a dimension and each row is an unit to be presented. Set these parameter to change the direction</td>
+    </tr>
+            <tr>
+        <td>-cache</td>
+        <td>Set to cache input data into memory.</td>
+    </tr>
+            <tr>
+        <td>-component</td>
+        <td>How many major components to present in the result</td>
+    </tr>
+            <tr>
+        <td>-partition</td>
+        <td>Re-distribute input data into a number of partitions. This is useful when you want to evenly distribute your data for paralleled computation.</td>
+    </tr>
+            <tr>
+        <td>-version</td>
+        <td>Print out Sparkhit version</td>
+    </tr>
+            <tr>
+        <td>-help</td>
+        <td>Print the help information</td>
+    </tr>
+            
+</table>
+        <p>
+        </p>
+        <div>
+            &#9749; &nbsp;Notes
+        </div>
+        <div-content>
+            <ol type="1">
+            <li>
+               <code>-vcf</code> is designed to read genotypes from VCF file. Genotypes are encoded to a correspond integer of a matrix: 0|0 is encoded as 0, 0|1 and 1|0 are encoded as 1; 1|1 is encoded as 2. Please see vcf file in the <code>./example</code> folder.
+            </li>
+            </ol>
+        </div-content>
+<h3>
+<a id="regressioner-options" class="anchor" href="#regressioner-options" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Sparkhit regressioner options</h3>
+        
+        <p>
+            
+        </p>
+        
+        <pre>
+SparkHit 22:23:27 SparkHit Clustering initiating ... 
+SparkHit 22:23:27 interpreting parameters.
+Name:
+	SparkHit Machine Learning library
+
+Options:
+  -train &lt;training data>          Input vcf file containing training data
+  -vcf &lt;input VCF file>           Input vcf file containing variation info
+  -tab &lt;input tabular file>       Input tabular file containing variation info
+  -outfile &lt;output file>          Output cluster index file
+  -model &lt;cluster model>          clustering model, 0 for hierarchical, 1 for
+                                  centroid (k-mean), default is 0
+  -window &lt;SNP window size>       window size for a block of snps
+  -column &lt;Columns for Alleles>   columns where allele info is set, default is 2-3
+  -cache                          weather to cache data in memory or not, default no
+  -iteration &lt;Iteration number>   how many iterations for learning, default is 20
+  -partition &lt;re-partition num>   even the load of each task, 1 partition for a task
+                                  or 4 partitions for a task is recommended. Default,
+                                  not re-partition
+  -version                        show version information
+  -help                           print and show this information
+  -h
+
+Usage:
+	Machine learning library for vcf or tabular file:
+spark-submit [spark parameter] --class uni.bielefeld.cmg.sparkhit.main.MainOfPiper Sparkhit.jar [parameters] -vcf genotype.vcf -outfile ./result -column 2-10 -cache
+sparkhit [command] [spark parameter] [parameters] -vcf genotype.vcf -outfile ./result -column 2-10 -cache</pre>
+
+        <table>
+            <caption>Table M-13: Sparkhit regressioner options description</caption>
+  <tr>
+    <th>Options</th>
+    <th>Description</th> 
+  </tr>
+    <tr>
+        <td>-vcf</td>
+        <td>Input a <a href="http://www.internationalgenome.org/wiki/Analysis/vcf4.0/">VCF</a> format file contains genotype information and annotations.
+        </td>
+    </tr>
+    <tr>
+        <td>-tab</td>
+        <td>Input a tabular file with raw data (eg. a table as matrix)</td>
+    </tr>
+            <tr>
+        <td>-outfile</td>
+        <td>Output file directory.</td>
+    </tr>
+            <tr>
+        <td>-model</td>
+        <td>Clustering model, 0 for hierarchical, 1 for centroid (k means), default is 0</td>
+    </tr>
+            <td>-window</td>
+        <td>An integer as the size of a window of SNPs. Instead of clustering based on each SNPs, the clustering will use the profile of SNPs within each window.</td>
+            <tr>
+        <td>-column</td>
+        <td>The column(s) where genotype was placed. See <b>Notes</b></td>
+    </tr>
+            <tr>
+        <td>-cache</td>
+        <td>Set to cache input data into memory.</td>
+    </tr>
+            <tr>
+        <td>-cluster</td>
+        <td>Maximum number of clusters.</td>
+    </tr>
+            <tr>
+        <td>-iteration</td>
+        <td>Maximu number of iterations for clustering. Default is 20</td>
+    </tr>
+            <tr>
+        <td>-partition</td>
+        <td>Re-distribute input data into a number of partitions. This is useful when you want to evenly distribute your data for paralleled computation.</td>
+    </tr>
+            <tr>
+        <td>-version</td>
+        <td>Print out Sparkhit version</td>
+    </tr>
+            <tr>
+        <td>-help</td>
+        <td>Print the help information</td>
+    </tr>
+            
+</table>
+        <p>
+        </p>
+        <div>
+            &#9749; &nbsp;Notes
+        </div>
+        <div-content>
+            <ol type="1">
+            <li>
+               <code>-vcf</code> is designed to read genotypes from VCF file. Genotypes are encoded to a correspond integer of a matrix: 0|0 is encoded as 0, 0|1 and 1|0 are encoded as 1; 1|1 is encoded as 2. Please see vcf file in the <code>./example</code> folder.
+            </li>
+            </ol>
+        </div-content>
+<h3>
+<a id="statisticer-options" class="anchor" href="#statisticer-options" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Sparkhit statisticer options</h3>
+        
+        <p>
+            
+        </p>
+        
+        <pre>
+SparkHit 22:25:27 SparkHit Statisticer (HWE, fisher EX, ChiSq) initiating ... 
+SparkHit 22:25:27 interpreting parameters.
+Name:
+	SparkHit Machine Learning library
+
+Options:
+  -vcf &lt;input VCF file>           Input vcf file containing variation info
+  -tab &lt;input tabular file>       Input tabular file containing variation info
+  -outfile &lt;output file>          Output alleles p value
+  -column &lt;Columns for Alleles>   columns where allele info is set
+  -cache                          weather to cache data in memory or not, default no
+  -partition &lt;re-partition num>   even the load of each task, 1 partition for a task
+                                  or 4 partitions for a task is recommended. Default,
+                                  not re-partition
+  -version                        show version information
+  -help                           print and show this information
+  -h
+
+Usage:
+	Machine learning library for vcf or tabular file:
+spark-submit [spark parameter] --class uni.bielefeld.cmg.sparkhit.main.MainOfPiper Sparkhit.jar [parameters] -vcf genotype.vcf -outfile ./result -column 2-10 -cache
+sparkhit [command] [spark parameter] [parameters] -vcf genotype.vcf -outfile ./result -column 2-10 -cache
+        </pre>
+        <table>
+            <caption>Table M-14: Sparkhit statisticer options description</caption>
+  <tr>
+    <th>Options</th>
+    <th>Description</th> 
+  </tr>
+    <tr>
+        <td>-vcf</td>
+        <td>Input a <a href="http://www.internationalgenome.org/wiki/Analysis/vcf4.0/">VCF</a> format file contains genotype information and annotations.
+        </td>
+    </tr>
+    <tr>
+        <td>-tab</td>
+        <td>Input a tabular file with raw data (eg. a table as matrix)</td>
+    </tr>
+            <tr>
+        <td>-outfile</td>
+        <td>Output file directory.</td>
+    </tr>
+            <tr>
+        <td>-column</td>
+        <td>The column(s) where genotype was placed.</td>
+    </tr>
+            <tr>
+        <td>-cache</td>
+        <td>Set to cache input data into memory.</td>
+    </tr>
+            <tr>
+        <td>-partition</td>
+        <td>Re-distribute input data into a number of partitions. This is useful when you want to evenly distribute your data for paralleled computation.</td>
+    </tr>
+            <tr>
+        <td>-version</td>
+        <td>Print out Sparkhit version</td>
+    </tr>
+            <tr>
+        <td>-help</td>
+        <td>Print the help information</td>
+    </tr>
+            
+</table>
+        <p>
+        </p>
+        <div>
+            &#9749; &nbsp;Notes
+        </div>
+        <div-content>
+            <ol type="1">
+            <li>
+               <code>-vcf</code> is designed to read genotypes from VCF file. Genotypes are encoded to a correspond integer of a matrix: 0|0 is encoded as 0, 0|1 and 1|0 are encoded as 1; 1|1 is encoded as 2. Please see vcf file in the <code>./example</code> folder.
+            </li>
+            </ol>
+        </div-content>
+<h3>
+<a id="variationer-options" class="anchor" href="#variationer-options" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Sparkhit variationer options</h3>
+        
+        <p>
+            
+        </p>
+        
+        <pre>
+SparkHit 22:27:11 SparkHit VariantCaller (HDFS bam reader) initiating ... 
+SparkHit 22:27:11 interpreting parameters.
+Name:
+	SparkHit ScriptPiper (bwa, bowtie2 or other aligner) ###### to be changed
+
+Options:
+  -list &lt;input bamfile list>         Input list file of HDFS (with hdfs schema) bam
+                                     file path, one file per line
+  -tool &lt;external tool path>         Path to an external tool you want to use, a
+                                     script or a tool
+  -toolparam &lt;external tool param>   Use "" quotation to quote Parameter for your
+                                     tool, please exclude input and output for your
+                                     tool as it should be STDIN and STDOUT for Spark
+                                     Pipe. Please include reference and place it in
+                                     the right position in your command line
+  -tooldepend &lt;tool dependencies>    Use "" quotation to quote Dependencies for your
+                                     tool. Or instead, put it in tool path in
+                                     commandline logic. Default is NONE
+  -outfile &lt;output file>             Output sequencing data directory
+  -partition &lt;re-partition num>      even the load of each task, 1 partition for a
+                                     task or 4 partitions for a task is recommended.
+                                     Default, not re-partition
+  -version                           show version information
+  -help                              print and show this information
+  -h
+
+Usage:
+	Parallelize your own tool like bwa mem:
+spark-submit [spark parameter] --class uni.bielefeld.cmg.sparkhit.main.MainOfPiper Sparkhit.jar [parameters] -fastq query.fq.tar.bz2 -outfile ./outbams_dir -tool "/mypath/bwa mem" -toolparam "/mypath/reference.fa -t 32"
+sparkhit piper [spark parameter] [parameters] -fastq query.fq.tar.bz2 -outfile ./outbams_dir -tool "/mypath/bwa mem" -toolparam "/mypath/reference.fa -t 32"</pre>
+
+        <table>
+            <caption>Table M-15: Sparkhit variationer options description</caption>
+  <tr>
+    <th>Options</th>
+    <th>Description</th> 
+  </tr>
+    <tr>
+        <td>-list</td>
+        <td>Input a <a href="http://www.internationalgenome.org/wiki/Analysis/vcf4.0/">VCF</a> format file contains genotype information and annotations.
+        </td>
+    </tr>
+    <tr>
+        <td>-tool</td>
+        <td>a script or tool which you want to use. Make sure it is accessible by each worker nodes, eg. place it in a shared file sytem or copy it to each worker nodes. If it is a script or one executable file, add <code>-copy</code> option to copy the script or executable file to each worker nodes.</td>
+    </tr>
+            <tr>
+        <td>-toolparam</td>
+        <td>The correspond parameter for the tool you invoke.</td>
+    </tr>
+            <tr>
+        <td>-tooldepend</td>
+        <td>The dependencies for the tool you invoke.</td>
+    </tr>
+            <tr>
+        <td>-outfile</td>
+        <td>Output file directory.</td>
+    </tr>
+            <tr>
+        <td>-partition</td>
+        <td>Re-distribute input data into a number of partitions. This is useful when you want to evenly distribute your data for paralleled computation.</td>
+    </tr>
+            <tr>
+        <td>-version</td>
+        <td>Print out Sparkhit version</td>
+    </tr>
+            <tr>
+        <td>-help</td>
+        <td>Print the help information</td>
+    </tr>
+            
+</table>
+        
+        <p>
+        </p>
+        <div>
+            &#9749; &nbsp;Notes
+        </div>
+        <div-content>
+            <ol type="1">
+            <li>
+               <code>-vcf</code> is designed to read genotypes from VCF file. Genotypes are encoded to a correspond integer of a matrix: 0|0 is encoded as 0, 0|1 and 1|0 are encoded as 1; 1|1 is encoded as 2. Please see vcf file in the <code>./example</code> folder.
+            </li>
+            </ol>
+        </div-content>
+        
+<h3>
+<a id="setting-spark-sge" class="anchor" href="#setting-spark-sge" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Setup Spark cluster on SGE</h3>
+        
+        <p>
+            Submit a slave deamon to computer node of SGE using <code>qsub start-slave.sh</code>
+        </p>
+        
+<h3>
+<a id="setting-spark-ec2" class="anchor" href="#setting-spark-ec2" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Setup Spark cluster on EC2</h3>
+        <p>
+            <code>
+                $ $SPARK_HOME/ec2/spark-ec2 -m m1.xlarge -k rhinempi -i /vol/AWS/Key/rhinempi.pem -s 100 --spot-price=0.8 --instance-type=c3.8xlarge --region=eu-west-1 launch Map-All-HMP
+            </code>
+        </p>
+        <p>
+            <code>$ $SPARK_HOME/ec2/spark-ec2</code>
+        </p>
+        <pre>
+Usage: spark-ec2 [options] &lt;action> &lt;cluster_name>
+
+&lt;action> can be: launch, destroy, login, stop, start, get-master, reboot-slaves
+
+Options:
+  --version             show program's version number and exit
+  -h, --help            show this help message and exit
+  -s SLAVES, --slaves=SLAVES
+                        Number of slaves to launch (default: 1)
+  -w WAIT, --wait=WAIT  DEPRECATED (no longer necessary) - Seconds to wait for
+                        nodes to start
+  -k KEY_PAIR, --key-pair=KEY_PAIR
+                        Key pair to use on instances
+  -i IDENTITY_FILE, --identity-file=IDENTITY_FILE
+                        SSH private key file to use for logging into instances
+  -p PROFILE, --profile=PROFILE
+                        If you have multiple profiles (AWS or boto config),
+                        you can configure additional, named profiles by using
+                        this option (default: none)
+  -t INSTANCE_TYPE, --instance-type=INSTANCE_TYPE
+                        Type of instance to launch (default: m1.large).
+                        WARNING: must be 64-bit; small instances won't work
+  -m MASTER_INSTANCE_TYPE, --master-instance-type=MASTER_INSTANCE_TYPE
+                        Master instance type (leave empty for same as
+                        instance-type)
+  -r REGION, --region=REGION
+                        EC2 region used to launch instances in, or to find
+                        them in (default: us-east-1)
+  -z ZONE, --zone=ZONE  Availability zone to launch instances in, or 'all' to
+                        spread slaves across multiple (an additional $0.01/Gb
+                        for bandwidthbetween zones applies) (default: a single
+                        zone chosen at random)
+  -a AMI, --ami=AMI     Amazon Machine Image ID to use
+  -v SPARK_VERSION, --spark-version=SPARK_VERSION
+                        Version of Spark to use: 'X.Y.Z' or a specific git
+                        hash (default: 1.6.0)
+  --spark-git-repo=SPARK_GIT_REPO
+                        Github repo from which to checkout supplied commit
+                        hash (default: https://github.com/apache/spark)
+  --spark-ec2-git-repo=SPARK_EC2_GIT_REPO
+                        Github repo from which to checkout spark-ec2 (default:
+                        https://github.com/amplab/spark-ec2)
+  --spark-ec2-git-branch=SPARK_EC2_GIT_BRANCH
+                        Github repo branch of spark-ec2 to use (default:
+                        branch-1.5)
+  --deploy-root-dir=DEPLOY_ROOT_DIR
+                        A directory to copy into / on the first master. Must
+                        be absolute. Note that a trailing slash is handled as
+                        per rsync: If you omit it, the last directory of the
+                        --deploy-root-dir path will be created in / before
+                        copying its contents. If you append the trailing
+                        slash, the directory is not created and its contents
+                        are copied directly into /. (default: none).
+  --hadoop-major-version=HADOOP_MAJOR_VERSION
+                        Major version of Hadoop. Valid options are 1 (Hadoop
+                        1.0.4), 2 (CDH 4.2.0), yarn (Hadoop 2.4.0) (default:
+                        1)
+  -D [ADDRESS:]PORT     Use SSH dynamic port forwarding to create a SOCKS
+                        proxy at the given local address (for use with login)
+  --resume              Resume installation on a previously launched cluster
+                        (for debugging)
+  --ebs-vol-size=SIZE   Size (in GB) of each EBS volume.
+  --ebs-vol-type=EBS_VOL_TYPE
+                        EBS volume type (e.g. 'gp2', 'standard').
+  --ebs-vol-num=EBS_VOL_NUM
+                        Number of EBS volumes to attach to each node as
+                        /vol[x]. The volumes will be deleted when the
+                        instances terminate. Only possible on EBS-backed AMIs.
+                        EBS volumes are only attached if --ebs-vol-size > 0.
+                        Only support up to 8 EBS volumes.
+  --placement-group=PLACEMENT_GROUP
+                        Which placement group to try and launch instances
+                        into. Assumes placement group is already created.
+  --swap=SWAP           Swap space to set up per node, in MB (default: 1024)
+  --spot-price=PRICE    If specified, launch slaves as spot instances with the
+                        given maximum price (in dollars)
+  --ganglia             Setup Ganglia monitoring on cluster (default: True).
+                        NOTE: the Ganglia page will be publicly accessible
+  --no-ganglia          Disable Ganglia monitoring for the cluster
+  -u USER, --user=USER  The SSH user you want to connect as (default: root)
+  --delete-groups       When destroying a cluster, delete the security groups
+                        that were created
+  --use-existing-master
+                        Launch fresh slaves, but use an existing stopped
+                        master if possible
+  --worker-instances=WORKER_INSTANCES
+                        Number of instances per worker: variable
+                        SPARK_WORKER_INSTANCES. Not used if YARN is used as
+                        Hadoop major version (default: 1)
+  --master-opts=MASTER_OPTS
+                        Extra options to give to master through
+                        SPARK_MASTER_OPTS variable (e.g
+                        -Dspark.worker.timeout=180)
+  --user-data=USER_DATA
+                        Path to a user-data file (most AMIs interpret this as
+                        an initialization script)
+  --authorized-address=AUTHORIZED_ADDRESS
+                        Address to authorize on created security groups
+                        (default: 0.0.0.0/0)
+  --additional-security-group=ADDITIONAL_SECURITY_GROUP
+                        Additional security group to place the machines in
+  --additional-tags=ADDITIONAL_TAGS
+                        Additional tags to set on the machines; tags are
+                        comma-separated, while name and value are colon
+                        separated; ex: "Task:MySparkProject,Env:production"
+  --copy-aws-credentials
+                        Add AWS credentials to hadoop configuration to allow
+                        Spark to access S3
+  --subnet-id=SUBNET_ID
+                        VPC subnet to launch instances in
+  --vpc-id=VPC_ID       VPC to launch instances in
+  --private-ips         Use private IPs for instances rather than public if
+                        VPC/subnet requires that.
+  --instance-initiated-shutdown-behavior=INSTANCE_INITIATED_SHUTDOWN_BEHAVIOR
+                        Whether instances should terminate when shut down or
+                        just stop
+  --instance-profile-name=INSTANCE_PROFILE_NAME
+                        IAM profile name to launch instances under
+        </pre>
+        
+        
       <footer class="site-footer">
-        <span class="site-footer-owner"><a href="https://github.com/rhinempi/sparkhit">Sparkhit</a> is maintained by <a href="https://github.com/rhinempi">rhinempi</a>.</span>
+        <span class="site-footer-owner"><a href="https://github.com/rhinempi/sparkhit">Sparkhit</a> is maintained by <a href="https://github.com/rhinempi">Liren Huang</a>.</span>
 
-        <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the <a href="https://github.com/jasonlong/cayman-theme">Cayman theme</a> by <a href="https://twitter.com/jasonlong">Jason Long</a>.</span>
+        <span class="site-footer-credits">This page was generated based on a template from <a href="https://pages.github.com">GitHub Pages</a> using the <a href="https://github.com/jasonlong/cayman-theme">Cayman theme</a> by <a href="https://twitter.com/jasonlong">Jason Long</a>.</span>
       </footer>
 
     </section>
