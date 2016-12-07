@@ -64,13 +64,11 @@ function closeNav() {
 
         <p>Sparkhit uses Spark <a href="http://www.tutorialspoint.com/apache_spark/apache_spark_rdd.htm">RDD</a> (resilient distributed dataset) to distribute genomic datasets: sequenced reads, mapped hits, genotype Alleles or expression data of genes or microbiomes. These datasets are, then, processed in parallel using <a href="https://en.wikipedia.org/wiki/MapReduce">MapReduce</a> paradigm.</p>
         <p>
-        Read <a href="manual.html">more</a>
 
 <h3>
 <a id="setup-cluster" class="anchor" href="#setup-cluster" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Setup cluster</h3>
 
-        <p>A spark cluster is essential to scale-out (multiple computer nodes) sparkhit workloads. There are three tools at your disposal: Spark-ec2, BiBiGrid, EMR. Follow a <a href="manual.html">tutorial</a> to setup a small cluster on amazon cloud or local cluster.</p>
-Read <a href="manual.html">more</a>
+        <p>A spark cluster is essential to scale-out (multiple computer nodes) sparkhit workloads. There are three tools at your disposal: Spark-ec2, BiBiGrid, EMR. Follow a <a href="example.html">tutorial</a> to setup a small cluster on amazon cloud or local cluster.</p>
         
 <h3>
 <a id="use-your-tool" class="anchor" href="#use-your-tool" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Use your own tool</h3>
@@ -79,7 +77,7 @@ Read <a href="manual.html">more</a>
  <p>
             Command: <br> </p>
 <pre>
-/usr/bin/sparkhit mapper \ 
+/usr/bin/sparkhit piper \ 
   --driver-memory 4G \                                          ## Spark parameter
   --executor-memory 8G \                                        ## Spark parameter
   -input /vol/human-microbiome-project/SRSXXXXX.tar.bz2 \       # Sparkhit parameter
@@ -87,7 +85,7 @@ Read <a href="manual.html">more</a>
   -toolparam "-refrence /vol/singlecell/genome.fa" \            # Sparkhit parameter
   -output /vol/mybucket/sparkhit/result                         # Sparkhit parameter
 </pre>
-        Read <a href="manual.html">more</a>
+        Read <a href="manual.html#piper-options">more</a>
 <h3>
 <a id="support-or-contact" class="anchor" href="#support-or-contact" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Support or Contact</h3>
 
