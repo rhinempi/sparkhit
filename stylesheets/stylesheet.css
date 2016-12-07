@@ -26,6 +26,7 @@ a {
     overflow-x: hidden;
     transition: 0.5s;
     padding-top: 60px;
+    line-height: 0.8;
 }
 
 .sidenav a {
@@ -223,7 +224,7 @@ a {
 .main-content code {
   padding: 2px 4px;
   font-family: Consolas, "Liberation Mono", Menlo, Courier, monospace;
-  font-size: 0.9rem;
+  font-size: 0.8rem;
   color: #383e41;
   background-color: #f3f6fa;
   border-radius: 0.3rem; }
@@ -287,10 +288,12 @@ a {
   word-break: normal;
   word-break: keep-all; }
   .main-content table th {
-    font-weight: bold; }
+    font-weight: bold;
+    font-size: 0.9rem; }
   .main-content table th, .main-content table td {
     padding: 0.5rem 1rem;
-    border: 1px solid #e9ebec; }
+    border: 1px solid #e9ebec; 
+    font-size: 0.9rem; }
 .main-content dl {
   padding: 0; }
   .main-content dl dt {
