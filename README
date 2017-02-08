@@ -1,7 +1,7 @@
 Please visit: https://rhinempi.github.io/sparkhit/
 
 
-To start using sparkhit, change sparkhit executable authorization:
+To start using sparkhit, change sparkhit executable permission:
     $ chmod 755 ./bin/sparkhit
 
 To see options:
