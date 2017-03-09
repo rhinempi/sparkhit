@@ -23,7 +23,7 @@
  #-----------------------------------------------------------------------------
 
 name="sparkhit"
-version="0.8"
+version="1.0"   # change to 0.8 if you are using Spark version under 2.0.0
 
 readlink -f 1>/dev/null 2>/dev/null
 readlinkReturn=$?
@@ -36,10 +36,9 @@ fi
 
 if [[ $sparkhit == "." ]]; then
     sparkhit=$(pwd -P)
-    sparkhit="$sparkhit/sparkhit"
 fi
 
-SH_BIN="$(dirname $sparkhit)"
+SH_BIN=$sparkhit
 SH_HOME="$(dirname "$SH_BIN")"
 SH_LIB=${SH_LIB:-$SH_HOME/lib}
 SH_JAR=${SH_JAR:-$SH_LIB/original-$name-$version.jar}
