@@ -24,6 +24,7 @@
 
 name="sparkhit"
 version="1.0"   # change to 0.8 if you are using Spark version under 2.0.0
+spark_version="2.0.0"  # only for auto downloading Spark package
 
 readlink -f 1>/dev/null 2>/dev/null
 readlinkReturn=$?
@@ -45,9 +46,9 @@ SH_JAR=${SH_JAR:-$SH_LIB/original-$name-$version.jar}
 SH_PACKAGE=${SH_PACKAGE:-$SH_HOME/package}
 SH_SBIN=${SH_SBIN:-$SH_HOME/sbin}
 SH_OPT=""
-SH_URL="https://github.com/rhinempi/sparkhit/zipball/master"
+SH_URL="https://github.com/rhinempi/sparkhit/archive/latest.zip"
 
-SPARK_URL="http://d3kbcqa49mib13.cloudfront.net/spark-1.6.0-bin-hadoop2.6.tgz"  # 1.6.0 version
+SPARK_URL="http://d3kbcqa49mib13.cloudfront.net/spark-$spark_version-bin-hadoop2.6.tgz"  # 1.6.0 version
 SPARK_CMD=""  # in case no spark home was found, please manually paste the "spark-submit" file path
 SPARK_OPT=""
 
@@ -154,15 +155,15 @@ fi
             SPARK_CMD="$SPARK_HOME/bin/spark-submit"
         fi
     elif [ $rc == 0 ]; then
-        SPARK_CMD= "$(which spark-submit)"
+        SPARK_CMD="$(which spark-submit)"
     elif [ -x "$SPARK_CMD" ]; then
         continue
-    elif [ -x "$SH_PACKAGE/spark-1.6.0-bin-hadoop2.6/bin/spark-submit" ]; then
-            SPARK_CMD="$SH_PACKAGE/spark-1.6.0-bin-hadoop2.6/bin/spark-submit"
+    elif [ -x "$SH_PACKAGE/spark-$spark_version-bin-hadoop2.6/bin/spark-submit" ]; then
+            SPARK_CMD="$SH_PACKAGE/spark-$spark_version-bin-hadoop2.6/bin/spark-submit"
     else
-        get_spark "$SPARK_URL" "$SH_PACKAGE/spark-1.6.0-bin-hadoop2.6.tgz"
-        untar_spark "$SH_PACKAGE/spark-1.6.0-bin-hadoop2.6.tgz" "$SH_PACKAGE"
-        SPARK_CMD= "$SH_PACKAGE/spark-1.6.0-bin-hadoop2.6/bin/spark-submit"
+        get_spark "$SPARK_URL" "$SH_PACKAGE/spark-$spark_version-bin-hadoop2.6.tgz"
+        untar_spark "$SH_PACKAGE/spark-$spark_version-bin-hadoop2.6.tgz" "$SH_PACKAGE"
+        SPARK_CMD= "$SH_PACKAGE/spark-$spark_version-bin-hadoop2.6/bin/spark-submit"
     fi
 
 # Verify sparkhit jar is available
