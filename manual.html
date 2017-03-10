@@ -13,12 +13,12 @@
     <section class="page-header">
       <h1 class="project-name">Sparkhit manual</h1>
       <h2 class="project-tagline">sparkhit - a cloud ready platform for large scale genomic data analysis</h2>
-      <a href="https://rhinempi.github.io/sparkhit/" class="btn">Home page</a>
-      <a href="https://rhinempi.github.io/sparkhit/example" class="btn">Getting started</a>
-      <a href="https://rhinempi.github.io/sparkhit/manual" class="btn">User manual</a>
+      <a href="index.html" class="btn">Home page</a>
+      <a href="example.html" class="btn">Getting started</a>
+      <a href="manual.html" class="btn">User manual</a>
       <a href="mailto:huanglr@cebitec.uni-bielefeld.de" class="btn">Contact us</a>
         <br>
-      <a href="https://github.com/rhinempi/sparkhit/zipball/master" class="btn">&nbsp;Download&nbsp;</a>
+      <a href="https://github.com/rhinempi/sparkhit/archive/latest.zip" class="btn">&nbsp;Download&nbsp;</a>
       <a href="http://bibiserv.techfak.uni-bielefeld.de/" class="btn">Other resource</a>
       <a href="https://github.com/rhinempi/sparkhit" class="btn">Source code&nbsp;</a>
       <a href="https://github.com/rhinempi/sparkhit/issues" class="btn">Questions&nbsp;</a>
@@ -44,7 +44,7 @@
     <a href="#variationer-options" style="font-size:16px">Sparkhit variationer</a>
     <a href="#setting-spark-sge" style="font-size:16px">Setting Spark on SGE</a>
     <a href="#setting-spark-ec2" style="font-size:16px">Setting Spark on EC2</a>
-    <a href="#" style="font-size:16px">Helpful info</a>
+    <a href="#" style="font-size:16px">Back to top</a>
 </div>
 
 <div id="main">
@@ -1674,21 +1674,102 @@ sparkhit piper [spark parameter] [parameters] -fastq query.fq.tar.bz2 -outfile .
         
 <h3>
 <a id="setting-spark-sge" class="anchor" href="#setting-spark-sge" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Setup Spark cluster on SGE</h3>
-        
         <p>
-            Submit a slave deamon to computer node of SGE using <code>qsub start-slave.sh</code>
+            To setup a Spark cluster on SGE, we can use scripts in the <code>./sbin</code> folder.
         </p>
+        <p>
+            We first start a Spark master node at the SGE login node: <br>
+            <code>sh start-master.sh</code> <br>
+            Then, a success info will display on you screen: <br>
+        </p>
+            <pre>
+starting org.apache.spark.deploy.master.Master, logging to $SPARK_HOME/logs/spark-huanglr-org.apache.spark.deploy.master.Master-1-zorin.out</pre>
+       <p>
+           Open the log file to see master node info: <br>
+           <code>less $SPARK_HOME/logs/spark-huanglr-org.apache.spark.deploy.master.Master-1-zorin.out</code>
+        </p>
+        <pre>
+Spark Command: /usr/lib/jvm/java-1.8.0/jre//bin/java -cp $SPARK_HOME/conf/:$SPARK_HOME/jars/* -Xmx1g org.apache.spark.deploy.master.Master --host zorin --port 7077 --webui-port 8080
+========================================
+Using Spark's default log4j profile: org/apache/spark/log4j-defaults.properties
+17/03/10 13:38:36 INFO Master: Started daemon with process name: 12018@zorin
+17/03/10 13:38:36 INFO SignalUtils: Registered signal handler for TERM
+17/03/10 13:38:36 INFO SignalUtils: Registered signal handler for HUP
+17/03/10 13:38:36 INFO SignalUtils: Registered signal handler for INT
+17/03/10 13:38:37 WARN NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+17/03/10 13:38:38 INFO SecurityManager: Changing view acls to: huanglr
+17/03/10 13:38:38 INFO SecurityManager: Changing modify acls to: huanglr
+17/03/10 13:38:38 INFO SecurityManager: Changing view acls groups to: 
+17/03/10 13:38:38 INFO SecurityManager: Changing modify acls groups to: 
+17/03/10 13:38:38 INFO SecurityManager: SecurityManager: authentication disabled; ui acls disabled; users  with view permissions: Set(huanglr); groups with view permissions: Set(); users  with modify permissions: Set(huanglr); groups with modify permissions: Set()
+17/03/10 13:38:39 INFO Utils: Successfully started service 'sparkMaster' on port 7077.
+17/03/10 13:38:39 INFO Master: Starting Spark master at spark://zorin:7077
+17/03/10 13:38:39 INFO Master: Running Spark version 2.0.0
+17/03/10 13:38:40 INFO Utils: Successfully started service 'MasterUI' on port 8080.
+17/03/10 13:38:40 INFO MasterWebUI: Bound MasterWebUI to 0.0.0.0, and started at http://zorin:8080
+17/03/10 13:38:40 INFO Utils: Successfully started service on port 6066.
+17/03/10 13:38:40 INFO StandaloneRestServer: Started REST server for submitting applications on port 6066
+17/03/10 13:38:41 INFO Master: I have been elected leader! New state: ALIVE</pre>
+        <p>
+            Now, you can view your Master node WebUI via: <br>
+            <code>http://zorin:8080</code>
+        </p>
+        <p>
+            Next, we will add Worker nodes to the master node. To do that, we use the <code>start-slave.sh</code> script located at the <code>./sbin</code> folder of Spark`s distribution.<br>
+            To submit a slave deamon to computer node of SGE, we first have to write a script for SGE submission:
+        </p>
+        <pre>
+#!/bin/sh
+
+# Set SGE options:
+## run the job in the current working directory (where qsub is called)
+#$ -cwd
+## Specify an architecture
+#$ -l arch=lx24-amd64
+## Specify multislot pe
+#$ -pe multislot 48
+## Specify memory for each pe job
+#$ -l vf=2G
+
+sh $SPARK_HOME/sbin/start-slave.sh spark://zorin:7077
+
+sleep 100000000</pre>
+        <p>
+            Where <code>spark://zorin:7077</code> is to assign the Master node we launched before. The code <code>sleep 1000000</code> is to keep the deamon running on the submitted computing node of SGE.
+        </p>
+        <p>
+            Check the log file again to see worker node info: <br>
+           <code>less $SPARK_HOME/logs/spark-huanglr-org.apache.spark.deploy.master.Master-1-zorin.out</code>
+        </p>
+        <pre>
+17/03/10 13:38:40 INFO Utils: Successfully started service on port 6066.
+17/03/10 13:38:40 INFO StandaloneRestServer: Started REST server for submitting applications on port 6066
+17/03/10 13:38:41 INFO Master: I have been elected leader! New state: ALIVE
+17/03/10 14:03:58 INFO Master: Registering worker statler:45341 with 48 cores, 250.8 GB RAM</pre>
+        <p>
+            To close worker nodes, use <code>qdel</code> command to delete submitted jobs.
+        </p>
+        <div>
+            &#9749; &nbsp;Notes
+        </div>
+        <div-content>
+            <ol type="1">
+            <li>
+                To launch a group of worker nodes, use the <code>start-slaves.sh</code> script located in <code>./sbin</code> folder. Before running <code>start-slaves.sh</code> script, include all IP addresses of compute nodes to <code>./conf/slaves</code> file in <code>$SPARK_HOME</code>.
+            </li>
+            </ol>
+        </div-content>
         
 <h3>
 <a id="setting-spark-ec2" class="anchor" href="#setting-spark-ec2" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Setup Spark cluster on EC2</h3>
         <p>
-            <code>
-                $ $SPARK_HOME/ec2/spark-ec2 -m m1.xlarge -k rhinempi -i /vol/AWS/Key/rhinempi.pem -s 100 --spot-price=0.8 --instance-type=c3.8xlarge --region=eu-west-1 launch Map-All-HMP
-            </code>
+            Using Spark-ec2 to setup a Spark cluster on Amazon EC2 cloud. Detailed instructions can be found at <a href="https://github.com/amplab/spark-ec2">Spark-ec2</a>. Here we provide an example to setup a 5 nodes Spark cluster.
         </p>
         <p>
+            To view all options:
             <code>$ $SPARK_HOME/ec2/spark-ec2</code>
         </p>
+       
         <pre>
 Usage: spark-ec2 [options] &lt;action> &lt;cluster_name>
 
@@ -1809,7 +1890,75 @@ Options:
   --instance-profile-name=INSTANCE_PROFILE_NAME
                         IAM profile name to launch instances under
         </pre>
+        <p>
+            To setup a cluster, we have to define the Master node and the number of worker nodes with option <code>-m</code> and <code>-s</code>. If you want to use spot instances, set option <code>--spot-price=0.8</code>, where 0.8 is the bid price in dollar. </p>
+        <p>
+            You also have to set your correspond AWS security Key with <code>-k rhinempi</code> and <code>-i /vol/AWS/Key/rhinempi.pem</code>. Here, <i>rhinempi</i> is the name of my security Key.
+        </p> 
+        <p>
+            Also include your <code>AWS_ACCESS_KEY_ID</code> and <code>AWS_SECRET_ACCESS_KEY</code> to your ENV.<br>
+            <code>$ vi ~/.bash_profile</code>
+        </p>
+        <pre>
+# --- spark ec2 env --- #
+export AWS_ACCESS_KEY_ID="xxxxxxxxxx"
+export AWS_SECRET_ACCESS_KEY="xxxxxxxxxxx"</pre>
+        <p>
+            Update your ENV:<br>
+            <code>source ~/.bash_profile</code>
+        </p>
+        Here is an example command:
+        <p>
+            <code>
+                $ $SPARK_HOME/ec2/spark-ec2 -m m1.xlarge -k rhinempi -i /vol/AWS/Key/rhinempi.pem -s 5 --spot-price=0.8 --instance-type=c3.8xlarge --region=eu-west-1 launch Map-All-HMP
+            </code>
+        </p>
+             
+        <pre>
+Setting up security groups...
+Searching for existing cluster Map-All-HMP in region eu-west-1...
+Spark AMI: ami-1ae0166d
+Launching instances...
+Requesting 5 slaves as spot instances with price $0.800
+Waiting for spot instances to be granted...
+All 5 slaves granted
+Launched master in eu-west-1a, regid = r-0cd1d32a495250e99
+Waiting for AWS to propagate instance metadata...
+Waiting for cluster to enter 'ssh-ready' state......</pre>
+<p>
+        To terminate the cluster, use <code>destroy</code> command of Spark-ec2:
+        </p>
+        <p>
+            <code>$ $SPARK_HOME/ec2/spark-ec2 --region=eu-west-1 destroy Map-All-HMP</code>
+        </p>
+        <pre>
+Searching for existing cluster Map-All-HMP in region eu-west-1...
+Found 1 master, 5 slaves.
+The following instances will be terminated:
+> ec2-54-194-240-108.eu-west-1.compute.amazonaws.com
+> ec2-54-154-111-11.eu-west-1.compute.amazonaws.com
+> ec2-54-154-69-167.eu-west-1.compute.amazonaws.com
+> ec2-54-229-5-191.eu-west-1.compute.amazonaws.com
+> ec2-54-194-140-87.eu-west-1.compute.amazonaws.com
+> ec2-54-154-186-102.eu-west-1.compute.amazonaws.com
+ALL DATA ON ALL NODES WILL BE LOST!!
+Are you sure you want to destroy the cluster huanglrHMP? (y/N) y
+Terminating master...
+Terminating slaves...</pre>
+        <div>
+            &#9749; &nbsp;Notes
+        </div>
+        <div-content>
+            <ol type="1">
+            <li>
+                For Spark 2.0.0 version, the spark-ec2 script is not included in the package distribution. To download <code>spark-ec2</code>, use the following link <code>https://github.com/amplab/spark-ec2/archive/branch-2.0.zip</code>.
+            </li>
+            </ol>
+        </div-content>
         
+        <p>
+            <a href="./manual.html">Back to top</a>
+        </p>
         
       <footer class="site-footer">
         <span class="site-footer-owner"><a href="https://github.com/rhinempi/sparkhit">Sparkhit</a> is maintained by <a href="https://github.com/rhinempi">Liren Huang</a>.</span>

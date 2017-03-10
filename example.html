@@ -13,24 +13,24 @@
     <section class="page-header">
       <h1 class="project-name">Sparkhit examples</h1>
       <h2 class="project-tagline">sparkhit - a cloud ready platform for large scale genomic data analysis</h2>
-      <a href="https://rhinempi.github.io/sparkhit/" class="btn">Home page</a>
-      <a href="https://rhinempi.github.io/sparkhit/example" class="btn">Getting started</a>
-      <a href="https://rhinempi.github.io/sparkhit/manual" class="btn">User manual</a>
+      <a href="index.html" class="btn">Home page</a>
+      <a href="example.html" class="btn">Getting started</a>
+      <a href="manual.html" class="btn">User manual</a>
       <a href="mailto:huanglr@cebitec.uni-bielefeld.de" class="btn">Contact us</a>
         <br>
-      <a href="https://github.com/rhinempi/sparkhit/zipball/master" class="btn">&nbsp;Download&nbsp;</a>
+      <a href="https://github.com/rhinempi/sparkhit/archive/latest.zip" class="btn">&nbsp;Download&nbsp;</a>
       <a href="http://bibiserv.techfak.uni-bielefeld.de/" class="btn">Other resource</a>
       <a href="https://github.com/rhinempi/sparkhit" class="btn">Source code&nbsp;</a>
       <a href="https://github.com/rhinempi/sparkhit/issues" class="btn">Questions&nbsp;</a>
     </section>
-	  
+
 <div id="mySidenav" class="sidenav">
   <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">×</a>
   <a href="#Dependencies" style="font-size:16px">Dependencies</a>
   <a href="#Spark-installation" style="font-size:16px">Spark-installation</a>
   <a href="#Sparkhit-installation" style="font-size:16px">Sparkhit-installation</a>
   <a href="#Test-run" style="font-size:16px">Test-run</a>
-  <a href="#Where to go from here" style="font-size:16px">Where to go from here</a>
+  <a href="#Where-to-go" style="font-size:16px">Where to go from here</a>
 </div>
 
 <div id="main">
@@ -41,7 +41,7 @@
 function openNav() {
     document.getElementById("mySidenav").style.width = "250px";
     document.getElementById("main").style.marginLeft = "250px";
-    document.body.style.backgroundColor = "rgba(0,0,0,0.4)";
+    document.body.style.backgroundColor = "white";
 }
 function closeNav() {
     document.getElementById("mySidenav").style.width = "0";
@@ -182,25 +182,25 @@ export SPARK_HOME="/vol/ec2-user/spark-2.0.0-bin-hadoop2.6"</pre>
 <a id="Sparkhit-installation" class="anchor" href="#Sparkhit-installation" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Sparkhit installation</h3>
         <p>
             Download <i>Sparkhit</i> package from github zipball: <br/>
-            <code>$ wget https://github.com/rhinempi/sparkhit/zipball/master -o ./sparkhit.zip</code> <br/>
+            <code>$ wget https://github.com/rhinempi/sparkhit/archive/latest.zip -O ./sparkhit.zip</code> <br/>
             If you do not have <code>wget</code> installed: <br>
-            <code>$ curl -fsSL https://github.com/rhinempi/sparkhit/zipball/master -o ./sparkhit.zip</code> <br/>
+            <code>$ curl -fsSL https://github.com/rhinempi/sparkhit/archive/latest.zip -o ./sparkhit.zip</code> <br/>
         </p>
         <p>
             Or tarball: <br/>
-            <code>$ wget https://github.com/rhinempi/sparkhit/tarball/master -o ./sparkhit.tar</code> <br/>
+            <code>$ wget https://github.com/rhinempi/sparkhit/archive/latest.tar.gz -O ./sparkhit.tar.gz</code> <br/>
             Alternatively: <br/>
-            <code>$ curl -fsSL https://github.com/rhinempi/sparkhit/tarball/master -o ./sparkhit.tar</code> <br/>
-            Or press the download buttom on top or click <a href="https://github.com/rhinempi/sparkhit/zipball/master">Download</a>.
+            <code>$ curl -fsSL https://github.com/rhinempi/sparkhit/archive/latest.tar.gz -o ./sparkhit.tar.gz</code> <br/>
+            Or press the download buttom on top or click <a href="https://github.com/rhinempi/sparkhit/archive/latest.zip">Download</a>.
         </p>
         <p>
             Once download, unzip or untar the package: <br/>
             <code>$ unzip ./sparkhit.zip</code> <br/>
-            <code>$ tar xf ./sparkhit.tar</code> <br/>
+            <code>$ tar zxvf ./sparkhit.tar.gz</code> <br/>
         </p>
         <p>
             Go to <i>Sparkhit</i> directory, you should see an executable file <code>sparkhit</code> in <code>./bin</code> folder, set its permission to executable if it is not: <br>
-            <code>$ cd ./rhinempi-sparkhit-769845e</code> <br>
+            <code>$ cd ./sparkhit-latest</code> <br>
             <code>$ chmod 755 ./bin/sparkhit</code>
         </p>
         <p>
@@ -209,7 +209,7 @@ export SPARK_HOME="/vol/ec2-user/spark-2.0.0-bin-hadoop2.6"</pre>
         </p>
             <pre>
 sparkhit - on the cloud.
-Version: 0.8
+Version: 1.0
 
 Commands:
   mapper         Fragment recruitment
