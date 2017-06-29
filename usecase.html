@@ -79,6 +79,8 @@ function closeNav() {
     <img class="mySlides" src="images/slide5.jpg" style="width:100%">
     <img class="mySlides" src="images/slide6.jpg" style="width:100%">
     <img class="mySlides" src="images/slide7.jpg" style="width:100%">
+    <img class="mySlides" src="images/slide8.jpg" style="width:100%">
+    <img class="mySlides" src="images/slide9.jpg" style="width:100%">
 
   <button class="w3-button w3-black w3-display-left" onclick="plusDivs(-1)">&#10094;</button>
   <button class="w3-button w3-black w3-display-right" onclick="plusDivs(1)">&#10095;</button>
@@ -126,7 +128,7 @@ function showDivs(n) {
                 "/vol/spool" is a NFS volume shared between all slaves.
             </li>
             <li>
-                Change to "vol/spool/sparkhit" directory with command: <br>
+                Change to "/vol/spool/sparkhit" directory with command: <br>
                 <code>cd /vol/spool/sparkhit</code> <br>
             </li>
             <li>
@@ -245,7 +247,8 @@ lo        Link encap:Local Loopback
             Switch to /vol/spool/sparkhit/script directory with command: <br>
             <code>cd /vol/spool/sparkhit/script</code> <br>
             as working directory. You should be able to see: <br>
-            <code>cat 00.spark-shell.sh</code>
+            <code>cat 00.spark-shell.sh</code> <br>
+            This is a interactive console, please do not run it directly.
 </p>
         <pre>
 spark-shell --driver-memory 30G --executor-memory 30G --executor-cores 30
@@ -289,6 +292,9 @@ fastqRDD.saveAsTextFile("./oneFastq")
             There should be a run time difference between partitioned RDD and unpartitioned RDD
         </p>
         <a><img src="images/step2.png" style="width:60%;height:60%;"></a>
+        <p>
+            Use <code>CTRL + D</code> to quit.
+        </p>
 
 <h3>
 <a id="NGS-Sparkhit" class="anchor" href="#NGS-Sparkhit" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Processing NGS data with Sparkhit:</h3>
@@ -377,6 +383,24 @@ docker run -iv /vol/spool/sparkhit/dataset:/tmp -w /tmp --rm \
         
  <h3>
 <a id="Step-5" class="anchor" href="#Step-5" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Step 5: summarize map results from both mapping tools</h3>
+        <p>
+            Sparkhit reporter summerizes tabular files by columns, for instance: <br>
+            Use command: <code>less ./01.ear_result/part-00000</code> <br>
+            to view the mapping result.
+        </p>
+        <pre>
+@HWI-EAS324_102408434:3:100:10079:21137/2       91nt    4.26e-31        88      4       91      +       89.01   NC_000913.3     2726600 2726687
+@HWI-EAS324_102408434:3:100:10079:21137/2       91nt    2.30e-29        88      4       91      +       87.91   NC_000913.3     3424199 3424286
+@HWI-EAS324_102408434:3:100:10079:21137/2       91nt    4.26e-31        88      1       88      -       89.01   NC_000913.3     228256  228343
+@HWI-EAS324_102408434:3:100:10079:21137/2       91nt    4.26e-31        88      1       88      -       89.01   NC_000913.3     4040017 4040104
+@HWI-EAS324_102408434:3:100:10079:21137/2       91nt    4.26e-31        88      1       88      -       89.01   NC_000913.3     4171138 4171225
+@HWI-EAS324_102408434:3:100:10079:21137/2       91nt    4.26e-31        88      1       88      -       89.01   NC_000913.3     4212540 4212627
+@HWI-EAS324_102408434:3:100:10079:21137/2       91nt    2.30e-29        88      1       88      -       87.91   NC_000913.3     3946201 3946288
+@HWI-EAS324_102408434:3:100:10083:8631/2        100nt   4.08e-24        88      9       96      +       77.00   NC_000913.3     224064  224151
+@HWI-EAS324_102408434:3:100:10083:8631/2        100nt   4.08e-24        88      9       96      +       77.00   NC_000913.3     3942101 3942188
+@HWI-EAS324_102408434:3:100:10083:8631/2        100nt   4.08e-24        88      9       96      +       77.00   NC_000913.3     4035824 4035911
+@HWI-EAS324_102408434:3:100:10083:8631/2        100nt   4.08e-24        88      9       96      +       77.00   NC_000913.3     4166952 4167039
+</pre>
         <p>
             <code>cat 03.report_ear.sh</code>
         </p>
