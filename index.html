@@ -19,7 +19,7 @@
       <a href="mailto:huanglr@cebitec.uni-bielefeld.de" class="btn">Contact us</a>
         <br>
       <a href="https://github.com/rhinempi/sparkhit/archive/latest.zip" class="btn">&nbsp;Download&nbsp;</a>
-      <a href="http://bibiserv.techfak.uni-bielefeld.de/" class="btn">Other resource</a>
+      <a href="usecase.html" class="btn">Hands-on exer.</a>
       <a href="https://github.com/rhinempi/sparkhit" class="btn">Source code&nbsp;</a>
       <a href="https://github.com/rhinempi/sparkhit/issues" class="btn">Questions&nbsp;</a>
     </section>
@@ -28,10 +28,10 @@
 <div id="mySidenav" class="sidenav">
   <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">×</a>
   <a href="#welcome-to-sparkhit" style="font-size:18px">Welcome</a>
-  <a href="#use-case" style="font-size:18px">Use case</a>
   <a href="#how-it-works" style="font-size:18px">How it works</a>
   <a href="#getting-started" style="font-size:18px">Getting started</a>
   <a href="#use-your-tool"style="font-size:18px" >Use your own tool</a>
+  <a href="#parallelize-docker"style="font-size:18px" >Parallelizing Docker containers</a>
   <a href="#setup-cluster" style="font-size:18px" >Setup cluster</a>
   <a href="#support-or-contact" style="font-size:18px">Support or Contact</a>
   <a href="#acknowledgement" style="font-size:18px">Acknowledgement</a>
@@ -62,29 +62,11 @@ function closeNav() {
         <p><b>Sparkhit</b> is an open source distributed computing platform for analyzing large-scale genomic dataset. It is built on top of the <i>Apache</i> <a href="http://spark.apache.org/">Spark</a> and <a href="http://hadoop.apache.org/">Hadoop</a> framework with implementations of different bioinformatics tools and methods. Here you can parallelize your workload such as sequence mapping, genotyping, gene expressiong quantification and taxonomy profiling. You can also use your own tools without changing your code.</p>
 
 <h3>
-<a id="use-case" class="anchor" href="#use-case" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Use case</h3>
-        <p>
-            We analyzed the entire whole-genome sequencing data (8.6 TB) of <a href="http://hmpdacc.org/">Human Microbiome Project</a> on the cloud in less than 2 hours, including cluster deployment, data downloading, decompressing and analyzing (taxonomy profiling). We used <a href="https://ccb.jhu.edu/software/kraken/">Kraken</a> on Sparkhit platform that profiled the taxonomy abundance of 6 differnt body sites. Here is the result presented in <a href="https://github.com/marbl/Krona/wiki">Krona</a> plot.
-        </p>
-        <iframe
-            id="Example"
-            title="Example"
-            width=100%
-            height=600
-            frameborder="0"
-            scrolling="no"
-            marginheight="0"
-            marginwidth="0"
-            src="./bodysites.reduced.tax.html">
-        </iframe>
-        
-        View more <a href="bodysites.tax.html">results</a> .
-<h3>
 <a id="how-it-works" class="anchor" href="#how-it-works" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>How it works</h3>
 
         <p>Sparkhit uses Spark <a href="http://www.tutorialspoint.com/apache_spark/apache_spark_rdd.htm">RDD</a> (resilient distributed dataset) to distribute genomic datasets: sequenced reads, mapped hits, genotype Alleles or expression data of genes or microbes. These datasets are, then, processed in parallel with <a href="https://en.wikipedia.org/wiki/MapReduce">MapReduce</a> paradigm.</p>
         <p>
-        <img src="images/Poster-Sparkhit.jpg" style="width:100%;height:100%;">
+        <img src="images/Poster-Sparkhit.png" style="width:100%;height:100%;">
 
 <h3>
 <a id="getting-started" class="anchor" href="#getting-started" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Getting started</h3>
@@ -93,6 +75,7 @@ function closeNav() {
             Follow a <a href="example.html">tutorial</a> to run a simple <i>Sparkhit</i> application on your laptop.
         </p>
         
+
 <h3>
 <a id="use-your-tool" class="anchor" href="#use-your-tool" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Use your own tool</h3>
 
@@ -103,13 +86,32 @@ function closeNav() {
 /usr/bin/sparkhit piper \ 
   --driver-memory 4G \                                          ## Spark parameter
   --executor-memory 8G \                                        ## Spark parameter
-  -input /vol/human-microbiome-project/SRSXXXXX.tar.bz2 \       # Sparkhit parameter
+  -input "/vol/human-microbiome-project/SRS*.tar.bz2" \         # Sparkhit parameter
   -tool /vol/sparkhit-home/package/mycode/myMappingScript.sh \  # Sparkhit parameter
-  -toolparam "-refrence /vol/singlecell/genome.fa" \            # Sparkhit parameter
+  -toolparam "-reference /vol/singlecell/genome.fa" \           # Sparkhit parameter
   -output /vol/mybucket/sparkhit/result                         # Sparkhit parameter
 </pre>
         Read <a href="manual.html#piper-options">more</a>
+        
+<h3>
+<a id="parallelize-docker" class="anchor" href="#parallelize-docker" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Parallelizing Docker containers</h3>
 
+<p>Sparkhit enables user to use public biocontainers, e.g. <a href="https://www.docker.com/">Docker</a>.</p>
+ <p>
+            Command: <br> </p>
+<pre>
+/usr/bin/sparkhit piper \ 
+  --driver-memory 4G \                                       ## Spark parameter
+  --executor-memory 8G \                                     ## Spark parameter
+  -input "/vol/human-microbiome-project/SRS*.tar.bz2" \      # Sparkhit parameter
+  -tooldepand docker \                                       # Sparkhit parameter: use docker
+  -tool run \                                                # Sparkhit parameter: use docker run
+  -toolparam "-iv /sparkhitData/dataset:/tmp -w /tmp --rm \  # Sparkhit parameter: docker options
+  lh3lh3/bwa mem reference.fa /dev/stdin" \                  # Sparkhit parameter: docker image "bwa"            
+  -output /vol/mybucket/sparkhit/result                      # Sparkhit parameter
+</pre>
+        Read <a href="manual.html#piper-options">more</a>
+        
 <h3>
 <a id="setup-cluster" class="anchor" href="#setup-cluster" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Setup cluster</h3>
 
