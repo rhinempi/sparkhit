@@ -179,7 +179,8 @@ function dump_help() {
     echo "Version: $version"
     echo ""
     echo "Commands:"
-    echo "  mapper         Fragment recruitment"
+    echo "  recruiter      Fragment recruitment"
+    echo "  mapper         NGS short read mapping"
     echo "  reporter       Summarize recruitment result"
     echo "  piper          Send data to external tools, eg. bwa, bowtie2 and fr-hit"
     echo "  parallelizer   Parallel a task to each worker node"
@@ -254,7 +255,9 @@ fi
 parse_param
 
 # check command modules
-if [[ ${MODULE} == "mapper" ]]; then
+if [[ ${MODULE} == "recruiter" ]]; then
+    mainClass="uni.bielefeld.cmg.sparkhit.main.Main"
+elif [[ ${MODULE} == "mapper" ]]; then
     mainClass="uni.bielefeld.cmg.sparkhit.main.Main"
 elif [[ ${MODULE} == "piper" ]]; then
     mainClass="uni.bielefeld.cmg.sparkhit.main.MainOfPiper"
