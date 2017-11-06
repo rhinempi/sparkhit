@@ -65,7 +65,7 @@ function closeNav() {
     <section class="main-content">
 <h3>
 <a id="Abstract" class="anchor" href="#Abstract" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Abstract</h3>
-        <p>In this lecture, I will firstly give a brief introduction to the new parallel computational framework, Apache Spark, and its applications in Biology. The introduction will be mainly focused on Spark`s new data sharing primitive called Resilient Distributed Dataset (RDD) and its advantages comparing to the conventional Apache Hadoop platform. In the hands on section, we will deploy our own Spark clusters on the de.NBI cloud and analysing NGS data with Sparkhit, a bioinformatics framework built on top of Spark. The hands on practice should facilitate your understanding to the architecture and underlying mechanism of Spark.
+        <p>In this lecture, I will firstly give a brief introduction to the new parallel computational framework, Apache Spark, and its applications in Biology. The introduction will be mainly focused on Spark`s new data sharing primitive called Resilient Distributed Dataset (RDD) and its advantages compared to the conventional Apache Hadoop platform. In the hands on section, we will deploy our own Spark clusters on the de.NBI cloud and analyse NGS data using <i>Sparkhit</i>, a bioinformatics framework builds on top of the Spark platform. The hands-on practice should facilitate your understanding to the architecture and the underlying mechanism of Spark.
         </p>
 
 <h3>
@@ -113,7 +113,7 @@ function showDivs(n) {
             <li>Step 2: RDD repartitioning and distributing.</li>
             <li>Step 3: mapping metagenomic data using Sparkhit algorithm.</li>
             <li>Step 4: using Sparkhit to parallelize Docker tasks (bwa mapping).</li>
-            <li>Step 5: summarize map results from both mapping tools.</li>
+            <li>Step 5: summarize mapping results of the two mapping tools.</li>
             <li>Step 6: generate and visualize the mapping results. </li>
         </ul>
             
@@ -178,7 +178,7 @@ function showDivs(n) {
 <h3>
 <a id="Public-IP" class="anchor" href="#Public-IP" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Public Master IP</h3>
         <p>
-            Public Master node`s ip address can be used to access Spark webUI. <br>
+            The public Master node`s ip address can be used to access the Spark webUI. <br>
             Type in: <br>
             <code>host myip.opendns.com resolver1.opendns.com</code> <br>
         </p>    
@@ -198,7 +198,7 @@ Host myip.opendns.com not found: 3(NXDOMAIN)
         </p> 
         <a><img src="images/publicip.png" style="width:359px;height:300px;"></a>
         <p>
-            Use master ip to browse Spark webUI to monitor the cluster and submitted jobs: <br>
+            Use the master ip to browse the Spark webUI to monitor the cluster and submitted jobs: <br>
             <code>http://134.176.27.181/spark/</code>
         </p>
 <a><img src="images/sparkui.png"></a>
@@ -246,9 +246,9 @@ lo        Link encap:Local Loopback
         <p>
             Switch to /vol/spool/sparkhit/script directory with command: <br>
             <code>cd /vol/spool/sparkhit/script</code> <br>
-            as working directory. You should be able to see: <br>
+            as working directory. You should be able to see a script <code>00.spark-shell.sh</code>. Print the script by: <br>
             <code>cat 00.spark-shell.sh</code> <br>
-            This is a interactive console, please do not run it directly.
+            These are interactive console commands, please do not run them directly.
 </p>
         <pre>
 spark-shell --driver-memory 30G --executor-memory 30G --executor-cores 30
@@ -266,14 +266,14 @@ val a = fastqRDD.count()
 val a = fastqRDD.count()
 </pre>
         <p>
-            There should be a run time difference between cache RDD and uncache RDD
+            There should be a run time difference between the cache RDD and the uncache RDD
         </p>
         <a><img src="images/step1.png" style="width:60%;height:60%;"></a>
         
         <h3>
 <a id="Step-2" class="anchor" href="#Step-2" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Step 2: RDD repartitioning and distributing</h3>
         <p>
-            Lets say you wanna write a program that counts all lines with more than 4 "N" in the <bold>fastq</bold> file. <br>
+            Lets say you wanna write a program that counts all the lines with more than 4 "N" in the <bold>fastq</bold> file. <br>
             <code>cat 00.spark-shell.sh</code>
         </p>
         <pre>
@@ -289,7 +289,7 @@ reparRDD.saveAsTextFile("./repartitionFastq")
 fastqRDD.saveAsTextFile("./oneFastq")
 </pre>
         <p>
-            There should be a run time difference between partitioned RDD and unpartitioned RDD
+            There should be a run time difference between the partitioned RDD and the unpartitioned RDD
         </p>
         <a><img src="images/step2.png" style="width:60%;height:60%;"></a>
         <p>
@@ -317,7 +317,7 @@ fastqRDD.saveAsTextFile("./oneFastq")
        <a><img src="images/step3.png" style="width:60%;height:60%;"></a>
 
         <h3>
-<a id="Step-4" class="anchor" href="#Step-4" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Step 4: using Sparkhit to parallelize Docker tasks (bwa mapping)</h3>
+<a id="Step-4" class="anchor" href="#Step-4" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Step 4: using Sparkhit to parallelize Docker tasks (e.g. bwa)</h3>
         <p>
             
             <code>docker run lh3lh3/bwa</code>
@@ -382,7 +382,7 @@ docker run -iv /vol/spool/sparkhit/dataset:/tmp -w /tmp --rm \
        <a><img src="images/step4.png" style="width:60%;height:60%;"></a>
         
  <h3>
-<a id="Step-5" class="anchor" href="#Step-5" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Step 5: summarize map results from both mapping tools</h3>
+<a id="Step-5" class="anchor" href="#Step-5" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Step 5: summarize mapping results of the two mapping tools</h3>
         <p>
             Sparkhit reporter summerizes tabular files by columns, for instance: <br>
             Use command: <code>less ./01.ear_result/part-00000</code> <br>
@@ -438,9 +438,9 @@ cp HMP.krona.html /vol/spool/www/index.html
 </pre>
         <p>
             After generating the Krona plot, go to http://134.176.27.181/result/ to see the results. <br>
-            Careful! Achtung! 注意! pay attention: &uarr;&uarr;&uarr; this is my ip &uarr;&uarr;&uarr; .
+            Remember to change the IP address to your own IP.
         </p>
-        <p>Ear sample should have more reads than Stool sample, as Sparkhit mapper is more sensitive.</p>
+        <p>Ear sample should have more reads than the Stool sample, as Sparkhit recruiter is more sensitive.</p>
 
 <!--
 <h3>

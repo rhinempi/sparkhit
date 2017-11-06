@@ -12,7 +12,7 @@
   <body>
     <section class="page-header">
       <h1 class="project-name">Sparkhit manual</h1>
-      <h2 class="project-tagline">Sparkhit - a cloud ready platform for large scale genomic data analyses</h2>
+      <h2 class="project-tagline">Sparkhit - a cloud ready platform for large scale genomic data analysis</h2>
       <a href="index.html" class="btn">Home page</a>
       <a href="example.html" class="btn">Getting started</a>
       <a href="manual.html" class="btn">User manual</a>
@@ -76,7 +76,7 @@ function closeNav() {
             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>spark-submit</b> + <b>[spark-options]</b> +  <b>Sparkhit.jar</b> + <b>[sparkhit-options]</b>. <br>
             <i>Sparkhit</i> executable file wraps the command and simplifies as <br>
             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>sparkhit</b> + <b>[command]</b> + <b>[Spark options]</b> + <b>[Sparkhit options]</b> <br>
-            where [command] specifies a particular application (tool) or functional module. [Spark options] are parameters for <i>Spark</i> framework, eg. to configure the <i>Spark</i> cluster. [Sparkhit options] are parameters for the <i>Sparkhit</i> applications.
+            where [command] specifies a particular application (tool) or a functional module. [Spark options] are parameters for the <i>Spark</i> framework, eg. to configure the <i>Spark</i> cluster. [Sparkhit options] are parameters for the <i>Sparkhit</i> applications.
         </p>
         <p>
             The examples below compare the two types of input commands:
@@ -283,7 +283,7 @@ For detailed cluster submission, please refer to scripts located in:
 
         <p>Spark options are the options for the <i>Apache Spark</i> framework. You can find detailed explanations of all options at the <i>Spark</i> <a href="http://spark.apache.org/docs/latest/configuration.html">configuration page</a>. </p>
         <p>
-            <i>Sparkhit</i> identifies these options through parameters start with two dashes <code>--</code>, just like the options used in <i>Spark</i>. <i>Sparkhit</i> also provide three additional input options for assigning <i>Spark</i> options. See the table below:
+            <i>Sparkhit</i> identifies these options through parameters starting with two dashes <code>--</code>, just like the options used in <i>Spark</i>. <i>Sparkhit</i> also provide three additional input options for assigning <i>Spark</i> options. See the table below:
         </p>
 
         <table>
@@ -789,7 +789,7 @@ sparkhit reporter [spark parameter] [parameters] -input ./sparkhit.out -outfile 
         <h3>
 <a id="piper-options" class="anchor" href="#piper-options" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Sparkhit piper options</h3>
         <p>
-            <i>Sparkhit piper</i> is a functional module for invoking and parallelizing external tools and scripts at the "Map" step. The "Map" step in MapReduce is usually an independent process. This process can also be carried out by an external tool. As for <i>Sparkhit</i>, it loads sequencing data to a <a href="http://www.tutorialspoint.com/apache_spark/apache_spark_rdd.htm">RDD</a> and sends the RDD data to the external tool via STDIN. Invoked tool processes the input data as programmed and sends the result back to STDOUT (a new RDD).
+            <i>Sparkhit piper</i> is a functional module for invoking and parallelizing external tools and scripts at the "Map" step. The "Map" step in MapReduce is usually an independent process. This process can also be carried out by an external tool. As for <i>Sparkhit</i>, it loads sequencing data to an <a href="http://www.tutorialspoint.com/apache_spark/apache_spark_rdd.htm">RDD</a> and sends the RDD data to the external tool via STDIN. Invoked tool processes the input data as programmed and sends the result back to STDOUT (a new RDD).
         </p>
         <p>
             The command line of <i>Sparkhit piper</i> consists of seven parts: <code>sparkhit piper --spark-param [input data] [external tool dependencies][external tool path] [external tool options] [output]</code>. Here in the command line, [external tool dependencies], [external tools path] and [external tool options] are combined into one command that will be executed in the worker nodes independently, eg. : <br>
@@ -1861,7 +1861,7 @@ sparkhit piper [spark parameter] [parameters] -fastq query.fq.tar.bz2 -outfile .
         </div-content>
         
 <h3>
-<a id="setting-spark-sge" class="anchor" href="#setting-spark-sge" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Setup a Spark cluster on Sun grid engine (SGE)</h3>
+<a id="setting-spark-sge" class="anchor" href="#setting-spark-sge" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Setup a Spark cluster on Sun Grid Engine (SGE)</h3>
         <p>
             To setup a Spark cluster on SGE, we can use scripts located in the <code>./sbin</code> folder where <i>Spark</i> is installed.
         </p>
@@ -1923,7 +1923,7 @@ sh $SPARK_HOME/sbin/start-slave.sh spark://zorin:7077
 
 sleep 100000000</pre>
         <p>
-            Where <code>spark://zorin:7077</code> is to connect this worker node to the master node we launched before. The code <code>sleep 1000000</code> is to keep the deamon running on the submitted SGE compute node.
+            Where <code>spark://zorin:7077</code> is used for assigning this worker node to the master node we launched before. The code <code>sleep 1000000</code> is to keep the deamon running on the submitted SGE compute node.
         </p>
         <p>
             Check the log file again to see if the worker node connection is successful: <br>
@@ -1951,7 +1951,7 @@ sleep 100000000</pre>
 <h3>
 <a id="setting-spark-ec2" class="anchor" href="#setting-spark-ec2" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Setup a Spark cluster on the AWS EC2 cloud</h3>
         <p>
-            Use Spark-ec2 to setup a Spark cluster on the Amazon EC2 cloud. Detailed instructions can be found at <a href="https://github.com/amplab/spark-ec2">Spark-ec2</a>. Here, we provide an example to setup a 5-node Spark cluster.
+            We use Spark-ec2 to setup a Spark cluster on the Amazon EC2 cloud. Detailed instructions can be found at <a href="https://github.com/amplab/spark-ec2">Spark-ec2</a>. Here, we provide an example to setup a 5-node Spark cluster.
         </p>
         <p>
             To view all options: <br>
