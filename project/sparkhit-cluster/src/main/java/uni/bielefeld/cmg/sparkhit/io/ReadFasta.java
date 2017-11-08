@@ -25,11 +25,24 @@ import java.io.*;
  * You should have received a copy of the GNU General Public License along
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+
+/**
+ * Returns an object for buffering input fasta files. This class is
+ * used for loading reference genomes located in local file system.
+ *
+ * @author  Liren Huang
+ * @version %I%, %G%
+ * @see
+ */
 public class ReadFasta implements InputFileManager {
     private InfoDumper info = new InfoDumper();
 
     public BufferedReader fasta;
 
+    /**
+     * A constructor that construct an object of {@link ReadFasta} class.
+     * No constructor option needed.
+     */
     public ReadFasta(){
         /**
          *
@@ -37,9 +50,9 @@ public class ReadFasta implements InputFileManager {
     }
 
     /**
+     * This method sets up an input file stream for an input fasta file.
      *
-     * @param inputFastaString
-     * @return
+     * @param inputFastaString full path of an input fasta file.
      */
     public void createInputFastaStream(String inputFastaString){
         try{
@@ -53,8 +66,10 @@ public class ReadFasta implements InputFileManager {
     }
 
     /**
+     * This method checks the path of an input fasta file. It classifies the
+     * location (via URL) of an input file.
      *
-     * @param cFile
+     * @param cFile the full path of an input fasta file.
      */
     public void checkFile(String cFile){
         File cFilePath = new File(cFile);
@@ -95,16 +110,18 @@ public class ReadFasta implements InputFileManager {
     }
 
     /**
+     * This method sets the BufferedReader.
      *
-     * @return
+     * @return Java {@link BufferedReader}.
      */
     public BufferedReader getFastaBufferedReader(){
         return this.fasta;
     }
 
     /**
+     * This method sets up an input fasta file stream based on an input file path.
      *
-     * @param inputFile is the input text file in String
+     * @param inputFile the full path of an input file.
      */
     public void bufferInputFile(String inputFile) {
         checkFile(inputFile);
@@ -112,8 +129,9 @@ public class ReadFasta implements InputFileManager {
     }
 
     /**
+     * This method sets the full path of an output file.
      *
-     * @param outputFile
+     * @param outputFile the full path of an output file.
      */
     public void bufferOutputFile(String outputFile){
         /**

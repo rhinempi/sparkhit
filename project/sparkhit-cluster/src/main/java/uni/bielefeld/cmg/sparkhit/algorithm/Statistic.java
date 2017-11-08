@@ -21,6 +21,16 @@ package uni.bielefeld.cmg.sparkhit.algorithm;
  * You should have received a copy of the GNU General Public License along
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+
+/**
+ * Returns an object that can then be used for varies statistic tests.
+ * This class can also be used as static methods, without building
+ * an instance for each operations.
+ *
+ * @author  Liren Huang
+ * @version %I%, %G%
+ * @see
+ */
 public class Statistic implements ShAlgorithm{
     public Statistic(){
         /**
@@ -28,6 +38,15 @@ public class Statistic implements ShAlgorithm{
          */
     }
 
+    /**
+     * This method can be used to calculate the expected frequencies of each genotype
+     * based on Hardy–Weinberg principle
+     *
+     * @param obs_hets observed value for heterozygous genotype.
+     * @param obs_hom1 observed value for Homozygous Dominant genotype.
+     * @param obs_hom2 observed value for Homozygous Recessive genotype.
+     * @return a string: consists of frequencies of three genotypes.
+     */
     public static String calculateHWEP(int obs_hets, int obs_hom1, int obs_hom2) {
         int total = 2*obs_hets + 2*obs_hom1 + 2*obs_hom2;
         int A = obs_hom1*2+obs_hets;
@@ -40,6 +59,14 @@ public class Statistic implements ShAlgorithm{
         return AFreq*AFreq*total + "\t" + 2*AFreq*aFreq*total + "\t" + aFreq*aFreq*total;
     }
 
+    /**
+     * deprecated
+     *
+     * @param obs_hets
+     * @param obs_hom1
+     * @param obs_hom2
+     * @return
+     */
     public static double calculateExactHWEPValue(int obs_hets, int obs_hom1, int obs_hom2) {
         //System.out.println("Starting exact HWE:\t" + obs_hets + "\t" + obs_hom1 + "\t" + obs_hom2);
 

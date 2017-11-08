@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>cmg</groupId>
   <artifactId>sparkhit</artifactId>
-  <version>0.8</version>
+  <version>1.0</version>
   <build>
     <plugins>
       <plugin>
@@ -34,6 +34,13 @@
             </configuration>
           </execution>
         </executions>
+      </plugin>
+      <plugin>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <source>1.6</source>
+          <target>1.6</target>
+        </configuration>
       </plugin>
     </plugins>
   </build>

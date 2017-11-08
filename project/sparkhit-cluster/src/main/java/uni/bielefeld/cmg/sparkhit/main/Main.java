@@ -33,11 +33,28 @@ import java.io.IOException;
  */
 
 
+/**
+ * Main Java method specified in the Manifest file for runnning
+ * Sparkhit-recruiter. It can also be specified at the input options
+ * of Spark cluster mode during submission.
+ *
+ * @author  Liren Huang
+ * @version %I%, %G%
+ * @see
+ */
+
 public class Main {
 
+    /**
+     * Main Java method specified in the Manifest file for Sparkhit-recruiter.
+     * This is the main Java method that starts the program and receives input
+     * arguments.
+     *
+     * @param args  a space separated command line arguments.
+     */
     public static void main(String[] args){
         InfoDumper info = new InfoDumper();
-        info.readParagraphedMessages("SparkHit main initiating ... \ninterpreting parameters.");
+        info.readParagraphedMessages("SparkHit recruiter initiating ... \ninterpreting parameters.");
         info.screenDump();
 
         Parameter parameter = null;

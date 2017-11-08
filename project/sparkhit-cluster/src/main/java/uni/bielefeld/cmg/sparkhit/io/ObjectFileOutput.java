@@ -25,6 +25,16 @@ import java.io.*;
  * You should have received a copy of the GNU General Public License along
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+
+/**
+ * Returns an object for buffering output object files. This class is
+ * used in local mode only. For cluster mode, Spark "textFile" function
+ * is used to access input Fastq file.
+ *
+ * @author  Liren Huang
+ * @version %I%, %G%
+ * @see
+ */
 public class ObjectFileOutput implements OutputFileManager {
     private String path;
     private File outputPath;
@@ -32,10 +42,20 @@ public class ObjectFileOutput implements OutputFileManager {
     public ObjectOutputStream outputObjectStream;
     private InfoDumper info = new InfoDumper();
 
+    /**
+     * This method sets FileOutputStream.
+     *
+     * @return Java {@link FileOutputStream}.
+     */
     public FileOutputStream getFileOutputStream(){
         return outputFileStream;
     }
 
+    /**
+     * This method sets ObjectOutputStream.
+     *
+     * @return Java {@link ObjectOutputStream}.
+     */
     public ObjectOutputStream getObjectOutputStream(){
         return outputObjectStream;
     }
@@ -62,6 +82,12 @@ public class ObjectFileOutput implements OutputFileManager {
         this.outputPath = new File(path);
     }
 
+    /**
+     * This method sets up an output file stream based on an output file path.
+     *
+     * @param outputFile the full path of an output file.
+     * @param overwrite whether to overwrite the existing output file or not.
+     */
     public void setOutput(String outputFile, boolean overwrite){
         this.path = outputFile;
         setOutputFile();
@@ -69,10 +95,21 @@ public class ObjectFileOutput implements OutputFileManager {
         setObjectOutputStream();
     }
 
+
+    /**
+     * This method set the full path of an output file.
+     *
+     * @param outputFile the full path of an output file.
+     */
     public void bufferOutputFile(String outputFile){
         this.path = outputFile;
     }
 
+    /**
+     * This method sets the full path of an input file.
+     *
+     * @param inputFile the full path of an input file.
+     */
     public void bufferInputFile(String inputFile){
 
     }

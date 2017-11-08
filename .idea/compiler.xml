@@ -22,16 +22,22 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <processorPath useClasspath="true" />
-        <module name="spark-hit" />
         <module name="sparkhit (1)" />
         <module name="sparkhit-hadoopDecompresser" />
         <module name="sparkhit-hadoopDecompressor" />
         <module name="Sparkhit-local" />
         <module name="sparkhit-local" />
       </profile>
+      <profile default="false" name="Annotation profile for spark-hit" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="true" />
+        <module name="spark-hit" />
+      </profile>
     </annotationProcessing>
     <bytecodeTargetLevel target="1.7">
-      <module name="spark-hit" target="1.5" />
+      <module name="spark-hit" target="1.6" />
       <module name="sparkhit" target="1.5" />
       <module name="sparkhit (1)" target="1.5" />
       <module name="sparkhit-hadoopDecompresser" target="1.5" />

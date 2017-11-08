@@ -34,7 +34,15 @@ import java.io.IOException;
  * with this program. If not, see <http://www.gnu.org/licenses>.
  */
 
-
+/**
+ * Returns an object for managing one thread of the pipeline. This class is
+ * used in local mode only. For cluster mode, Spark RDD is used to
+ * parallelize the tasks.
+ *
+ * @author  Liren Huang
+ * @version %I%, %G%
+ * @see
+ */
 public class OnePipe implements Pipeline,Runnable {
     public DefaultParam param;
     public BufferedReader inputBufferedReader;
@@ -51,12 +59,17 @@ public class OnePipe implements Pipeline,Runnable {
 
     public readInfo read;
 
+    /**
+     * A constructor that construct an object of {@link OnePipe} class.
+     *
+     * @param threadName the index of this thread.
+     */
     public OnePipe(String threadName){
         this.threadName = threadName;
     }
 
     /**
-     * the pipeline start calls the thread start() function
+     * the pipeline starts by calling the thread start() function
      */
     public void start(){
         info.readMessage("Start new thread " + threadName);
@@ -67,6 +80,9 @@ public class OnePipe implements Pipeline,Runnable {
         }
     }
 
+    /**
+     * wait util all threads finish.
+     */
     public void join(){
         if (oneThread != null){
             while(oneThread.isAlive()){
@@ -82,6 +98,9 @@ public class OnePipe implements Pipeline,Runnable {
         info.screenDump();
     }
 
+    /**
+     * This method runs the fragment recruitment pipeline within this thread.
+     */
     public void run(){
         try {
             BatchAlignPipe batchPipeline = new BatchAlignPipe();
@@ -98,26 +117,56 @@ public class OnePipe implements Pipeline,Runnable {
 
     }
 
+    /**
+     * This method sets the buffer for loading fastq units.
+     *
+     * @param inputBufferedFastqUnit
+     */
     public void setInputFastqUnitBuffer(FastqUnitBuffer inputBufferedFastqUnit){
         this.inputBufferedFastqUnit = inputBufferedFastqUnit;
     }
 
+    /**
+     * This method sets the scoring matrix for sequence alignment.
+     *
+     * @param matrix {@link ScoreMatrix}.
+     */
     public void setMatrix(ScoreMatrix matrix){
         this.matrix = matrix;
     }
 
+    /**
+     * This method sets the reference index.
+     *
+     * @param ref {@link RefStructBuilder} the reference index.
+     */
     public void setStruct(RefStructBuilder ref){
         this.ref = ref;
     }
 
+    /**
+     * This method sets the input parameters.
+     *
+     * @param param {@link DefaultParam} is the object for command line parameters.
+     */
     public void setParameter(DefaultParam param){
         this.param = param;
     }
 
+    /**
+     * This method sets the buffer for loading input data.
+     *
+     * @param InputRead a {@link BufferedReader} to read input data.
+     */
     public void setInput(BufferedReader InputRead){
         this.inputBufferedReader = InputRead;
     }
 
+    /**
+     * This method sets the buffer for writing output data.
+     *
+     * @param OutputWrite a {@link BufferedWriter} to write to an output file.
+     */
     public void setOutput(BufferedWriter OutputWrite){
         this.outputBufferedWriter = OutputWrite;
     }

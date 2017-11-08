@@ -27,11 +27,20 @@ import java.util.Date;
  * You should have received a copy of the GNU General Public License along
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+
+/**
+ * Returns an object for logging messages in a structured format.
+ *
+ * @author  Liren Huang
+ * @version %I%, %G%
+ * @see
+ */
 public class InfoLogger implements InfoManager {
     private String message;
     private File outputPath;
 
     /**
+     *
      *
      * @param timeFormat
      * @return
@@ -44,9 +53,10 @@ public class InfoLogger implements InfoManager {
     }
 
     /**
+     * This method formats the message by including the time information.
      *
-     * @param timeFormat
-     * @return
+     * @param timeFormat the raw system time format.
+     * @return the formatted time
      */
     private String headerTime(String timeFormat){
         SimpleDateFormat hourMinuteSecond = new SimpleDateFormat(timeFormat);
@@ -55,9 +65,10 @@ public class InfoLogger implements InfoManager {
     }
 
     /**
+     * This method formats the message by including the time header.
      *
-     * @param m
-     * @return
+     * @param m the raw message.
+     * @return the formated message.
      */
     private String completeMessage(String m){
         String mHeader = headerMessage("HH:mm:ss");
@@ -66,8 +77,9 @@ public class InfoLogger implements InfoManager {
     }
 
     /**
+     * This method writes the structured message to a log file.
      *
-     * @param logFileWriter
+     * @param logFileWriter a {@link BufferedWriter} of a log file.
      */
     private void logFileWrite(BufferedWriter logFileWriter){
         try {
@@ -80,9 +92,10 @@ public class InfoLogger implements InfoManager {
     }
 
     /**
+     * This method parses the output path and sets a BufferedWriter for the output
      *
-     * @param path
-     * @param overwrite
+     * @param path the full path of an output file.
+     * @param overwrite whether to overwrite existing file or not.
      * @return
      */
     public BufferedWriter setOutput(String path, boolean overwrite){
@@ -93,23 +106,25 @@ public class InfoLogger implements InfoManager {
     }
 
     /**
-     *
+     * This method prints the structured message to the screen.
      */
     public void screenDump (){
         System.out.println(message);
     }
 
     /**
+     * This method records a specified message.
      *
-     * @param m
+     * @param m the message that is going to be processed.
      */
     public void readMessage (String m){
         this.message = completeMessage(m);
     }
 
     /**
+     * This method records an IOException message.
      *
-     * @param e
+     * @param e the IOException message that is going to be processed.
      */
     public void readIOException (IOException e){
         String m = e.getMessage();
@@ -117,8 +132,9 @@ public class InfoLogger implements InfoManager {
     }
 
     /**
+     * This method records a FileNotFoundException message.
      *
-     * @param e
+     * @param e the FileNotFoundException message that is going to be processed.
      */
     public void readFileNotFoundException (FileNotFoundException e){
         String m = e.getMessage();
@@ -126,8 +142,9 @@ public class InfoLogger implements InfoManager {
     }
 
     /**
+     * This method records a ClassNotFoundException message.
      *
-     * @param e
+     * @param e the ClassNotFoundException message that is going to be processed.
      */
     public void readClassNotFoundException (ClassNotFoundException e){
         String m = e.getMessage();

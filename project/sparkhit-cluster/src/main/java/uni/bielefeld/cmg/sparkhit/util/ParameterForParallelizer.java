@@ -29,10 +29,24 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Returns an object for parsing the input options for Sparkhit-parallelizer.
+ *
+ * @author  Liren Huang
+ * @version %I%, %G%
+ * @see
+ */
 public class ParameterForParallelizer {
     private String[] arguments;
     private InfoDumper info = new InfoDumper();
 
+    /**
+     * A constructor that construct an object of {@link Parameter} class.
+     *
+     * @param arguments an array of strings containing commandline options
+     * @throws IOException
+     * @throws ParseException
+     */
     public ParameterForParallelizer(String[] arguments) throws IOException, ParseException {
         this.arguments = arguments;
     }
@@ -55,7 +69,9 @@ public class ParameterForParallelizer {
 
     private static final Map<String, Integer> parameterMap = new HashMap<String, Integer>();
 
-
+    /**
+     * This method places all input parameters into a hashMap.
+     */
     public void putParameterID(){
         int o =0;
 
@@ -70,6 +86,9 @@ public class ParameterForParallelizer {
         parameterMap.put(HELP2, o++);
     }
 
+    /**
+     * This method adds descriptions to each parameter.
+     */
     public void addParameterInfo(){
 
 
@@ -114,6 +133,13 @@ public class ParameterForParallelizer {
     }
 
     /* main method */
+
+    /**
+     * This method parses input commandline arguments and sets correspond
+     * parameters.
+     *
+     * @return {@link DefaultParam}.
+     */
     public DefaultParam importCommandLine() {
 
         /* Assigning Parameter ID to an ascending number */
@@ -136,12 +162,12 @@ public class ParameterForParallelizer {
 			/* Set Object cl of CommandLine class for Parameter storage */
             CommandLine cl = parser.parse(parameter, arguments, true);
             if (cl.hasOption(HELP)) {
-                help.printScriptPiperHelp();
+                help.printParallelizerHelp();
                 System.exit(0);
             }
 
             if (cl.hasOption(HELP2)){
-                help.printScriptPiperHelp();
+                help.printParallelizerHelp();
                 System.exit(0);
             }
 
@@ -160,7 +186,7 @@ public class ParameterForParallelizer {
             if ((value = cl.getOptionValue(INPUT_NODES)) != null) {
                 param.inputNodes = Integer.decode(value);
             }else {
-                help.printScriptPiperHelp();
+                help.printParallelizerHelp();
                 System.exit(0);
 //                throw new IOException("Input file not specified.\nUse -help for list of options");
             }

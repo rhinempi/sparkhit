@@ -23,6 +23,14 @@ import java.io.Serializable;
  * You should have received a copy of the GNU General Public License along
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+
+/**
+ * A data structure class that stores all parameters for a Q-gram.
+ *
+ * @author  Liren Huang
+ * @version %I%, %G%
+ * @see
+ */
 public class Qgram implements Serializable {
     public int chr = 0;
     public int begin =0;
@@ -31,6 +39,9 @@ public class Qgram implements Serializable {
     public int bandLeft = 0;
     public int bandRight = 0;
 
+    /**
+     * A constructor that construct an object of {@link Qgram} class.
+     */
     public Qgram(){
         /**
          * a data structure storing q-Gram info

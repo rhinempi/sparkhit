@@ -24,7 +24,13 @@ package uni.bielefeld.cmg.sparkhit.reference;
  *
  */
 
-
+/**
+ * This is an interface for the input and output of reference genomes.
+ *
+ * @author  Liren Huang
+ * @version %I%, %G%
+ * @see
+ */
 public interface RefIOManager {
     /**
      * Use "io" package, ReadFasta class instead

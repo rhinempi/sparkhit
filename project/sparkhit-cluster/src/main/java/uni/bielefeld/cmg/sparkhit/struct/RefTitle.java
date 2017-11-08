@@ -23,10 +23,21 @@ import java.io.Serializable;
  * You should have received a copy of the GNU General Public License along
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+
+/**
+ * A data structure class that stores all names of reference contigs (scaffolds or chromosomes).
+ *
+ * @author  Liren Huang
+ * @version %I%, %G%
+ * @see
+ */
 public class RefTitle implements Serializable {
     public String name;
     public int size;
 
+    /**
+     *  A constructor that construct an object of {@link RefTitle} class.
+     */
     public RefTitle(){
         /**
          * a data structure storing name info

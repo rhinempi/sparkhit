@@ -23,20 +23,41 @@ import java.io.Serializable;
  * You should have received a copy of the GNU General Public License along
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+
+/**
+ * A data structure class that stores all parameters for a reference genome.
+ *
+ * @author  Liren Huang
+ * @version %I%, %G%
+ * @see
+ */
 public class RefInfo implements Serializable {
     public String refName;
     public long refSize;
 
+    /**
+     * A constructor that construct an object of {@link RefInfo} class.
+     */
     public RefInfo(){
         /**
          * a data structure storing reference length
          */
     }
 
+    /**
+     * This method sets the id of a reference genome.
+     *
+     * @param n the id of a reference genome (contig).
+     */
     public void name (String n){
         this.refName = n;
     }
 
+    /**
+     * This method sets the size of a reference genome.
+     *
+     * @param s the size of a reference genome.
+     */
     public void size (long s){
         this.refSize = s;
     }

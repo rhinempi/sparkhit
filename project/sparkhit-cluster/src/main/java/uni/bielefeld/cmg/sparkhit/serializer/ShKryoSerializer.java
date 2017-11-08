@@ -21,19 +21,47 @@ package uni.bielefeld.cmg.sparkhit.serializer;
  * You should have received a copy of the GNU General Public License along
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+
+/**
+ * This is an interface for kryo serializers.
+ *
+ * @author  Liren Huang
+ * @version %I%, %G%
+ * @see
+ */
 public interface ShKryoSerializer extends ShSerializer {
 
     /**
-     * serialize objects with java default serializer
+     * This is an abstract method for default Java serialization.
      *
-     * @param object
-     * @param outFile
+     * @param object the object to be serialized.
+     * @param outFile the output file that stores serialized data.
      */
     void javaSerialization(Object object, String outFile);
 
+    /**
+     * This is an abstract method for default Java de-serialization.
+     *
+     * @param inFile the full path of the pre-serialized object file.
+     * @return
+     */
     Object javaDeSerialization(String inFile);
 
+    /**
+     * This is an abstract method for kryo serialization.
+     *
+     * @param object the object to be serialized.
+     * @param outFile the output file that stores serialized data.
+     * @param registerId an register id for kryo serializer.
+     */
     void kryoSerialization(Object object, String outFile, int registerId);
 
+    /**
+     * This is an abstract method for kryo de-serialization.
+     *
+     * @param myClass the class name that is used for de-serialization.
+     * @param inFile the full path of the pre-serialized object file.
+     * @return
+     */
     Object kryoDeSerialization(Class myClass, String inFile);
 }

@@ -23,6 +23,15 @@ import java.io.Serializable;
  * You should have received a copy of the GNU General Public License along
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+
+/**
+ * Returns an instance of data structure class that stores scoring matrix
+ * for sequence alignment.
+ *
+ * @author  Liren Huang
+ * @version %I%, %G%
+ * @see
+ */
 public class ScoreMatrix implements Serializable, ShMatrix {
 
     final int maxGapNum = 4096;
@@ -37,6 +46,10 @@ public class ScoreMatrix implements Serializable, ShMatrix {
         //  A  C  G  T  U  N
     };
 
+    /**
+     * A constructor that construct an object of {@link ScoreMatrix} class.
+     * No constructor option needed.
+     */
     public ScoreMatrix(){
         initiateMatrix(-6, -1); // not make them program parameters for the moment
     }
@@ -44,6 +57,13 @@ public class ScoreMatrix implements Serializable, ShMatrix {
     public int[] gapArray = new int[maxGapNum];
     public int[][] matrix = new int[maxNtTypes][maxNtTypes];
 
+    /**
+     * This method initiates the scoring matrix based on the gap penalty
+     * and gap extension penalty.
+     *
+     * @param gap the penalty score for the first nucleotide in a gap.
+     * @param extendGap the penalty score for extra nucleotides in the gap.
+     */
     public void initiateMatrix(int gap, int extendGap){
         for(int i = 0; i<maxGapNum; i++){
             gapArray[i] = gap + i*extendGap;

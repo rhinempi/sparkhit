@@ -21,6 +21,14 @@ package uni.bielefeld.cmg.sparkhit.matrix;
  * You should have received a copy of the GNU General Public License along
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+
+/**
+ * This is an interface for different matrix used in sequence alignment.
+ *
+ * @author  Liren Huang
+ * @version %I%, %G%
+ * @see
+ */
 public interface ShMatrix {
     /**
      *

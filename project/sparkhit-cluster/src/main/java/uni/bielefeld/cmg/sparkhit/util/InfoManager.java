@@ -24,17 +24,46 @@ import java.io.IOException;
  * You should have received a copy of the GNU General Public License along
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+
+/**
+ * This is an interface for managing program information. All classes formulate
+ * and log the information produced by the source code.
+ *
+ * @author  Liren Huang
+ * @version %I%, %G%
+ * @see
+ */
 public interface InfoManager {
     /**
      *
      */
 
+    /**
+     * This is an abstract method for recording specified messages.
+     *
+     * @param m the message that is going to be processed.
+     */
     void readMessage(String m);
 
+    /**
+     * This is an abstract method for recording IOException messages.
+     *
+     * @param e the IOException message that is going to be processed.
+     */
     void readIOException(IOException e);
 
+    /**
+     * This is an abstract method for recording FileNotFoundException messages.
+     *
+     * @param e the FileNotFoundException message that is going to be processed.
+     */
     void readFileNotFoundException(FileNotFoundException e);
 
+    /**
+     * This is an abstract method for recording ClassNotFoundException messages.
+     *
+     * @param e the ClassNotFoundException message that is going to be processed.
+     */
     void readClassNotFoundException(ClassNotFoundException e);
 
 }

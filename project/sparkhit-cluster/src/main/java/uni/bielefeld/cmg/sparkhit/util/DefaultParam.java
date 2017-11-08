@@ -16,7 +16,7 @@ import java.util.regex.Pattern;
  * Software Foundation, either version 3 of the License, or (at your option)
  * any later version.
  *
- * This program is distributed in the hope that it will be useful, but WITHOU
+ * This program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
  * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
  * more details.
@@ -24,8 +24,19 @@ import java.util.regex.Pattern;
  * You should have received a copy of the GNU General Public License along
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+
+/**
+ * A data structure class that stores all default parameters.
+ *
+ * @author  Liren Huang
+ * @version %I%, %G%
+ * @see
+ */
 public class DefaultParam implements Serializable{
 
+    /**
+     * A constructor that construct an object of {@link DefaultParam} class.
+     */
     public DefaultParam (){
         /**
          * This is a class of data structure which stores the default parameters
@@ -45,6 +56,7 @@ public class DefaultParam implements Serializable{
 
     public String inputFqLinePath;  // input query file, one line per unit
     public String inputFaPath; // input reference file, used by main program
+    public boolean filename = false;  // tag filename to query sequence id
 
     public String toolDepend = " "; // external tool dependencies such as sh, perl, java package
     public String tool;  // external tool such as bwa mem, bowtie2
@@ -99,7 +111,6 @@ public class DefaultParam implements Serializable{
     public  int bestPigeon = 2;             // at least 2 kmers to form a block
     public  int maxTrys = 20;               // tries for alignment
     public  int skipThreshold = 1000;       // threshold for long reads with 2bp skip per extension
-    public  int globalSignal = 0;           //
 
     public  double eValue = 10d;                     // default evalue cutoff
     public  int chains = 0;                 // alignment for chains: 1 positive; 2 complementary; 0 Both
@@ -115,6 +126,11 @@ public class DefaultParam implements Serializable{
     public double lambda = 1.33;
     public double pairAlign = 1.12;
 
+    /**
+     * This method initiates the ASCII code for each nucleotide.
+     *
+     * @return an array of values for each nucleotide.
+     */
     public int[] initialAlphaCode(){
         int[] alphaCodeInitial = new int[256];
         for (int i=0; i<256; i++){
@@ -128,6 +144,11 @@ public class DefaultParam implements Serializable{
         return alphaCodeInitial;
     }
 
+    /**
+     * This method initiates the ASCII code for the reverse-complement of each nucleotide.
+     *
+     * @return an array of values for the reverse-complement of each nucleotide.
+     */
     public int[] initialAlphaCodeComplement(){
         int[] alphaCodeComplementInitial = new int[256];
         for (int i=0; i<256; i++){
@@ -140,6 +161,11 @@ public class DefaultParam implements Serializable{
         return alphaCodeComplementInitial;
     }
 
+    /**
+     * This method initiates the codes for unidentified nucleotides.
+     *
+     * @return an array of value for the unindentified necleotides.
+     */
     public int[] initialNNNNNFilter(){
         int[] alphaCodeNNNNNInitial = new int[256];
         for (int i=0; i<256; i++){
@@ -153,12 +179,23 @@ public class DefaultParam implements Serializable{
     }
 
     /* change kmer length and maximum bit */
+
+    /**
+     * This method initiates the K-mer size parameter.
+     *
+     * @param k the size of the k-mer.
+     */
     public  void setKmerSize(int k){
         kmerSize = k;
         kmerBits = (1 << (kmerSize*2))-1;
         maximumKmerNum = 1<<(kmerSize*2); // re-initial maximumKmerNum according to kmerSize
     }
 
+    /**
+     * This method initiates the overlap between k-mers.
+     *
+     * @param o the size of the overlap between k-mers.
+     */
     public void setKmerOverlap(int o){
         kmerOverlap = o;
     }

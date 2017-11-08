@@ -26,8 +26,19 @@ import uni.bielefeld.cmg.sparkhit.util.DefaultParam;
  *
  */
 
-
+/**
+ * This is an interface for reference genome serialization.
+ *
+ * @author  Liren Huang
+ * @version %I%, %G%
+ * @see
+ */
 public interface RefSerializer {
 
+    /**
+     * This is an abstract method for passing input parameters to each class.
+     *
+     * @param param {@link DefaultParam}.
+     */
     void setParameter(DefaultParam param);
 }

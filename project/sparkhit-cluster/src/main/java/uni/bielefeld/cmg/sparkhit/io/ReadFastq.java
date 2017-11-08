@@ -26,6 +26,15 @@ import java.io.*;
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+/**
+ * Returns an object for buffering input fastq files. This class is
+ * used in local mode only. For cluster mode, Spark "textFile" function
+ * is used to access input Fastq file.
+ *
+ * @author  Liren Huang
+ * @version %I%, %G%
+ * @see
+ */
 public class ReadFastq implements InputFileManager {
     private InfoDumper info = new InfoDumper();
     private readInfo read = new readInfo();
@@ -34,6 +43,10 @@ public class ReadFastq implements InputFileManager {
     public BufferedReader fastq;
     public FastqUnitBuffer BufferedFastqUnit;
 
+    /**
+     * A constructor that construct an object of {@link ReadFastq} class.
+     * No constructor option needed.
+     */
     public ReadFastq(){
         /**
          *  not used here
@@ -41,13 +54,22 @@ public class ReadFastq implements InputFileManager {
     }
 
     /**
+     * Use this method to get the buffer for accessing fastq unit.
      *
-     * @return
+     * @return {@link FastqUnitBuffer}.
      */
     public FastqUnitBuffer getBufferedFastqUnit(){
         return this.BufferedFastqUnit;
     }
 
+    /**
+     * This method loads {@param units} number fastq units into buffer
+     * for streaming fastq reads. Each fastq unit is a four line string
+     * providing essential information for a sequencing unit.
+     *
+     * @param units number of input fastq units per batch (buffer size).
+     * @return {@link FastqUnitBuffer}.
+     */
     public FastqUnitBuffer loadBufferedFastq(int units){
         try {
             String line;
@@ -104,13 +126,13 @@ public class ReadFastq implements InputFileManager {
      * Usually I use TextFileBufferInput to create a synchronized
      * BufferedReader and parallelize getRead in threads.
      *
-     * @param inputFastaString
-     * @return
+     * @param inputFastqString full path of an input fastq file.
+     * @return null.
      */
-    public void createInputFastqStream(String inputFastaString){
+    public void createInputFastqStream(String inputFastqString){
         try{
-            FileInputStream inputFastaStream = new FileInputStream(inputFastaString);
-            InputStreamReader inputFastq = new InputStreamReader(inputFastaStream);
+            FileInputStream inputFastqStream = new FileInputStream(inputFastqString);
+            InputStreamReader inputFastq = new InputStreamReader(inputFastqStream);
             fastq = new BufferedReader(inputFastq);
         }catch (IOException e) {
             e.fillInStackTrace();
@@ -119,17 +141,19 @@ public class ReadFastq implements InputFileManager {
     }
 
     /**
+     *This method checks the path of input fastq file. It classifies the
+     * location (via URL) of an input file.
      *
-     * @param cFile
+     * @param cFile the full path of an input fastq file.
      */
     public void checkFile(String cFile){
 
         if (cFile.startsWith("s3")){
-            info.readMessage("Input fasta file is located in S3 bucket : ");
+            info.readMessage("Input fastq file is located in S3 bucket : ");
             info.screenDump();
             info.readMessage("\t" + cFile);
             info.screenDump();
-            info.readMessage("Reading fasta file using Map-Reduce FASTA reader");
+            info.readMessage("Reading fastq file using Map-Reduce FASTQ reader");
             info.screenDump();
         }
 
@@ -160,11 +184,17 @@ public class ReadFastq implements InputFileManager {
         }
     }
 
+    /**
+     * This method sets the BufferedReader.
+     *
+     * @param inputBufferedReader {@link BufferedReader}.
+     */
     public void setInputBufferedReader(BufferedReader inputBufferedReader){
         this.fastq = inputBufferedReader;
     }
 
     /**
+     * This method sets up an input fastq file stream based on an input file path.
      *
      * @param inputFastq is the input text file in String
      */
@@ -173,8 +203,9 @@ public class ReadFastq implements InputFileManager {
     }
 
     /**
+     * This method sets the full path of an output file.
      *
-     * @param outputFile
+     * @param outputFile is the full path of an output file.
      */
     public void bufferOutputFile(String outputFile){
         /**

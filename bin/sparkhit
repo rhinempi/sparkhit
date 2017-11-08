@@ -258,7 +258,7 @@ parse_param
 if [[ ${MODULE} == "recruiter" ]]; then
     mainClass="uni.bielefeld.cmg.sparkhit.main.Main"
 elif [[ ${MODULE} == "mapper" ]]; then
-    mainClass="uni.bielefeld.cmg.sparkhit.main.Main"
+    mainClass="uni.bielefeld.cmg.sparkhit.main.MainOfMapper"
 elif [[ ${MODULE} == "piper" ]]; then
     mainClass="uni.bielefeld.cmg.sparkhit.main.MainOfPiper"
 elif [[ ${MODULE} == "parallelizer" ]]; then

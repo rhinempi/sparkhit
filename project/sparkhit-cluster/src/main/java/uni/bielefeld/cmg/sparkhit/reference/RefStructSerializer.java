@@ -40,7 +40,15 @@ import java.util.List;
  *
  */
 
-
+/**
+ * Returns an object for serializing reference indices. This class is used
+ * in local mode only. For cluster mode, Spark kryo serialization function
+ * is used to broadcast objects into each worker nodes.
+ *
+ * @author  Liren Huang
+ * @version %I%, %G%
+ * @see
+ */
 public class RefStructSerializer implements RefSerializer, Serializable {
     private DefaultParam param;
     private kryoSerializer kSerializer = new kryoSerializer();
@@ -48,14 +56,27 @@ public class RefStructSerializer implements RefSerializer, Serializable {
     private RefStructBuilder ref;
     private InfoDumper info = new InfoDumper();
 
+    /**
+     * This method sets the input parameters.
+     *
+     * @param param {@link DefaultParam}.
+     */
     public void setParameter(DefaultParam param){
         this.param = param;
     }
 
+    /**
+     * This method passes the reference of the reference index to this class.
+     *
+     * @return {@link RefStructBuilder}.
+     */
     public RefStructBuilder getStruct(){
         return this.ref;
     }
 
+    /**
+     * This method de-serializes all reference indices using kryo serializer.
+     */
     public void kryoDeserialization(){
         String bbl = param.inputFaPath + ".bbl";
         String blo = param.inputFaPath + ".blo";
@@ -108,6 +129,9 @@ public class RefStructSerializer implements RefSerializer, Serializable {
 
     }
 
+    /**
+     * This method serializes reference indices using kryo serializer.
+     */
     public void kryoSerialization() {
         String bbl = param.inputFaPath + ".bbl";
         String blo = param.inputFaPath + ".blo";
@@ -123,6 +147,9 @@ public class RefStructSerializer implements RefSerializer, Serializable {
 
     }
 
+    /**
+     * This method de-serializes reference indices using default Java serializer.
+     */
     public void javaDeSerialization(){
         String bbl = param.inputFaPath + ".bbl";
         String blo = param.inputFaPath + ".blo";
@@ -175,6 +202,9 @@ public class RefStructSerializer implements RefSerializer, Serializable {
 
     }
 
+    /**
+     * This method serializes reference indices using default Java serializer.
+     */
     public void javaSerialization(){
         String bbl = param.inputFaPath + ".bbl";
         String blo = param.inputFaPath + ".blo";
@@ -190,6 +220,11 @@ public class RefStructSerializer implements RefSerializer, Serializable {
 
     }
 
+    /**
+     * This method loads pre-stored reference metadata into the program.
+     *
+     * @param met the full path of the .met file.
+     */
     private void readMetaData(String met){
         TextFileBufferInput metaDataTextFileReader = new TextFileBufferInput();
         metaDataTextFileReader.setInput(met);
@@ -210,6 +245,10 @@ public class RefStructSerializer implements RefSerializer, Serializable {
         }
     }
 
+    /**
+     *
+     * @param met
+     */
     private void putMetaData(String met){
 
         /* put total length and contig number in .met (meta) file */

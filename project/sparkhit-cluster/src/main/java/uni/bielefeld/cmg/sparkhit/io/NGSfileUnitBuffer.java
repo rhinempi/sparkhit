@@ -24,6 +24,20 @@ package uni.bielefeld.cmg.sparkhit.io;
  */
 
 
+/**
+ * This is an interface for managing input NGS (next generation sequencing) files
+ * via different input buffers.
+ *
+ * @author  Liren Huang
+ * @version %I%, %G%
+ * @see
+ */
 public interface NGSfileUnitBuffer {
+    /**
+     * This is an abstract method for buffering input fastq units.
+     *
+     * @param read {@link readInfo} a type of data structure class describing a sequencing read.
+     * @param unitsMark a integer marker counting input fastq units for the buffer.
+     */
     void addReadUnit(readInfo read, int unitsMark);
 }

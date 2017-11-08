@@ -28,6 +28,14 @@ import java.util.Date;
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  *
  */
+
+/**
+ * Returns an object for printing messages in a structured format to the screen.
+ *
+ * @author  Liren Huang
+ * @version %I%, %G%
+ * @see
+ */
 public class InfoDumper implements InfoManager, Serializable{
 
     private String message;
@@ -52,9 +60,10 @@ public class InfoDumper implements InfoManager, Serializable{
     }
 
     /**
+     * This method formats the message by including the time information.
      *
-     * @param timeFormat
-     * @return
+     * @param timeFormat the raw system time format.
+     * @return the formatted time
      */
     private String headerTime(String timeFormat){
         SimpleDateFormat hourMinuteSecond = new SimpleDateFormat(timeFormat);
@@ -85,31 +94,34 @@ public class InfoDumper implements InfoManager, Serializable{
     }
 
     /**
-     * out put formatted messages
+     * This method prints the structured message to the screen.
      */
     public void screenDump(){
         System.out.println(message);
     }
 
     /**
+     * This method records a specified message.
      *
-     * @param m
+     * @param m the message that is going to be processed.
      */
     public void readMessage(String m) {
         this.message = completeMessage(m);
     }
 
     /**
+     * This method records a paragraph of message.
      *
-     * @param m
+     * @param m the message that is going to be processed.
      */
     public void readParagraphedMessages(String m ){
         this.message = paragraphReader(m);
     }
 
     /**
+     * This method records an IOException message.
      *
-     * @param e
+     * @param e the IOException message that is going to be processed.
      */
     public void readIOException(IOException e){
         String m = e.getMessage();
@@ -118,8 +130,9 @@ public class InfoDumper implements InfoManager, Serializable{
     }
 
     /**
+     * This method records a FileNotFoundException message.
      *
-     * @param e
+     * @param e the FileNotFoundException message that is going to be processed.
      */
     public void readFileNotFoundException(FileNotFoundException e){
         String m = e.getMessage();
@@ -127,6 +140,11 @@ public class InfoDumper implements InfoManager, Serializable{
         this.message = completeMessage(m);
     }
 
+    /**
+     * This method records a ClassNotFoundException message.
+     *
+     * @param e the ClassNotFoundException message that is going to be processed.
+     */
     public void readClassNotFoundException(ClassNotFoundException e){
         String m = e.getMessage();
         m = "ClassNotFoundException " + m;

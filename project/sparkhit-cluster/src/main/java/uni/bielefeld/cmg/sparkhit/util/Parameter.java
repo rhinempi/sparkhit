@@ -29,10 +29,24 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Returns an object for parsing the input options for Sparkhit-recruiter.
+ *
+ * @author  Liren Huang
+ * @version %I%, %G%
+ * @see
+ */
 public class Parameter {
     private String[] arguments;
     private InfoDumper info = new InfoDumper();
 
+    /**
+     * A constructor that construct an object of {@link Parameter} class.
+     *
+     * @param arguments an array of strings containing commandline options
+     * @throws IOException
+     * @throws ParseException
+     */
     public Parameter(String[] arguments) throws IOException, ParseException {
         this.arguments = arguments;
     }
@@ -42,9 +56,10 @@ public class Parameter {
     DefaultParam param = new DefaultParam();
 
     /* parameter IDs */
-    private static final String BUILD_REF = "build",
+    private static final String
             INPUT_FASTQ = "fastq",
             INPUT_LINE = "line",
+            INPUT_TAG= "tag",
             INPUT_REF = "reference",
             OUTPUT_FILE = "outfile",
             KMER_SIZE = "kmer",
@@ -67,12 +82,15 @@ public class Parameter {
     private static final Map<String, Integer> parameterMap = new HashMap<String, Integer>();
 
 
+    /**
+     * This method places all input parameters into a hashMap.
+     */
     public void putParameterID(){
         int o =0;
 
-        parameterMap.put(BUILD_REF, o++);
         parameterMap.put(INPUT_FASTQ, o++);
         parameterMap.put(INPUT_LINE, o++);
+        parameterMap.put(INPUT_TAG, o++);
         parameterMap.put(INPUT_REF, o++);
         parameterMap.put(OUTPUT_FILE, o++);
         parameterMap.put(KMER_SIZE, o++);
@@ -93,13 +111,13 @@ public class Parameter {
         parameterMap.put(HELP2, o++);
     }
 
+    /**
+     * This method adds descriptions to each parameter.
+     */
     public void addParameterInfo(){
 
 
 		/* use Object parameter of Options class to store parameter information */
-        parameter.addOption(OptionBuilder.withArgName("ref genome file.fa")
-                .hasArg().withDescription("build index of reference genome.\n")
-                .create(BUILD_REF));
 
         parameter.addOption(OptionBuilder.withArgName("input fastq file")
                 .hasArg().withDescription("Input Next Generation Sequencing (NGS) data, fastq file format, four line per unit")
@@ -108,6 +126,10 @@ public class Parameter {
         parameter.addOption(OptionBuilder.withArgName("input line file")
                 .hasArg().withDescription("Input NGS data, line based text file format, one line per unit")
                 .create(INPUT_LINE));
+
+        parameter.addOption(OptionBuilder.withArgName("tag filename")
+                .hasArg(false).withDescription("Set to tag filename to sequence id. It is useful when you are processing lots of samples at the same time")
+                .create(INPUT_TAG));
 
         parameter.addOption(OptionBuilder.withArgName("input reference")
                 .hasArg().withDescription("Input genome reference file, usually fasta format file, as input file")
@@ -126,7 +148,7 @@ public class Parameter {
                 .create(EVALUE));
 
         parameter.addOption(OptionBuilder.withArgName("global or not")
-                .hasArg().withDescription("Use global alignment or not. 0 for local, 1 for global, default 0")
+                .hasArg().withDescription("Use global alignment or not. 0 for local, 1 for global, default 1")
                 .create(GLOBAL));
 
         parameter.addOption(OptionBuilder.withArgName("unmask")
@@ -158,7 +180,7 @@ public class Parameter {
                 .create(HITS));
 
         parameter.addOption(OptionBuilder.withArgName("strand +/-")
-                .hasArg().withDescription("")
+                .hasArg().withDescription("0 for both strands, 1 for only + strand, 2 for only - strand")
                 .create(STRAND));
 
         parameter.addOption(OptionBuilder.withArgName("number of threads")
@@ -184,6 +206,13 @@ public class Parameter {
     }
 
     /* main method */
+
+    /**
+     * This method parses input commandline arguments and sets correspond
+     * parameters.
+     *
+     * @return {@link DefaultParam}.
+     */
     public DefaultParam importCommandLine() {
 
         /* Assigning Parameter ID to an ascending number */
@@ -193,7 +222,7 @@ public class Parameter {
         addParameterInfo();
 
         /* need a Object parser of PosixParser class for the function parse of CommandLine class */
-        PosixParser parser = new PosixParser();
+        CommandLineParser parser = new GnuParser();
 
         /* print out help information */
         HelpParam help = new HelpParam(parameter, parameterMap);
@@ -237,17 +266,17 @@ public class Parameter {
             }
 
             if ((value = cl.getOptionValue(KMER_SIZE)) != null){
-                if (Integer.decode(value) >= 8 || Integer.decode(value) <= 12){
+                if (Integer.decode(value) >= 8 && Integer.decode(value) <= 14){
                     param.kmerSize = Integer.decode(value);
                     param.setKmerSize(param.kmerSize);
                 }else{
                     throw new RuntimeException("Parameter " + KMER_SIZE +
-                            " should be set between 8-12");
+                            " should be set between 8-14");
                 }
             }
 
             if ((value = cl.getOptionValue(OVERLAP)) != null){
-                if (Integer.decode(value) >= 0 || Integer.decode(value) <= param.kmerSize){
+                if (Integer.decode(value) >= 0 && Integer.decode(value) <= param.kmerSize){
                     param.kmerOverlap = Integer.decode(value);
                 }else{
                     throw new RuntimeException("Parameter " + OVERLAP +
@@ -258,11 +287,6 @@ public class Parameter {
             /**
              * not available for now
              */
-            if ((value = cl.getOptionValue(BUILD_REF)) != null){
-                param.inputBuildPath = new File(value).getAbsolutePath();
-                param.inputFaPath = param.inputBuildPath;
-                return param;
-            }
 
             if ((value = cl.getOptionValue(THREADS)) != null){
                 if (Integer.decode(value) <= threads){
@@ -347,7 +371,7 @@ public class Parameter {
             }else {
                 help.printHelp();
                 System.exit(0);
-                //throw new IOException("Input query file not specified.\nUse -help for list of options");
+ //               throw new IOException("Input query file not specified.\nUse -help for list of options");
             }
 
 			/* not applicable for HDFS and S3 */
@@ -363,6 +387,7 @@ public class Parameter {
             }else{
                 info.readMessage("Output file not set of -outfile options");
                 info.screenDump();
+                throw new RuntimeException("Parameter " + OUTPUT_FILE + " is not set");
             }
 
             if ((value = cl.getOptionValue(INPUT_REF)) != null){
@@ -370,19 +395,25 @@ public class Parameter {
             }else{
                 info.readMessage("Input reference file had not specified.");
                 info.screenDump();
+                throw new RuntimeException("Parameter " + INPUT_REF + " is not set");
             }
 
             File inputFasta = new File(param.inputFaPath).getAbsoluteFile();
             if (!inputFasta.exists()){
                 info.readMessage("Input reference file had not found.");
                 info.screenDump();
+                throw new RuntimeException("Parameter " + INPUT_REF + " file not found");
             }
 
             File outfile = new File(param.outputPath).getAbsoluteFile();
-            if (outfile.exists()){
+            if (outfile.exists()) {
                 info.readParagraphedMessages("Output file : \n\t" + param.outputPath + "\nalready exists, will be overwrite.");
                 info.screenDump();
                 Runtime.getRuntime().exec("rm -rf " + param.outputPath);
+            }
+
+            if (cl.hasOption(INPUT_TAG)){
+                param.filename = true;
             }
 
             if (param.inputFqPath.endsWith(".gz")){
@@ -404,17 +435,17 @@ public class Parameter {
             info.readMessage("Parameter settings incorrect.");
             info.screenDump();
             e.printStackTrace();
-            System.exit(0);
+//            System.exit(0);
         } catch (RuntimeException e){
             info.readMessage("Parameter settings incorrect.");
             info.screenDump();
             e.printStackTrace();
-            System.exit(0);
+ //           System.exit(0);
         } catch (ParseException e){
             info.readMessage("Parameter settings incorrect.");
             info.screenDump();
             e.printStackTrace();
-            System.exit(0);
+ //           System.exit(0);
         }
 
         return param;

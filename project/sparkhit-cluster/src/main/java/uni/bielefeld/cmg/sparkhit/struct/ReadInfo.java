@@ -25,6 +25,14 @@ import java.io.Serializable;
  * You should have received a copy of the GNU General Public License along
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+
+/**
+ * A data structure class that stores all parameters for a sequence read.
+ *
+ * @author  Liren Huang
+ * @version %I%, %G%
+ * @see
+ */
 public class ReadInfo implements Serializable {
     public String line;
     public String readName;
@@ -34,8 +42,9 @@ public class ReadInfo implements Serializable {
     private readInfo r;
 
     /**
+     * A constructor that construct an object of {@link ReadInfo} class.
      *
-     * @param line
+     * @param line the nucleotide sequence of a sequencing read.
      */
     public ReadInfo(String line){
         /**
@@ -46,8 +55,9 @@ public class ReadInfo implements Serializable {
     }
 
     /**
+     * A constructor that construct an object of {@link ReadInfo} class.
      *
-     * @param r
+     * @param r {@link readInfo}.
      */
     public ReadInfo(readInfo r){
         /**
@@ -63,6 +73,9 @@ public class ReadInfo implements Serializable {
         size(read);
     }
 
+    /**
+     * This method logs all required information from a fastq unit.
+     */
     public void logInfo(){
         String[] textFq = line.split("\\t");
         name(textFq[0]);
@@ -70,14 +83,29 @@ public class ReadInfo implements Serializable {
         size(read);
     }
 
+    /**
+     * This method sets the id of a read.
+     *
+     * @param n the nucleotide sequence of a read.
+     */
     public void name(String n){
         this.readName = n;
     }
 
+    /**
+     * This method sets the sequence of a read.
+     *
+     * @param r the nucleotide sequence in a string.
+     */
     public void seq(String r){
         this.read = r;
     }
 
+    /**
+     * This method sets the length of a sequencing read.
+     *
+     * @param s the nucleotide sequence of a read.
+     */
     public void size(String s){
         this.readSize = s.length();
     }

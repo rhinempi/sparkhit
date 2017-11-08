@@ -25,7 +25,12 @@ package uni.bielefeld.cmg.sparkhit.io;
 
 
 /**
- * a data structure for storing fastq four line unit
+ * This is a data structure class. It returns an instance of a data structure
+ * that stores a fastq unit that describes a sequencing read.
+ *
+ * @author  Liren Huang
+ * @version %I%, %G%
+ * @see
  */
 public class readInfo {
     public String readId;   // @Hiseq-2000-AWESOME-MACHINE

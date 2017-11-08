@@ -28,10 +28,24 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Returns an object for parsing the input options for Sparkhit-reductioner.
+ *
+ * @author  Liren Huang
+ * @version %I%, %G%
+ * @see
+ */
 public class ParameterForReductioner {
     private String[] arguments;
     private InfoDumper info = new InfoDumper();
 
+    /**
+     * A constructor that construct an object of {@link Parameter} class.
+     *
+     * @param arguments an array of strings containing commandline options
+     * @throws IOException
+     * @throws ParseException
+     */
     public ParameterForReductioner(String[] arguments) throws IOException, ParseException {
         this.arguments = arguments;
     }
@@ -57,7 +71,9 @@ public class ParameterForReductioner {
 
     private static final Map<String, Integer> parameterMap = new HashMap<String, Integer>();
 
-
+    /**
+     * This method places all input parameters into a hashMap.
+     */
     public void putParameterID(){
         int o =0;
 
@@ -75,6 +91,9 @@ public class ParameterForReductioner {
         parameterMap.put(HELP2, o++);
     }
 
+    /**
+     * This method adds descriptions to each parameter.
+     */
     public void addParameterInfo(){
 
 
@@ -131,6 +150,13 @@ public class ParameterForReductioner {
     }
 
     /* main method */
+
+    /**
+     * This method parses input commandline arguments and sets correspond
+     * parameters.
+     *
+     * @return {@link DefaultParam}.
+     */
     public DefaultParam importCommandLine() {
 
         /* Assigning Parameter ID to an ascending number */

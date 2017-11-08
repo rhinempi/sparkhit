@@ -1,12 +1,22 @@
 package uni.bielefeld.cmg.sparkhit.pipeline;
 
 
+import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.io.LongWritable;
+import org.apache.hadoop.io.Text;
+import org.apache.hadoop.mapreduce.InputSplit;
+import org.apache.hadoop.mapreduce.lib.input.FileSplit;
+import org.apache.hadoop.mapreduce.lib.input.TextInputFormat;
 import org.apache.spark.SparkConf;
+import org.apache.spark.api.java.JavaNewHadoopRDD;
+import org.apache.spark.api.java.JavaPairRDD;
 import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.api.java.JavaSparkContext;
 import org.apache.spark.api.java.function.FlatMapFunction;
 import org.apache.spark.api.java.function.Function;
+import org.apache.spark.api.java.function.Function2;
 import org.apache.spark.broadcast.Broadcast;
+import scala.Tuple2;
 import uni.bielefeld.cmg.sparkhit.matrix.ScoreMatrix;
 import uni.bielefeld.cmg.sparkhit.reference.RefStructBuilder;
 import uni.bielefeld.cmg.sparkhit.reference.RefStructSerializer;
@@ -17,6 +27,7 @@ import uni.bielefeld.cmg.sparkhit.util.DefaultParam;
 import uni.bielefeld.cmg.sparkhit.util.InfoDumper;
 
 import java.io.Serializable;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -41,7 +52,14 @@ import java.util.List;
  * with this program. If not, see <http://www.gnu.org/licenses>.
  */
 
-
+/**
+ * Returns an object for running the Sparkhit-recruiter pipeline.
+ * This is the main pipeline for fragment recruitment.
+ *
+ * @author  Liren Huang
+ * @version %I%, %G%
+ * @see
+ */
 public class SparkPipe implements Serializable {
     private long time;
     private DefaultParam param;
@@ -63,6 +81,7 @@ public class SparkPipe implements Serializable {
     private SparkConf setSparkConfiguration(){
         SparkConf conf = new SparkConf().setAppName("SparkHit");
         conf.set("spark.serializer", "org.apache.spark.serializer.KryoSerializer");
+        conf.set("spark.kryo.referenceTracking", "false");
         conf.set("spark.kryo.registrator", "uni.bielefeld.cmg.sparkhit.serializer.SparkKryoRegistrator");
 
         return conf;
@@ -98,6 +117,11 @@ public class SparkPipe implements Serializable {
         return ref;
     }
 
+    /**
+     * This method builds the reference index.
+     *
+     * @return the reference index.
+     */
     public RefStructBuilder loadReference(){
         RefStructSerializer refSer = new RefStructSerializer();
         refSer.setParameter(param);
@@ -112,6 +136,9 @@ public class SparkPipe implements Serializable {
         return ref;
     }
 
+    /**
+     * This method transforms fastq format to line-based format.
+     */
     public void sparkFastqToLine(){
         SparkConf conf = setSparkConfiguration();
         JavaSparkContext sc = new JavaSparkContext(conf);
@@ -119,6 +146,12 @@ public class SparkPipe implements Serializable {
         JavaRDD<String> FastqRDD = sc.textFile(param.inputFqPath);
 
         class FastqFilter implements Function<String, Boolean>, Serializable{
+            /**
+             * This function implements the Spark {@link Function}.
+             *
+             * @param s an input string.
+             * @return the filtered result.
+             */
             public Boolean call(String s){
                 if (s != null){
           //          if (s.startsWith("@")){
@@ -135,6 +168,13 @@ public class SparkPipe implements Serializable {
         class FastqConcat implements Function<String, String>, Serializable{
             String line = "";
             int lineMark = 0;
+
+            /**
+             * This function implements the Spark {@link Function}.
+             *
+             * @param s the input fastq lines.
+             * @return a fastq unit.
+             */
             public String call(String s){
                 if (s.startsWith("@")){
                     line = s;
@@ -171,7 +211,66 @@ public class SparkPipe implements Serializable {
         SparkConf conf = setSparkConfiguration();
         JavaSparkContext sc = new JavaSparkContext(conf);
 
-        JavaRDD<String> FastqRDD = sc.textFile(param.inputFqPath);
+        JavaRDD<String> FastqRDD;
+
+        if (param.filename){
+            class Tuple2String implements Function<Tuple2<String, String>, String>, Serializable{
+                /**
+                 * This method concatenates fastq lines into one fastq unit.
+                 *
+                 * @param s {@link Tuple2}.
+                 * @return a string of a fastq unit.
+                 */
+                public String call(Tuple2<String, String> s){
+                    return ("@" + s._1 + "|" + s._2);
+                }
+            }
+
+            Tuple2String RDDmerge = new Tuple2String();
+
+            JavaPairRDD<LongWritable, Text> javaPairRDD = sc.newAPIHadoopFile(
+                    param.inputFqPath,
+                    TextInputFormat.class,
+                    LongWritable.class,
+                    Text.class,
+                    new Configuration()
+            );
+
+            JavaNewHadoopRDD<LongWritable, Text> hadoopRDD = (JavaNewHadoopRDD) javaPairRDD;
+
+            JavaRDD<Tuple2<String, String>> namedLinesRDD = hadoopRDD.mapPartitionsWithInputSplit(
+                    new Function2<InputSplit, Iterator<Tuple2<LongWritable, Text>>, Iterator<Tuple2<String, String>>>() {
+                        @Override
+                        public Iterator<Tuple2<String, String>> call(InputSplit inputSplit, final Iterator<Tuple2<LongWritable, Text>> lines) throws Exception {
+                            FileSplit fileSplit = (FileSplit) inputSplit;
+                            final String fileName = fileSplit.getPath().getName();
+                            return new Iterator<Tuple2<String, String>>() {
+                                @Override
+                                public boolean hasNext() {
+                                    return lines.hasNext();
+                                }
+                                @Override
+                                public Tuple2<String, String> next() {
+                                    Tuple2<LongWritable, Text> entry = lines.next();
+                                    return new Tuple2<String, String>(fileName, entry._2().toString());
+                                }
+
+                                @Override
+                                public void remove() {
+                                    throw new IllegalStateException();
+                                }
+                            };
+                        }
+                    },
+                    true
+            );
+
+            FastqRDD = namedLinesRDD.map(RDDmerge);
+        }else {
+
+            FastqRDD = sc.textFile(param.inputFqPath);
+
+        }
 
         RefStructBuilder ref = buildReference();
 
@@ -190,11 +289,19 @@ public class SparkPipe implements Serializable {
         info.readMessage("Spark kryo reference data structure serialization time : "  + T + " ms");
         info.screenDump();
 
+
+
         class SparkBatchAlign implements FlatMapFunction<String, String>, Serializable{
 
             BatchAlignPipe bPipe = new BatchAlignPipe(broadParam.value());
 
-            public Iterable<String> call(String s){
+            /**
+             * This function implements the Spark {@link FlatMapFunction}.
+             *
+             * @param s an input string, usually a fastq unit.
+             * @return the result of fragment recruitment.
+             */
+            public Iterator<String> call(String s){
 
                 bPipe.BBList = broadBBList.value();
                 bPipe.index = broadIndex.value();
@@ -203,7 +310,7 @@ public class SparkPipe implements Serializable {
                 bPipe.totalLength = totalLength;
                 bPipe.totalNum = totalNum;
 
-                return bPipe.sparkRecruit(s);
+                return bPipe.sparkRecruit(s).iterator();
             }
         }
 
@@ -218,7 +325,7 @@ public class SparkPipe implements Serializable {
     }
 
     /**
-     *
+     * This method runs the Sparkhit pipeline using Spark RDD operations.
      */
     public void spark(){
         SparkConf conf = setSparkConfiguration();
@@ -228,7 +335,69 @@ public class SparkPipe implements Serializable {
         info.screenDump();
         JavaSparkContext sc = new JavaSparkContext(conf);
 
-        JavaRDD<String> FastqRDD = sc.textFile(param.inputFqPath);
+        JavaRDD<String> FastqRDD;
+
+        if (param.filename){
+            class Tuple2String implements Function<Tuple2<String, String>, String>, Serializable{
+                /**
+                 * This function implements the Spark {@link FlatMapFunction}.
+                 *
+                 * @param s a tuple consists of the filename and the sequence header.
+                 * @return a concatenated string combining filename and sequence header as sequence header.
+                 */
+                public String call(Tuple2<String, String> s){
+                    if (s._2.startsWith("@")) {
+                        return ("@" + s._1 + "|" + s._2);
+                    }else{
+                        return s._2;
+                    }
+                }
+            }
+
+            Tuple2String RDDmerge = new Tuple2String();
+
+            JavaPairRDD<LongWritable, Text> javaPairRDD = sc.newAPIHadoopFile(
+                    param.inputFqPath,
+                    TextInputFormat.class,
+                    LongWritable.class,
+                    Text.class,
+                    new Configuration()
+            );
+
+            JavaNewHadoopRDD<LongWritable, Text> hadoopRDD = (JavaNewHadoopRDD) javaPairRDD;
+
+            JavaRDD<Tuple2<String, String>> namedLinesRDD = hadoopRDD.mapPartitionsWithInputSplit(
+                    new Function2<InputSplit, Iterator<Tuple2<LongWritable, Text>>, Iterator<Tuple2<String, String>>>() {
+                        @Override
+                        public Iterator<Tuple2<String, String>> call(InputSplit inputSplit, final Iterator<Tuple2<LongWritable, Text>> lines) throws Exception {
+                            FileSplit fileSplit = (FileSplit) inputSplit;
+                            final String fileName = fileSplit.getPath().getName();
+                            return new Iterator<Tuple2<String, String>>() {
+                                @Override
+                                public boolean hasNext() {
+                                    return lines.hasNext();
+                                }
+                                @Override
+                                public Tuple2<String, String> next() {
+                                    Tuple2<LongWritable, Text> entry = lines.next();
+                                    return new Tuple2<String, String>(fileName, entry._2().toString());
+                                }
+
+                                @Override
+                                public void remove() {
+                                    throw new IllegalStateException();
+                                }
+                            };
+                        }
+                    },
+                    true
+            );
+
+            FastqRDD = namedLinesRDD.map(RDDmerge);
+        }else {
+
+            FastqRDD = sc.textFile(param.inputFqPath);
+        }
 
         RefStructBuilder ref = buildReference();
 
@@ -248,6 +417,13 @@ public class SparkPipe implements Serializable {
         info.screenDump();
 
         class FastqFilter implements Function<String, Boolean>, Serializable{
+
+            /**
+             * This method filters the input fastq stream.
+             *
+             * @param s each line of the fastq file.
+             * @return filter or not.
+             */
             public Boolean call(String s){
                 if (s != null){
 //                    if (s.startsWith("@")){
@@ -264,6 +440,13 @@ public class SparkPipe implements Serializable {
         class FastqConcat implements Function<String, String>, Serializable{
             String line = "";
             int lineMark = 0;
+
+            /**
+             * This method concatenates a fastq header and a fastq sequence into a line.
+             *
+             * @param s a line of the input fastq file.
+             * @return the concatenated unit of fastq file.
+             */
             public String call(String s){
                 if (s.startsWith("@")){
                     line = s;
@@ -284,7 +467,13 @@ public class SparkPipe implements Serializable {
 
             BatchAlignPipe bPipe = new BatchAlignPipe(broadParam.value());
 
-            public Iterable<String> call(String s){
+            /**
+             * This method applies {@link BatchAlignPipe} (the fragment recruitment) pipeline to each partition of the RDD.
+             *
+             * @param s an input fastq unit.
+             * @return the result of the fragment recruitment.
+             */
+            public Iterator<String> call(String s){
 
                 bPipe.BBList = broadBBList.value();
                 bPipe.index = broadIndex.value();
@@ -293,7 +482,7 @@ public class SparkPipe implements Serializable {
                 bPipe.totalLength = totalLength;
                 bPipe.totalNum = totalNum;
 
-                return bPipe.sparkRecruit(s);
+                return bPipe.sparkRecruit(s).iterator();
             }
         }
 
@@ -320,14 +509,29 @@ public class SparkPipe implements Serializable {
         sc.stop();
     }
 
+    /**
+     * This method sets the input parameters.
+     *
+     * @param param {@link DefaultParam}.
+     */
     public void setParam(DefaultParam param){
         this.param = param;
     }
 
+    /**
+     * This method sets the reference builder object.
+     *
+     * @param ref {@link RefStructBuilder}.
+     */
     public void setStruct(RefStructBuilder ref) {
     //    this.ref = ref;
     }
 
+    /**
+     * This method sets the scoring matrix for sequence alignment.
+     *
+     * @param mat {@link ScoreMatrix}.
+     */
     public void setMatrix(ScoreMatrix mat){
       //  this.mat = mat;
     }

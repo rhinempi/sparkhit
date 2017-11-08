@@ -46,7 +46,14 @@ import java.util.List;
  * with this program. If not, see <http://www.gnu.org/licenses>.
  */
 
-
+/**
+ * Returns an object for managing different pipelines of each Sparkhit
+ * application.
+ *
+ * @author  Liren Huang
+ * @version %I%, %G%
+ * @see
+ */
 public class Pipelines implements Pipeline, Serializable{
 
     private String threadName;
@@ -81,11 +88,14 @@ public class Pipelines implements Pipeline, Serializable{
     }
 
     /**
-     *
+     * A constructor that construct an object of {@link Pipelines} class.
      */
     public Pipelines () {
     }
 
+    /**
+     * This is a test method to test the run time of serializing the reference genomes.
+     */
     public void loadReference(){
         RefStructSerializer refSer = new RefStructSerializer();
         refSer.setParameter(param);
@@ -98,6 +108,9 @@ public class Pipelines implements Pipeline, Serializable{
         ref = refSer.getStruct();
     }
 
+    /**
+     * This method builds the reference index.
+     */
     public void buildReferenceForSpark(){
         info.readMessage("start building reference index.");
         info.screenDump();
@@ -126,6 +139,9 @@ public class Pipelines implements Pipeline, Serializable{
         info.screenDump();
     }
 
+    /**
+     * This method deserializes the reference index using default Java serializer.
+     */
     public void buildJavaReference(){
         info.readMessage("start building reference index.");
         info.screenDump();
@@ -168,6 +184,9 @@ public class Pipelines implements Pipeline, Serializable{
         info.screenDump();
     }
 
+    /**
+     * This method deserializes the reference index using kryo serializer.
+     */
     public void buildReference(){
 
         info.readMessage("start building reference index.");
@@ -212,8 +231,11 @@ public class Pipelines implements Pipeline, Serializable{
     }
 
     /**
+     * This method starts parallel processes with a selected number of cores.
+     * It is only used in local mode. For cluster mode, Sparkhit uses Spark
+     * RDD to parallelize tasks.
      *
-     * @param cores
+     * @param cores the number of threads to be created.
      */
     public void parallelization(int cores) {
         inputFileBuffer = new TextFileBufferInput();
@@ -250,6 +272,13 @@ public class Pipelines implements Pipeline, Serializable{
         info.screenDump();
     }
 
+    /**
+     * This method creates a new thread to run a new pipeline. It is only used in
+     * local mode. For cluster mode, Sparkhit uses Spark RDD to parallelize
+     * tasks.
+     *
+     * @param pipeIndex the index of this thread.
+     */
     public void newThread(int pipeIndex){
         OnePipe pipe = new OnePipe(threadName);
         pipe.setParameter(param);
@@ -261,6 +290,10 @@ public class Pipelines implements Pipeline, Serializable{
         processors[pipeIndex] = pipe;
     }
 
+
+    /**
+     * This method starts the recruiter pipeline
+     */
     public void spark(){
         SparkPipe sPipe = new SparkPipe();
         sPipe.setParam(param);
@@ -271,6 +304,23 @@ public class Pipelines implements Pipeline, Serializable{
         }
     }
 
+    /**
+     * This method starts the mapper pipeline
+     */
+    public void sparkMapper(){
+        SparkPipe sPipe = new SparkPipe();
+        sPipe.setParam(param);
+        if (param.inputFqLinePath != null){
+            sPipe.sparkLineFile();
+        }else{
+            sPipe.spark();
+        }
+    }
+
+
+    /**
+     * This method starts the reporter pipeline
+     */
     public void sparkReporter(){
         SparkReportPipe sRPipe = new SparkReportPipe();
         sRPipe.setParam(param);
@@ -281,84 +331,138 @@ public class Pipelines implements Pipeline, Serializable{
         }
     }
 
+    /**
+     * This method starts the converter pipeline
+     */
     public void sparkConverter(){
         SparkConvertPipe sCPipe = new SparkConvertPipe();
         sCPipe.setParam(param);
         sCPipe.spark();
     }
 
+    /**
+     * This method starts the piper pipeline
+     */
     public void sparkPiper(){
         SparkScriptPipe sPPipe = new SparkScriptPipe();
         sPPipe.setParam(param);
         sPPipe.spark();
     }
 
+    /**
+     * This method starts the variant detection pipeline
+     */
     public void sparkVariantCaller(){
         SparkBamPipe sBPipe = new SparkBamPipe();
         sBPipe.setParam(param);
         sBPipe.spark();
     }
 
+    /**
+     * This method starts the parallelizer pipeline
+     */
     public void sparkParallelizer(){
         SparkParallelPipe sPPipe = new SparkParallelPipe();
         sPPipe.setParam(param);
         sPPipe.spark();
     }
 
+
+    /**
+     * This method starts the reduction pipeline
+     */
     public void sparkReductioner(){
         SparkReductionPipe sRPipe = new SparkReductionPipe();
         sRPipe.setParam(param);
         sRPipe.spark();
     }
 
+    /**
+     * This method starts the HWE test pipeline
+     */
     public void sparkStatisticer(){
         SparkHWEPipe sHPipe = new SparkHWEPipe();
         sHPipe.setParam(param);
         sHPipe.spark();
     }
 
+    /**
+     * This method starts the decompression pipeline
+     */
     public void sparkDecompresser(){
         SparkDecompressPipe sDPipe = new SparkDecompressPipe();
         sDPipe.setParam(param);
         sDPipe.spark();
     }
 
+    /**
+     * This method starts the cluster pipeline
+     */
     public void sparkCluster(){
         SparkClusterPipe sCPipe = new SparkClusterPipe();
         sCPipe.setParam(param);
         sCPipe.spark();
     }
 
+    /**
+     * This method starts the correlation pipeline
+     */
     public void sparkCorrelationer(){
         SparkCorrelationPipe sCPipe = new SparkCorrelationPipe();
         sCPipe.setParam(param);
         sCPipe.spark();
     }
 
+    /**
+     * This method starts the chi-square test pipeline
+     */
     public void sparkChisquareTester(){
         SparkChiSquarePipe sCPipe = new SparkChiSquarePipe();
         sCPipe.setParam(param);
         sCPipe.spark();
     }
 
+    /**
+     * This method starts the regression pipeline
+     */
     public void sparkRegressioner(){
         SparkReductionPipe sRPipe = new SparkReductionPipe();
         sRPipe.setParam(param);
         sRPipe.spark();
     }
 
+    /**
+     * This method sets a buffer for loading fastq units.
+     *
+     * @param inputFastqUnitBuffer a buffer for reading fastq units.
+     */
     public void setFastqUnitBuffer(FastqUnitBuffer inputFastqUnitBuffer){
         this.inputFastqUnitBuffer = inputFastqUnitBuffer;
     }
 
+    /**
+     * This method sets correspond parameters.
+     *
+     * @param param {@link DefaultParam} is the object for command line parameters.
+     */
     public void setParameter(DefaultParam param){
         this.param = param;
     }
 
+    /**
+     * This method sets input buffer reader.
+     *
+     * @param inputBufferedReader a {@link BufferedReader} to read input data.
+     */
     public void setInput(BufferedReader inputBufferedReader){
 
     }
 
+    /**
+     * This method sets output buffer writer.
+     *
+     * @param outputBufferedWriter a {@link BufferedWriter} to write to an output file.
+     */
     public void setOutput(BufferedWriter outputBufferedWriter){
         this.outputBufferedWriter = outputBufferedWriter;
     }

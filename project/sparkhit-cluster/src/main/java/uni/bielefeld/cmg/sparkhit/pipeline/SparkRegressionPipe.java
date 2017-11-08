@@ -23,27 +23,33 @@ import java.io.Serializable;
 
 /**
  * Created by Liren Huang on 17/03/16.
- * <p/>
- * SparkHit
- * <p/>
+ *
+ *      SparkHit
+ *
  * Copyright (c) 2015-2015
  * Liren Huang      <huanglr at cebitec.uni-bielefeld.de>
- * <p/>
+ *
  * SparkHit is free software: you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the Free
  * Software Foundation, either version 3 of the License, or (at your option)
  * any later version.
- * <p/>
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; Without even the implied warranty of MERCHANTABILITY or
  * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
  * more detail.
- * <p/>
+ *
  * You should have received a copy of the GNU General Public License along
  * with this program. If not, see <http://www.gnu.org/licenses>.
  */
 
-
+/**
+ * Returns an object for running the Sparkhit regression pipeline.
+ *
+ * @author  Liren Huang
+ * @version %I%, %G%
+ * @see
+ */
 public class SparkRegressionPipe implements Serializable{
     private DefaultParam param;
     private InfoDumper info = new InfoDumper();
@@ -56,6 +62,9 @@ public class SparkRegressionPipe implements Serializable{
         return conf;
     }
 
+    /**
+     * runs the Sparkhit pipeline using Spark RDD operations.
+     */
     public void spark() {
         SparkConf conf = setSparkConfiguration();
         info.readMessage("Initiating Spark context ...");
@@ -70,6 +79,12 @@ public class SparkRegressionPipe implements Serializable{
 
         class VariantToLabeledPoint implements Function<String, LabeledPoint> {
 
+            /**
+             * This function implements the Spark {@link Function}.
+             *
+             * @param s an input line of the VCF file.
+             * @return {@link LabeledPoint}.
+             */
             public LabeledPoint call(String s) {
 
                 if (s.startsWith("#")) {
@@ -100,6 +115,12 @@ public class SparkRegressionPipe implements Serializable{
         }
 
         class Filter implements Function<LabeledPoint, Boolean>, Serializable{
+            /**
+             * This function implements the Spark {@link Function}.
+             *
+             * @param s an input line of the regression result.
+             * @return to be filtered or not.
+             */
             public Boolean call(LabeledPoint s){
                 if (s != null){
                     return true;
@@ -145,6 +166,11 @@ public class SparkRegressionPipe implements Serializable{
         sc.stop();
     }
 
+    /**
+     * This method sets the input parameters.
+     *
+     * @param param {@link DefaultParam}.
+     */
     public void setParam(DefaultParam param){
         this.param = param;
     }

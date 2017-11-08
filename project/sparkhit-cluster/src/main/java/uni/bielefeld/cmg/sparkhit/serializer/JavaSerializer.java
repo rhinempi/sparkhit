@@ -27,12 +27,25 @@ import java.io.*;
  * You should have received a copy of the GNU General Public License along
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+
+/**
+ * Returns an object for serializing objects using default Java serializer.
+ *
+ * @author  Liren Huang
+ * @version %I%, %G%
+ * @see
+ */
 public class JavaSerializer /*implements ShJavaSerializer*/{
 
     private ObjectOutputStream out;
     private ObjectInputStream in;
     private InfoDumper info = new InfoDumper();
 
+    /**
+     * This method writes object bits into output stream.
+     *
+     * @param object the object to be write out.
+     */
     public void writeOutObject(Object object){
         try{
             out.writeObject(object);
@@ -44,6 +57,12 @@ public class JavaSerializer /*implements ShJavaSerializer*/{
         }
     }
 
+    /**
+     * This method serializes an object to an assigned file.
+     *
+     * @param object the object to be serialized.
+     * @param outFile the full path to which the serialized bits store.
+     */
     public void javaSerialization(Object object, String outFile){
         ObjectFileOutput objectOut = new ObjectFileOutput();
         objectOut.setOutput(outFile, false);
@@ -51,6 +70,11 @@ public class JavaSerializer /*implements ShJavaSerializer*/{
         writeOutObject(object);
     }
 
+    /**
+     * Return the input object from input deserialization stream.
+     *
+     * @return the object that is been deserialized.
+     */
     public Object readInObject(){
         try {
             return in.readObject();
@@ -67,6 +91,12 @@ public class JavaSerializer /*implements ShJavaSerializer*/{
         return null;
     }
 
+    /**
+     * This method deserializes an input file into an object.
+     *
+     * @param inFile the full path of an input file.
+     * @return the object that is been deserialized.
+     */
     public Object javaDeSerialization(String inFile){
         ObjectFileInput objectIn = new ObjectFileInput();
         objectIn.setInput(inFile);
@@ -76,10 +106,22 @@ public class JavaSerializer /*implements ShJavaSerializer*/{
         return inObject;
     }
 
+    /**
+     * This method serializes an object using kryo serializer.
+     *
+     * @param object the object to be serialized.
+     * @param outFile the full path to which the serialized bits store.
+     */
     public void kryoSerialization(Object object, String outFile){
 
     }
 
+    /**
+     * Return the input object from input deserialization stream.
+     *
+     * @param inFile the full path of an input file.
+     * @return the object that is been deserialized.
+     */
     public Object kryoDeSerialization(String inFile){
         return null;
     }

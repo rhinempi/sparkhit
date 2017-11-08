@@ -26,7 +26,19 @@ import uni.bielefeld.cmg.sparkhit.util.DefaultParam;
  *
  */
 
-
+/**
+ * This is an interface for reference index management.
+ *
+ * @author  Liren Huang
+ * @version %I%, %G%
+ * @see
+ */
 public interface RefManager {
+
+    /**
+     * This is an abstract method for passing input parameters to each class.
+     *
+     * @param param {@link DefaultParam}.
+     */
     void setParameter(DefaultParam param);
 }

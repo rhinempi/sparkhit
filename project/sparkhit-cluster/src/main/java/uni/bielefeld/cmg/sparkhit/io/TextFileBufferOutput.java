@@ -23,6 +23,16 @@ import java.io.*;
  * You should have received a copy of the GNU General Public License along
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+
+/**
+ * Returns an object for buffering output files. This class is
+ * used in local mode only. For cluster mode, Spark "textFile" function
+ * is used to access input Fastq file.
+ *
+ * @author  Liren Huang
+ * @version %I%, %G%
+ * @see
+ */
 public class TextFileBufferOutput implements OutputFileManager {
     public String path;
     public File outputPath;
@@ -30,6 +40,10 @@ public class TextFileBufferOutput implements OutputFileManager {
     public OutputStreamWriter outputStreamWriter;
     public BufferedWriter outputBufferWriter;
 
+    /**
+     * A constructor that construct an object of {@link TextFileBufferOutput} class.
+     * No constructor option needed.
+     */
     public TextFileBufferOutput(){
         /**
          *
@@ -37,24 +51,27 @@ public class TextFileBufferOutput implements OutputFileManager {
     }
 
     /**
+     * Returns the preset BufferedWriter.
      *
-     * @return return BufferWriter for output text
+     * @return return {@link BufferedWriter} for output text.
      */
     public BufferedWriter getOutputBufferWriter(){
         return outputBufferWriter;
     }
 
     /**
+     * Returns the preset OutputStreamWriter.
      *
-     * @return
+     * @return {@link OutputStreamWriter}.
      */
     public OutputStreamWriter getOutputStreamWriter(){
         return outputStreamWriter;
     }
 
     /**
+     * Returns the preset FileOutputStream.
      *
-     * @return
+     * @return {@link FileOutputStream}.
      */
     public FileOutputStream getOutputFileStream(){
         return outputFileStream;
@@ -62,7 +79,7 @@ public class TextFileBufferOutput implements OutputFileManager {
 
     /**
      *
-     * set class BufferWriter object outputBufferWriter
+     * set class {@link BufferedWriter} object outputBufferWriter.
      */
     public void setBufferWriter(){
         this.outputBufferWriter = new BufferedWriter(outputStreamWriter);
@@ -70,16 +87,16 @@ public class TextFileBufferOutput implements OutputFileManager {
 
     /**
      *
-     * set class OutputStreamWriter object outputStreamWriter
+     * set class {@link OutputStreamWriter} object outputStreamWriter.
      */
     public void setOutputStreamWriter(){
         this.outputStreamWriter = new OutputStreamWriter(outputFileStream);
     }
 
     /**
-     * set class FileOutputStream object outputFileStream
+     * set class {@link FileOutputStream} object outputFileStream.
      *
-     * @param overwrite stands for whether overwrite the log file or not
+     * @param overwrite stands for whether overwrite the output file or not.
      */
     public void setFileOutputStream(boolean overwrite){
         try{
@@ -91,18 +108,19 @@ public class TextFileBufferOutput implements OutputFileManager {
     }
 
     /**
-     * set class File object outputPath
+     * This method sets the full path of an output file.
      *
-     * @param overwrite
+     * @param overwrite whether to overwrite the existing file or not.
      */
     private void setOutputFile(boolean overwrite){
         this.outputPath = new File(path).getAbsoluteFile();
     }
 
     /**
+     * This method sets up an output file stream for an output file.
      *
-     * @param outputFile out put file path
-     * @param overwrite  whether overwrite existing file
+     * @param outputFile the full path of an output file.
+     * @param overwrite  whether to overwrite the existing file or not.
      */
     public void setOutput(String outputFile, boolean overwrite){
         this.path = outputFile;
@@ -113,17 +131,18 @@ public class TextFileBufferOutput implements OutputFileManager {
     }
 
     /**
-     * Override interface method
+     * This method sets up an output file buffer based on an output file path.
      *
-     * @param outputFile is the out put file path in String.
+     * @param outputFile the full path of an output file.
      */
     public void bufferOutputFile(String outputFile){
         this.path = outputFile;
     }
 
     /**
+     * This method sets up an input file buffer based on an input file path.
      *
-     * @param inputFile
+     * @param inputFile the full path of an input file.
      */
     public void bufferInputFile(String inputFile){
         /**

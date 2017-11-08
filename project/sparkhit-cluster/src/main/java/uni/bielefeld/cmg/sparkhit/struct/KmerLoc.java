@@ -23,11 +23,22 @@ import java.io.Serializable;
  * You should have received a copy of the GNU General Public License along
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+
+/**
+ * A data structure class that stores the loci of all k-mers on the reference genome.
+ *
+ * @author  Liren Huang
+ * @version %I%, %G%
+ * @see
+ */
 public class KmerLoc implements Serializable {
     public int n;
     public int[] id;
     public int[] loc;
 
+    /**
+     * A constructor that construct an object of {@link KmerLoc} class.
+     */
     public KmerLoc(){
         /**
          * a data structure storing kmer id and loci

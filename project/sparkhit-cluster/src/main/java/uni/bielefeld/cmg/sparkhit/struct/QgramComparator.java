@@ -24,7 +24,22 @@ import java.util.Comparator;
  * You should have received a copy of the GNU General Public License along
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+
+/**
+ * A comparator class for comparing the q-gram scores of all the q-grams.
+ *
+ * @author  Liren Huang
+ * @version %I%, %G%
+ * @see
+ */
 public class QgramComparator implements Comparator<Qgram>, Serializable {
+    /**
+     * a compare method that compares the q-gram scores of two q-grams.
+     *
+     * @param o1 the first q-gram.
+     * @param o2 the seconde q-gram.
+     * @return the result of comparison.
+     */
     public int compare(Qgram o1, Qgram o2){
         if (o1.qGrams == o2.qGrams){
             return 0;

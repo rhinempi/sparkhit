@@ -32,8 +32,22 @@ import java.io.IOException;
  * with this program. If not, see <http://www.gnu.org/licenses>.
  */
 
-
+/**
+ * Main Java method specified in the Manifest file for running
+ * Sparkhit-regressioner. It can also be specified at the input options
+ * of Spark cluster mode during submission.
+ *
+ * @author  Liren Huang
+ * @version %I%, %G%
+ * @see
+ */
 public class MainOfRegressioner {
+    /**
+     * This is the main Java method that starts the program and receives input
+     * arguments.
+     *
+     * @param args a space separated command line arguments.
+     */
     public static void main(String[] args){
         InfoDumper info = new InfoDumper();
         info.readParagraphedMessages("SparkHit Clustering initiating ... \ninterpreting parameters.");

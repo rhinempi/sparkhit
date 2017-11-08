@@ -23,11 +23,22 @@ import java.io.Serializable;
  * You should have received a copy of the GNU General Public License along
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+
+/**
+ * A data structure class that stores the locus of each binary block.
+ *
+ * @author  Liren Huang
+ * @version %I%, %G%
+ * @see
+ */
 public class Block implements Serializable{
     public int id = 0;
     public int begin = 0;
     public int end =0;
 
+    /**
+     * A constructor that construct an object of {@link Block} class.
+     */
     public Block(){
         /**
          * a data structure storing block info

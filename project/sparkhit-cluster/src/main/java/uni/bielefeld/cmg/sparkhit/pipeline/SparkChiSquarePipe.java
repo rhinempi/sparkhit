@@ -15,27 +15,33 @@ import java.io.Serializable;
 
 /**
  * Created by Liren Huang on 17/03/16.
- * <p/>
- * SparkHit
- * <p/>
+ *
+ *      SparkHit
+ *
  * Copyright (c) 2015-2015
  * Liren Huang      <huanglr at cebitec.uni-bielefeld.de>
- * <p/>
+ *
  * SparkHit is free software: you can redistribute it and/or modify it
  * under the terms of the GNU General Public License as published by the Free
  * Software Foundation, either version 3 of the License, or (at your option)
  * any later version.
- * <p/>
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; Without even the implied warranty of MERCHANTABILITY or
  * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
  * more detail.
- * <p/>
+ *
  * You should have received a copy of the GNU General Public License along
  * with this program. If not, see <http://www.gnu.org/licenses>.
  */
 
-
+/**
+ * Returns an object for running the Sparkhit Chi-square test pipeline.
+ *
+ * @author  Liren Huang
+ * @version %I%, %G%
+ * @see
+ */
 public class SparkChiSquarePipe implements Serializable{
     private DefaultParam param;
     private InfoDumper info = new InfoDumper();
@@ -48,6 +54,9 @@ public class SparkChiSquarePipe implements Serializable{
         return conf;
     }
 
+    /**
+     * runs the Sparkhit pipeline using Spark RDD operations.
+     */
     public void spark() {
         SparkConf conf = setSparkConfiguration();
         info.readMessage("Initiating Spark context ...");
@@ -59,6 +68,12 @@ public class SparkChiSquarePipe implements Serializable{
         JavaRDD<String> vcfRDD = sc.textFile(param.inputFqPath);
 
         class VariantToPValue implements Function<String, String> {
+            /**
+             * This function implements the Spark {@link Function}.
+             *
+             * @param s an input line of a VCF file.
+             * @return the P value of the Chi-square test.
+             */
             public String call(String s) {
 
                 if (s.startsWith("#")) {
@@ -117,6 +132,12 @@ public class SparkChiSquarePipe implements Serializable{
         }
 
         class TabVariantToPValue implements Function<String, String> {
+            /**
+             * This function implements the Spark {@link Function}.
+             *
+             * @param s an input line of a tabular file.
+             * @return the P value of the Chi-square test.
+             */
             public String call(String s) {
                 String[] array = s.split("\\t");
                 String prefix="";
@@ -136,6 +157,13 @@ public class SparkChiSquarePipe implements Serializable{
         }
 
         class Filter implements Function<String, Boolean>, Serializable{
+
+            /**
+             * This function implements the Spark {@link Function}.
+             *
+             * @param s an input line of the reporter`s result.
+             * @return to be filtered or not.
+             */
             public Boolean call(String s){
                 if (s != null){
                     return true;
@@ -168,6 +196,11 @@ public class SparkChiSquarePipe implements Serializable{
         sc.stop();
     }
 
+    /**
+     * This method sets the input parameters.
+     *
+     * @param param {@link DefaultParam}.
+     */
     public void setParam(DefaultParam param){
         this.param = param;
     }

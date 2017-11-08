@@ -28,7 +28,16 @@ import java.io.IOException;
  * with this program. If not, see <http://www.gnu.org/licenses>.
  */
 
-
+/**
+ * Returns an object for buffering Fastq files. Providing Fastq
+ * unit buffer for multi-thread Fastq input stream. This class is used
+ * in local mode only. For cluster mode, Spark "textFile" function
+ * is used to access input Fastq file.
+ *
+ * @author  Liren Huang
+ * @version %I%, %G%
+ * @see
+ */
 public class FastqUnitBuffer implements NGSfileUnitBuffer{
 
     private int unitCount = 1000;
@@ -38,6 +47,11 @@ public class FastqUnitBuffer implements NGSfileUnitBuffer{
     public readInfo[] reads;
     public BufferedReader inputBufferedReader;
 
+    /**
+     * This method loads 1000 fastq units into buffer for streaming
+     * fastq reads. Each fastq unit is a four line string providing
+     * essential information for a sequencing unit.
+     */
     public void loadBufferedFastq(){
         try {
             readInfo read = new readInfo();
@@ -94,25 +108,43 @@ public class FastqUnitBuffer implements NGSfileUnitBuffer{
         }
     }
 
+    /**
+     * A constructor that sets input BufferedReader for buffering input Fastq files.
+     *
+     * @param inputBufferedReader Java {@link BufferedReader}.
+     */
     public FastqUnitBuffer(BufferedReader inputBufferedReader){
         this.inputBufferedReader = inputBufferedReader;
     }
 
+    /**
+     * This constructor is deprecated
+     *
+     * @param inputBufferedReader
+     * @param unitCount
+     */
     public FastqUnitBuffer(BufferedReader inputBufferedReader, int unitCount){
         this.inputBufferedReader = inputBufferedReader;
         this.unitCount = unitCount;
         this.pointerInt = unitCount;
     }
 
+    /**
+     * This method adds a read into the Fastq unit buffer.
+     *
+     * @param read {@link readInfo} a type of data structure class describing a sequencing read.
+     * @param unitsMark the count of buffered Fastq units.
+     */
     public void addReadUnit(readInfo read, int unitsMark){
         int unitsMarkIndex = unitsMark -1;
         reads[unitsMarkIndex] = read;
     }
 
     /**
-     * lock unit output
+     * This method provides a thread safe access point for loading Fastq
+     * reads.
      *
-     * @return
+     * @return {@link readInfo} a type of data structure class describing a sequencing read
      */
     public synchronized readInfo nextUnit(){
         pointerInt++;

@@ -34,7 +34,15 @@ import java.io.IOException;
  * with this program. If not, see <http://www.gnu.org/licenses>.
  */
 
-
+/**
+ * Returns an object for running fast mode of fragment recruitment. This class is
+ * used in local mode only. For cluster mode, Spark RDD is used to parallelize
+ * the tasks.
+ *
+ * @author  Liren Huang
+ * @version %I%, %G%
+ * @see
+ */
 public class FastPipe implements Pipeline {
     private DefaultParam param;
     private BufferedReader InputRead;
@@ -44,6 +52,11 @@ public class FastPipe implements Pipeline {
     private readInfo read = new readInfo();
     private TextFileBufferOutput outputBufferedFile = new TextFileBufferOutput();
 
+    /**
+     * This method writes a line of message to the output stream.
+     *
+     * @param outputM a message to be written.
+     */
     public void writeFastqLine(String outputM){
         try {
             OutputWrite.write(outputM);
@@ -54,6 +67,9 @@ public class FastPipe implements Pipeline {
         }
     }
 
+    /**
+     * This method changes the format of the sequencing data.
+     */
     public void runChangeFormat() {
         TextFileBufferInput inputFileBuffer = new TextFileBufferInput();
         inputFileBuffer.setInput(param.inputFqPath);
@@ -82,14 +98,29 @@ public class FastPipe implements Pipeline {
     }
 
 
+    /**
+     * This method sets the parameters.
+     *
+     * @param param {@link DefaultParam} is the object for command line parameters.
+     */
     public void setParameter(DefaultParam param){
         this.param = param;
     }
 
+    /**
+     * This method sets the buffer for reading the input data.
+     *
+     * @param InputRead a {@link BufferedReader} to read input data.
+     */
     public void setInput(BufferedReader InputRead){
         this.InputRead = InputRead;
     }
 
+    /**
+     * This method sets the buffer for writing the output data.
+     *
+     * @param OutputWrite a {@link BufferedWriter} to write to an output file.
+     */
     public void setOutput(BufferedWriter OutputWrite){
         this.OutputWrite = OutputWrite;
     }

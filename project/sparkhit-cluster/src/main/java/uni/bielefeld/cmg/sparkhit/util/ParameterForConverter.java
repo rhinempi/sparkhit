@@ -28,10 +28,24 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Returns an object for parsing the input options for Sparkhit-converter.
+ *
+ * @author  Liren Huang
+ * @version %I%, %G%
+ * @see
+ */
 public class ParameterForConverter {
     private String[] arguments;
     private InfoDumper info = new InfoDumper();
 
+    /**
+     * A constructor that construct an object of {@link Parameter} class.
+     *
+     * @param arguments an array of strings containing commandline options
+     * @throws IOException
+     * @throws ParseException
+     */
     public ParameterForConverter(String[] arguments) throws IOException, ParseException {
         this.arguments = arguments;
     }
@@ -52,7 +66,9 @@ public class ParameterForConverter {
 
     private static final Map<String, Integer> parameterMap = new HashMap<String, Integer>();
 
-
+    /**
+     * This method places all input parameters into a hashMap.
+     */
     public void putParameterID(){
         int o =0;
 
@@ -65,13 +81,16 @@ public class ParameterForConverter {
         parameterMap.put(HELP2, o++);
     }
 
+    /**
+     * This method adds descriptions to each parameter.
+     */
     public void addParameterInfo(){
 
 
 		/* use Object parameter of Options class to store parameter information */
 
         parameter.addOption(OptionBuilder.withArgName("input fastq file")
-                .hasArg().withDescription("Input spark hit result file in tabular format. Accept wild card, s3n schema, hdfs schema")
+                .hasArg().withDescription("Input Next Generation Sequencing (NGS) data, fastq file format, four line per unit")
                 .create(INPUT_FASTQ));
 
         parameter.addOption(OptionBuilder.withArgName("output file")
@@ -101,6 +120,13 @@ public class ParameterForConverter {
     }
 
     /* main method */
+
+    /**
+     * This method parses input commandline arguments and sets correspond
+     * parameters.
+     *
+     * @return {@link DefaultParam}.
+     */
     public DefaultParam importCommandLine() {
 
         /* Assigning Parameter ID to an ascending number */

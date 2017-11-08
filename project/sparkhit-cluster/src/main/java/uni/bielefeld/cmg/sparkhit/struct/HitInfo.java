@@ -23,10 +23,21 @@ import java.io.Serializable;
  * You should have received a copy of the GNU General Public License along
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+
+/**
+ * A data structure class that stores the locus of each k-mer match.
+ *
+ * @author  Liren Huang
+ * @version %I%, %G%
+ * @see
+ */
 public class HitInfo implements Serializable {
     public int chr = 0;
     public int loc = 0;
 
+    /**
+     * A constructor that construct an object of {@link HitInfo} class.
+     */
     public HitInfo(){
         /**
          * a data structure for storing K-mer hit info

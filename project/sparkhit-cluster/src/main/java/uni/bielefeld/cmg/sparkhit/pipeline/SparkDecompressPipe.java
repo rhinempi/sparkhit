@@ -32,7 +32,13 @@ import java.io.Serializable;
  * with this program. If not, see <http://www.gnu.org/licenses>.
  */
 
-
+/**
+ * Returns an object for running the Sparkhit decompression pipeline.
+ *
+ * @author  Liren Huang
+ * @version %I%, %G%
+ * @see
+ */
 public class SparkDecompressPipe implements Serializable{
     private DefaultParam param;
     private InfoDumper info = new InfoDumper();
@@ -45,6 +51,9 @@ public class SparkDecompressPipe implements Serializable{
         return conf;
     }
 
+    /**
+     * runs the Sparkhit pipeline using Spark RDD operations.
+     */
     public void spark() {
         SparkConf conf = setSparkConfiguration();
         info.readMessage("Initiating Spark context ...");
@@ -56,6 +65,12 @@ public class SparkDecompressPipe implements Serializable{
         JavaRDD<String> FastqRDD = sc.textFile(param.inputFqPath);
 
         class LineToFastq implements Function<String, String>, Serializable{
+            /**
+             * This function implements the Spark {@link Function}.
+             *
+             * @param s a line of the input line-based file.
+             * @return the concatenated fastq unit.
+             */
             public String call(String s){
                 String[] fourMusketeers = s.split("\\t");
                 if (fourMusketeers[3]!=null) {
@@ -68,6 +83,12 @@ public class SparkDecompressPipe implements Serializable{
         }
 
         class RDDUnitFilter implements Function<String, Boolean>, Serializable{
+            /**
+             * This function implements the Spark {@link Function}.
+             *
+             * @param s an input line of the filtering result.
+             * @return to be filtered or not.
+             */
             public Boolean call(String s){
                 if (s != null){
                     return true;
@@ -80,6 +101,13 @@ public class SparkDecompressPipe implements Serializable{
         class FastqFilterWithQual implements Function<String, String>, Serializable{
             String line = "";
             int lineMark = 0;
+
+            /**
+             * This function implements the Spark {@link Function}.
+             *
+             * @param s a line of the input fastq file.
+             * @return the concatenated fastq unit.
+             */
             public String call(String s) {
                 if (lineMark == 2) {
                     lineMark++;
@@ -106,6 +134,13 @@ public class SparkDecompressPipe implements Serializable{
         class FastqFilterToFasta implements Function<String, String>, Serializable{
             String line = "";
             int lineMark = 0;
+
+            /**
+             * This function implements the Spark {@link Function}.
+             *
+             * @param s a line of the input fastq file.
+             * @return the concatenated fasta unit.
+             */
             public String call(String s){
                 if (s.startsWith("@")){
                     line = s;
@@ -123,6 +158,13 @@ public class SparkDecompressPipe implements Serializable{
         }
 
         class LineFilterToFasta implements Function<String, String>, Serializable{
+
+            /**
+             * This function implements the Spark {@link Function}.
+             *
+             * @param s a line of the input line-based file.
+             * @return the concatenated fasta unit.
+             */
             public String call(String s){
                 String[] fourMusketeers = s.split("\\t");
                 if (fourMusketeers[1]!=null) {
@@ -171,6 +213,11 @@ public class SparkDecompressPipe implements Serializable{
         sc.stop();
     }
 
+    /**
+     * This method sets the input parameters.
+     *
+     * @param param {@link DefaultParam}.
+     */
     public void setParam(DefaultParam param){
         this.param = param;
     }

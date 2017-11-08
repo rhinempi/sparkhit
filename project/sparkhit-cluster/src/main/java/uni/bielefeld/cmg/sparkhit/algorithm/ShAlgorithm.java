@@ -21,6 +21,14 @@ package uni.bielefeld.cmg.sparkhit.algorithm;
  * You should have received a copy of the GNU General Public License along
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+
+/**
+ * An interface class for varies algorithms.
+ *
+ * @author  Liren Huang
+ * @version %I%, %G%
+ * @see
+ */
 public interface ShAlgorithm {
     /**
      * spark hit algorithm package

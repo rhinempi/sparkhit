@@ -27,7 +27,15 @@ import java.io.*;
  * with this program. If not, see <http://www.gnu.org/licenses>.
  */
 
-
+/**
+ * Returns an object for buffering input files. This class is
+ * used in local mode only. For cluster mode, Spark "textFile" function
+ * is used to access input Fastq file.
+ *
+ * @author  Liren Huang
+ * @version %I%, %G%
+ * @see
+ */
 public class TextFileBufferInput implements InputFileManager{
     private String inputFile;
     private File inputPath;
@@ -37,6 +45,10 @@ public class TextFileBufferInput implements InputFileManager{
 
     private InfoDumper info = new InfoDumper();
 
+    /**
+     * A constructor that construct an object of {@link TextFileBufferInput} class.
+     * No constructor option needed.
+     */
     public TextFileBufferInput(){
         /**
          * Read an input path and set an input buffered reader
@@ -48,45 +60,48 @@ public class TextFileBufferInput implements InputFileManager{
     }
 
     /**
+     * Returns the preset BufferedReader.
      *
-     * @return
+     * @return {@link BufferedReader}.
      */
     public BufferedReader getBufferReader(){
         return inputBufferReader;
     }
 
     /**
+     * Returns the preset InputStreamReade.
      *
-     * @return
+     * @return {@link InputStreamReader}.
      */
     public InputStreamReader getInputStreamReader(){
         return inputStreamReader;
     }
 
     /**
+     * Returns the preset FileInputStream.
      *
-     * @return
+     * @return {@link FileInputStream}.
      */
     public FileInputStream getInputFileStream(){
         return inputFileStream;
     }
 
     /**
-     *
+     * This method sets the BufferedReader based on the preset {@link InputStreamReader}.
      */
     public void setBufferReader(){
         this.inputBufferReader = new BufferedReader(inputStreamReader);
     }
 
     /**
-     *
+     * This method sets the InputStreamReader based on the preset {@link FileInputStream}.
      */
     private void setInputStreamReader(){
         this.inputStreamReader = new InputStreamReader(inputFileStream);
     }
 
     /**
-     *
+     * This method sets the FileInputStream based on the full path of an input file.
      */
     private void setFileInputStream(){
         try {
@@ -98,12 +113,18 @@ public class TextFileBufferInput implements InputFileManager{
     }
 
     /**
-     *
+     * This method sets the full path of an input file.
      */
     private void setInputFile(){
         this.inputPath = new File(inputFile);
     }
 
+    /**
+     * This method checks the path of an input file. It classifies the
+     * location (via URL) of an input file.
+     *
+     * @param cFile the full
+     */
     public void checkFile(String cFile){
 
         if (cFile.startsWith("s3")){
@@ -134,7 +155,7 @@ public class TextFileBufferInput implements InputFileManager{
             if (!inputcFile.exists()){
                 info.readMessage("However, it is not there, please check it again");
                 info.screenDump();
-                System.exit(0);
+                throw new RuntimeException("Input file is not in the assigned path.");
             }else {
                 info.readMessage("Reading fastq file using FastqUnitBuffer");
                 info.screenDump();
@@ -143,8 +164,9 @@ public class TextFileBufferInput implements InputFileManager{
     }
 
     /**
+     * This method sets up an input file stream for an input file.
      *
-     * @param inputFile
+     * @param inputFile the full path of an input file.
      */
     public void setInput(String inputFile){
         this.inputFile = inputFile;
@@ -156,6 +178,7 @@ public class TextFileBufferInput implements InputFileManager{
     }
 
     /**
+     * This method sets up an input file buffer based on an input file path.
      *
      * @param inputFile is the input text file in String
      */
@@ -164,6 +187,7 @@ public class TextFileBufferInput implements InputFileManager{
     }
 
     /**
+     * This method sets up an output file buffer based on an output file path.
      *
      * @param OutputFile
      */

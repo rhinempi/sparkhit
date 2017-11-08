@@ -30,26 +30,33 @@ import java.io.BufferedWriter;
  */
 
 
+/**
+ * This is an interface for pipelines of each Sparkhit application.
+ *
+ * @author  Liren Huang
+ * @version %I%, %G%
+ * @see
+ */
 public interface Pipeline {
 
     /**
-     * Set correspond parameter
+     * Sets correspond parameter.
      *
-     * @param param is the object for command line parameters
+     * @param param {@link DefaultParam} is the object for command line parameters.
      */
     void setParameter(DefaultParam param);
 
     /**
-     * Set input buffer reader
+     * Sets input buffer reader.
      *
-     * @param InputRead
+     * @param InputRead a {@link BufferedReader} to read input data.
      */
     void setInput(BufferedReader InputRead);
 
     /**
-     * Set output buffer writer
+     * Sets output buffer writer.
      *
-     * @param OutputWrite
+     * @param OutputWrite a {@link BufferedWriter} to write to an output file.
      */
     void setOutput(BufferedWriter OutputWrite);
 }

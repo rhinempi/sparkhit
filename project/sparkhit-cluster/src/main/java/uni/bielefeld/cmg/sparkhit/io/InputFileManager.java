@@ -22,22 +22,31 @@ package uni.bielefeld.cmg.sparkhit.io;
  * You should have received a copy of the GNU General Public License along
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+
+/**
+ * This is an interface for managing input files via different input
+ * buffers.
+ *
+ * @author  Liren Huang
+ * @version %I%, %G%
+ * @see
+ */
 public interface InputFileManager extends FileManager{
     /**
      * sub interface for managing input files
      */
 
     /**
-     * BufferedReader for reading input textFile
+     * This is an abstract method for buffering input stream of input files.
      *
-     * @param inputFile is the input text file in String
+     * @param inputFile the full path of an input file.
      */
     void bufferInputFile(String inputFile);
 
     /**
-     * Please override this method in null
+     * This is an abstract method for buffering output stream of output files.
      *
-     * @param outputFile
+     * @param outputFile the full path of an output file.
      */
     void bufferOutputFile(String outputFile);
 }

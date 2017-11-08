@@ -23,10 +23,21 @@ import java.io.Serializable;
  * You should have received a copy of the GNU General Public License along
  * with this program. If not, see <http://www.gnu.org/licenses/>.
  */
+
+/**
+ * A data structure class that stores a k-mer block in binary.
+ *
+ * @author  Liren Huang
+ * @version %I%, %G%
+ * @see
+ */
 public class BinaryBlock implements Serializable {
     public int n =0;
     public int[] s;
 
+    /**
+     * A constructor that construct an object of {@link BinaryBlock} class.
+     */
     public BinaryBlock(){
         /**
          * a data structure storing K-mer binary
