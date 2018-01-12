@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="UTF-8">
+    <title>Sparkhit</title>
+      <link rel="shortcut icon" type="image/x-icon" href="./images/sparkhit-logo.jpg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="stylesheets/normalize.css" media="screen">
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">
+  </head>
+  <body>
+    <section class="page-header">
+      <h1 class="project-name">Sparkhit</h1>
+      <h2 class="project-tagline">Sparkhit - a cloud ready platform for large scale genomic data analysis</h2>
+      <a href="index.html" class="btn">Home page</a>
+      <a href="example.html" class="btn">Getting started</a>
+      <a href="manual.html" class="btn">User manual</a>
+      <a href="javadoc/index.html" class="btn">&nbsp;&nbsp;Javadoc&nbsp;&nbsp;&nbsp;</a>
+        <br>
+      <a href="https://github.com/rhinempi/sparkhit/archive/latest.zip" class="btn">&nbsp;Download&nbsp;</a>
+      <a href="usecase.html" class="btn">Hands-on exer.</a>
+      <a href="https://github.com/rhinempi/sparkhit" class="btn">Source code&nbsp;</a>
+      <a href="https://github.com/rhinempi/sparkhit/issues" class="btn">Questions&nbsp;</a>
+    </section>
+    
+
+<div id="mySidenav" class="sidenav">
+  <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">×</a>
+  <a href="#welcome-to-sparkhit" style="font-size:18px">Welcome</a>
+  <a href="#how-it-works" style="font-size:18px">How it works</a>
+  <a href="#getting-started" style="font-size:18px">Getting started</a>
+  <a href="#use-your-tool"style="font-size:18px" >Use your own tool</a>
+  <a href="#parallelize-docker"style="font-size:18px" >Parallelizing Docker containers</a>
+  <a href="#setup-cluster" style="font-size:18px" >Setup cluster</a>
+  <a href="#support-or-contact" style="font-size:18px">Support or Contact</a>
+  <a href="#acknowledgement" style="font-size:18px">Acknowledgement</a>
+</div>
+
+<div id="main">
+  <span style="font-size:30px;cursor:pointer" onclick="openNav()">☰ Menu</span>
+</div>
+
+<script>
+function openNav() {
+    document.getElementById("mySidenav").style.width = "250px";
+    document.getElementById("main").style.marginLeft = "250px";
+    document.body.style.backgroundColor = "white";
+}
+function closeNav() {
+    document.getElementById("mySidenav").style.width = "0";
+    document.getElementById("main").style.marginLeft= "0";
+    document.body.style.backgroundColor = "white";
+}
+</script>
+
+
+    <section class="main-content">
+      <h3>
+<a id="welcome-to-sparkhit" class="anchor" href="#welcome-to-sparkhit" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Welcome to Sparkhit</h3>
+
+        <p><b>Sparkhit</b> is an open source distributed computational platform for analyzing large-scale genomic datasets. It is built on top of the <i>Apache</i> <a href="http://spark.apache.org/">Spark</a> and <a href="http://hadoop.apache.org/">Hadoop</a> framework, integrates a series of bioinformatics tools and methods. Here you can parallelize different analytical modules, such as sequence mapping, genotyping, gene expression quantification and taxonomy profiling. You can also use your own tools without changing the source code. For distributed parallel <i>De novo</i> genome assembly, please visit <a href="https://rhinempi.github.io/Reflexiv/" style="color:#E56717;"><b>Reflexiv</b></a>.</p>
+
+<h3>
+<a id="how-it-works" class="anchor" href="#how-it-works" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>How it works</h3>
+
+        <p><b>Sparkhit</b> uses Spark <a href="http://www.tutorialspoint.com/apache_spark/apache_spark_rdd.htm">RDD</a> (resilient distributed dataset) to distribute genomic datasets: sequencing data, mapping results, genotypes or expression profiles of genes or microbes. A <i>Spark</i> extended <a href="https://en.wikipedia.org/wiki/MapReduce">MapReduce</a> paradigm is used to analyse these datasets in parallel.</p>
+        <p>
+            Read more: <a href="https://academic.oup.com/bioinformatics/advance-article/doi/10.1093/bioinformatics/btx808/4747885">Analyzing large scale genomic data on the cloud with Sparkhit</a>.  <i> Bioinformatics. 2017</i>.
+        </p>
+        <p>
+        <img src="images/Poster-Sparkhit.png" style="width:100%;height:100%;">
+
+<h3>
+<a id="getting-started" class="anchor" href="#getting-started" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Getting started</h3>
+
+        <p>
+            Follow the <a href="example.html">tutorial</a> to run a simple <b>Sparkhit</b> application on your laptop.
+        </p>
+        
+
+<h3>
+<a id="use-your-tool" class="anchor" href="#use-your-tool" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Use your own tool</h3>
+
+<p><b>Sparkhit</b> facilitates users to use their own tools without changing the source code.</p>
+ <p>
+            Command: <br> </p>
+<pre>
+/usr/bin/sparkhit piper \ 
+  --driver-memory 4G \                                          ## Spark parameter
+  --executor-memory 8G \                                        ## Spark parameter
+  -input '/vol/human-microbiome-project/SRS*.tar.bz2' \         # Sparkhit parameter
+  -tool /vol/sparkhit-home/package/mycode/myMappingScript.sh \  # Sparkhit parameter
+  -toolparam "-reference /vol/singlecell/genome.fa" \           # Sparkhit parameter
+  -output /vol/mybucket/sparkhit/result                         # Sparkhit parameter
+</pre>
+        Read <a href="manual.html#piper-options">more</a>.
+        
+<h3>
+<a id="parallelize-docker" class="anchor" href="#parallelize-docker" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Parallelize Docker containers</h3>
+
+<p><b>Sparkhit</b> enables users to parallelize public biocontainers, e.g. <a href="https://www.docker.com/">Docker</a>.</p>
+ <p>
+            Command: <br> </p>
+<pre>
+/usr/bin/sparkhit piper \ 
+  --driver-memory 4G \                                       ## Spark parameter
+  --executor-memory 8G \                                     ## Spark parameter
+  -input '/vol/human-microbiome-project/SRS*.tar.bz2' \      # Sparkhit parameter
+  -tooldepand docker \                                       # Sparkhit parameter: use docker
+  -tool run \                                                # Sparkhit parameter: use docker run
+  -toolparam "-iv /sparkhitData/dataset:/tmp -w /tmp --rm \  # Sparkhit parameter: docker options
+  lh3lh3/bwa mem reference.fa /dev/stdin" \                  # Sparkhit parameter: docker image "bwa"            
+  -output /vol/mybucket/sparkhit/result                      # Sparkhit parameter
+</pre>
+        Read <a href="manual.html#piper-options">more</a>.
+        
+<h3>
+<a id="setup-cluster" class="anchor" href="#setup-cluster" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Setup cluster</h3>
+
+        <p>A Spark cluster is essential to scale-out (distribute to multiple compute nodes) <bold>Sparkhit</bold> workloads. There are three tools at your disposal: Spark-ec2, BiBiGrid, Amazon Elastic MapReduce (EMR). Follow the <a href="manual.html#setting-spark-sge">tutorial</a> to setup a Spark cluster on the Amazon cloud or a local cluster.</p>
+        
+<h3>
+<a id="support-or-contact" class="anchor" href="#support-or-contact" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Support or Contact</h3>
+
+<p>Having troubles using <bold>Sparkhit</bold>? Leave an issue on <a href="https://github.com/rhinempi/sparkhit/issues">github</a> or <a href="mailto:huanglr@cebitec.uni-bielefeld.de">contact support</a> and we will help you to sort it out.</p>
+        
+<h3>
+<a id="acknowledgement" class="anchor" href="#acknowledgement" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Acknowledgement</h3>
+        
+<p>We acknowledge all developers whose tools are used by Sparkhit.</p>
+        <a href="http://www.didy.uni-bielefeld.de/"><img src="images/didy-logo.png" style="width:259px;height:53px;"></a>
+        <a href="https://www.denbi.de/"><img src="images/deNBI-Logo.png" style="width:202px;height:53px;"></a>
+        <a href="https://aws.amazon.com/grants/"><img src="images/aws-logo.png" style="width:145px;height:53px;"></a>
+
+      <footer class="site-footer">
+          <span class="site-footer-owner"><a href="https://github.com/rhinempi/sparkhit">Sparkhit</a> is maintained by <a href="https://github.com/rhinempi">Liren Huang</a></span>
+
+        <span class="site-footer-credits">This page was generated based on a template from <a href="https://pages.github.com">GitHub Pages</a> using the <a href="https://github.com/jasonlong/cayman-theme">Cayman theme</a> by <a href="https://twitter.com/jasonlong">Jason Long</a>.</span>
+      </footer>
+
+    </section>
+
+  
+  </body>
+</html>

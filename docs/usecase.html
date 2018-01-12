@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="UTF-8">
+    <title>Sparkhit</title>
+      <link rel="shortcut icon" type="image/x-icon" href="./images/sparkhit-logo.jpg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="stylesheets/normalize.css" media="screen">
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">
+  </head>
+  <body>
+    <section class="page-header">
+      <h1 class="project-name">Sparkhit - the de.NBI summer school</h1>
+      <h2 class="project-tagline">Sparkhit hands on practice on the de.NBI Openstack cloud - 30.06.2017, Giessen</h2>
+      <a href="index.html" class="btn">Home page</a>
+      <a href="example.html" class="btn">Getting started</a>
+      <a href="manual.html" class="btn">User manual</a>
+      <a href="javadoc/index.html" class="btn">&nbsp;&nbsp;Javadoc&nbsp;&nbsp;&nbsp;</a>
+        <br>
+      <a href="https://github.com/rhinempi/sparkhit/archive/latest.zip" class="btn">&nbsp;Download&nbsp;</a>
+      <a href="usecase.html" class="btn">Hands-on exer.</a>
+      <a href="https://github.com/rhinempi/sparkhit" class="btn">Source code&nbsp;</a>
+      <a href="https://github.com/rhinempi/sparkhit/issues" class="btn">Questions&nbsp;</a>
+    </section>
+
+<div id="mySidenav" class="sidenav">
+  <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">×</a>
+  <a href="#Abstract" style="font-size:16px">Abstract</a>
+  <a href="#Slides" style="font-size:16px">Slides</a>
+  <a href="#Workflow" style="font-size:16px">Overview</a>
+    <a href="#File-download" style="font-size:16px">Download files</a>
+    <a href="#File-structure" style="font-size:16px">Directory tree</a>
+    <a href="#Preparation" style="font-size:16px">Preparation</a>
+    <a href="#Public-IP" style="font-size:16px">Public master IP</a>
+    <a href="#Private-IP" style="font-size:16px">Private master IP</a>
+  <a href="#Spark-shell" style="font-size:16px">Programming in Spark-shell</a>
+    <a href="#Step-1" style="font-size:16px">Step 1</a>
+    <a href="#Step-2" style="font-size:16px">Step 2</a>
+    <a href="#NGS-Sparkhit" style="font-size:16px">NGS data with Sparkhit</a>
+    <a href="#Step-3" style="font-size:16px">Step 3</a>
+    <a href="#Step-4" style="font-size:16px">Step 4</a>
+    <a href="#Step-5" style="font-size:16px">Step 5</a>
+  <a href="#Step-6" style="font-size:16px">Step 6</a>
+    <a href="#use-case" style="font-size:16px">Demo case</a>
+</div>
+
+<div id="main">
+  <span style="font-size:30px;cursor:pointer" onclick="openNav()">☰ Menu</span>
+</div>
+
+<script>
+function openNav() {
+    document.getElementById("mySidenav").style.width = "250px";
+    document.getElementById("main").style.marginLeft = "250px";
+    document.body.style.backgroundColor = "white";
+}
+function closeNav() {
+    document.getElementById("mySidenav").style.width = "0";
+    document.getElementById("main").style.marginLeft= "0";
+    document.body.style.backgroundColor = "white";
+}
+</script>
+
+    <section class="main-content">
+<h3>
+<a id="Abstract" class="anchor" href="#Abstract" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Abstract</h3>
+        <p>In this lecture, I will firstly give a brief introduction to the new parallel computational framework, Apache Spark, and its applications in Biology. The introduction will be mainly focused on Spark`s new data sharing primitive called Resilient Distributed Dataset (RDD) and its advantages compared to the conventional Apache Hadoop platform. In the hands on section, we will deploy our own Spark clusters on the de.NBI cloud and analyse NGS data using <i>Sparkhit</i>, a bioinformatics framework builds on top of the Spark platform. The hands-on practice should facilitate your understanding to the architecture and the underlying mechanism of Spark.
+        </p>
+
+<h3>
+<a id="Slides" class="anchor" href="#Slides" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Introductory slides</h3>
+        
+<div class="w3-content w3-display-container">
+  <img class="mySlides" src="images/slide1.jpg" style="width:100%">
+  <img class="mySlides" src="images/slide2.jpg" style="width:100%">
+  <img class="mySlides" src="images/slide3.jpg" style="width:100%">
+  <img class="mySlides" src="images/slide4.jpg" style="width:100%">
+    <img class="mySlides" src="images/slide5.jpg" style="width:100%">
+    <img class="mySlides" src="images/slide6.jpg" style="width:100%">
+    <img class="mySlides" src="images/slide7.jpg" style="width:100%">
+    <img class="mySlides" src="images/slide8.jpg" style="width:100%">
+    <img class="mySlides" src="images/slide9.jpg" style="width:100%">
+
+  <button class="w3-button w3-black w3-display-left" onclick="plusDivs(-1)">&#10094;</button>
+  <button class="w3-button w3-black w3-display-right" onclick="plusDivs(1)">&#10095;</button>
+</div>
+
+<script>
+var slideIndex = 1;
+showDivs(slideIndex);
+
+function plusDivs(n) {
+  showDivs(slideIndex += n);
+}
+
+function showDivs(n) {
+  var i;
+  var x = document.getElementsByClassName("mySlides");
+  if (n > x.length) {slideIndex = 1}    
+  if (n < 1) {slideIndex = x.length}
+  for (i = 0; i < x.length; i++) {
+     x[i].style.display = "none";  
+  }
+  x[slideIndex-1].style.display = "block";  
+}
+</script>
+<h3>
+<a id="Workflow" class="anchor" href="#Workflow" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Hands-on overview and workflow</h3>
+        <ul style="list-style-type:circle">
+            <li>Step 0: Download tools and datasets.</li>
+            <li>Step 1: RDD loading and caching. </li>
+            <li>Step 2: RDD repartitioning and distributing.</li>
+            <li>Step 3: mapping metagenomic data using Sparkhit algorithm.</li>
+            <li>Step 4: using Sparkhit to parallelize Docker tasks (bwa mapping).</li>
+            <li>Step 5: summarize mapping results of the two mapping tools.</li>
+            <li>Step 6: generate and visualize the mapping results. </li>
+        </ul>
+            
+        <a><img src="images/overview.jpg"></a>
+
+        <h3>
+<a id="File-download" class="anchor" href="#File-download" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Download tools and dataset from SWIFT</h3>
+        <ul style="list-style-type:circle">
+            <li>
+                Create a working directory at : <code>/vol/spool</code>, with command: <br>
+                <code>mkdir /vol/spool/sparkhit</code>. <br>
+                "/vol/spool" is a NFS volume shared between all slaves.
+            </li>
+            <li>
+                Change to "/vol/spool/sparkhit" directory with command: <br>
+                <code>cd /vol/spool/sparkhit</code> <br>
+            </li>
+            <li>
+                Download tools and dataset from SWIFT with command: <br>
+                <code>wget https://s3.computational.bio.uni-giessen.de/swift/v1/sparkhitTool/sparkhitSummer.tar.gz</code> <br>
+                Or, using SWIFT download command: <br>
+                <code>swift download sparkhitTool sparkhitSummer.tar.gz</code>
+            </li>
+            <li>
+                Decompress the downloaded package with command: <br>
+                <code>tar zxvf sparkhitSummer.tar.gz</code>
+            </li>
+        </ul>
+        
+        
+<h3>
+<a id="File-structure" class="anchor" href="#File-structure" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Directory tree: all file locations</h3>
+        <pre>
+/vol/spool/sparkhit
+        ├── script
+        │   ├── 00.spark-shell.sh
+        │   ├── 01.mapping.sh
+        │   ├── 02.mapping_docker.sh
+        │   ├── 03.report_ear.sh
+        │   ├── 04.report_stool.sh
+        │   ├── 05.plot.krona.sh
+        │   ├── 06.view.sh
+        │   └── docker.sh
+        ├── software
+        │   ├── KronaTools-2.7
+        │   └── sparkhit-latest
+        ├── dataset
+        │   ├── ear
+        │   ├── reference.fa
+        │   ├── reference.fa.amb
+        │   ├── reference.fa.ann
+        │   ├── reference.fa.bwt
+        │   ├── reference.fa.pac
+        │   ├── reference.fa.sa
+        │   ├── SRS018978.fastq.gz
+        │   └── stool
+</pre>
+    
+<h3>
+<a id="Preparation" class="anchor" href="#Preparation" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Preparation:</h3>
+        
+<h3>
+<a id="Public-IP" class="anchor" href="#Public-IP" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Public Master IP</h3>
+        <p>
+            The public Master node`s ip address can be used to access the Spark webUI. <br>
+            Type in: <br>
+            <code>host myip.opendns.com resolver1.opendns.com</code> <br>
+        </p>    
+<pre>
+Using domain server:
+Name: resolver1.opendns.com
+Address: 208.67.222.222#53
+Aliases: 
+
+myip.opendns.com has address 134.176.27.181
+Host myip.opendns.com not found: 3(NXDOMAIN)
+Host myip.opendns.com not found: 3(NXDOMAIN)
+</pre>
+        <p>
+            To list your public IP address. <br>
+            Or check your openstack UI at Project / Network / Routers / sparkhitrouter
+        </p> 
+        <a><img src="images/publicip.png" style="width:359px;height:300px;"></a>
+        <p>
+            Use the master ip to browse the Spark webUI to monitor the cluster and submitted jobs: <br>
+            <code>http://134.176.27.181/spark/</code>
+        </p>
+<a><img src="images/sparkui.png"></a>
+
+<h3>
+<a id="Private-IP" class="anchor" href="#Private-IP" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Private Master IP</h3>
+        <p>
+            You are gona need your private master ip to submit your Spark jobs. <br>
+            Type in: <br>
+            <code>ifconfig</code> <br>
+        </p>
+<pre>
+docker0   Link encap:Ethernet  HWaddr 02:42:5a:04:83:25  
+          inet addr:172.17.0.1  Bcast:0.0.0.0  Mask:255.255.0.0
+          UP BROADCAST MULTICAST  MTU:1500  Metric:1
+          RX packets:0 errors:0 dropped:0 overruns:0 frame:0
+          TX packets:0 errors:0 dropped:0 overruns:0 carrier:0
+          collisions:0 txqueuelen:0 
+          RX bytes:0 (0.0 B)  TX bytes:0 (0.0 B)
+
+eth0      Link encap:Ethernet  HWaddr fa:16:3e:b5:a1:a3  
+          inet addr:192.168.0.4  Bcast:192.168.0.255  Mask:255.255.255.0
+          inet6 addr: fe80::f816:3eff:feb5:a1a3/64 Scope:Link
+          UP BROADCAST RUNNING MULTICAST  MTU:1450  Metric:1
+          RX packets:1700393 errors:0 dropped:0 overruns:0 frame:0
+          TX packets:1590152 errors:0 dropped:0 overruns:0 carrier:0
+          collisions:0 txqueuelen:1000 
+          RX bytes:3882456204 (3.8 GB)  TX bytes:11170161352 (11.1 GB)
+
+lo        Link encap:Local Loopback  
+          inet addr:127.0.0.1  Mask:255.0.0.0
+          inet6 addr: ::1/128 Scope:Host
+          UP LOOPBACK RUNNING  MTU:65536  Metric:1
+          RX packets:151909 errors:0 dropped:0 overruns:0 frame:0
+          TX packets:151909 errors:0 dropped:0 overruns:0 carrier:0
+          collisions:0 txqueuelen:0 
+          RX bytes:60357490 (60.3 MB)  TX bytes:60357490 (60.3 MB)
+</pre>
+        
+<h3>
+<a id="Spark-shell" class="anchor" href="#Spark-shell" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Programming in Spark-shell:</h3>
+
+<h3>
+<a id="Step-1" class="anchor" href="#Step-1" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Step 1: RDD loading and caching</h3>
+        <p>
+            Switch to /vol/spool/sparkhit/script directory with command: <br>
+            <code>cd /vol/spool/sparkhit/script</code> <br>
+            as working directory. You should be able to see a script <code>00.spark-shell.sh</code>. Print the script by: <br>
+            <code>cat 00.spark-shell.sh</code> <br>
+            These are interactive console commands, please do not run them directly.
+</p>
+        <pre>
+spark-shell --driver-memory 30G --executor-memory 30G --executor-cores 30
+
+val fastqRDD =sc.textFile("/vol/spool/sparkhit/dataset/SRS018978.fastq.gz")
+
+# RDD cache function
+fastqRDD.cache()    # cache data into memroy, but since RDD is "lazy". Nothing actually happens
+val a = fastqRDD.count()    # here "cache" step is now running, thus this step takes more time
+val a = fastqRDD.count()
+fastqRDD.unpersist()
+val a = fastqRDD.count()
+fastqRDD.cache()
+val a = fastqRDD.count()
+val a = fastqRDD.count()
+</pre>
+        <p>
+            There should be a run time difference between the cache RDD and the uncache RDD
+        </p>
+        <a><img src="images/step1.png" style="width:60%;height:60%;"></a>
+        
+        <h3>
+<a id="Step-2" class="anchor" href="#Step-2" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Step 2: RDD repartitioning and distributing</h3>
+        <p>
+            Lets say you wanna write a program that counts all the lines with more than 4 "N" in the <bold>fastq</bold> file. <br>
+            <code>cat 00.spark-shell.sh</code>
+        </p>
+        <pre>
+# RDD data distribution
+val reparRDD = fastqRDD.repartition(30) # distributing data
+reparRDD.cache()
+reparRDD.count()
+reparRDD.filter(line => line.contains("NNNN")).count()
+fastqRDD.filter(line => line.contains("NNNN")).count()
+reparRDD.filter(line => line.contains("NNNN")).count()
+fastqRDD.filter(line => line.contains("NNNN")).count()
+reparRDD.saveAsTextFile("./repartitionFastq")
+fastqRDD.saveAsTextFile("./oneFastq")
+</pre>
+        <p>
+            There should be a run time difference between the partitioned RDD and the unpartitioned RDD
+        </p>
+        <a><img src="images/step2.png" style="width:60%;height:60%;"></a>
+        <p>
+            Use <code>CTRL + D</code> to quit.
+        </p>
+
+<h3>
+<a id="NGS-Sparkhit" class="anchor" href="#NGS-Sparkhit" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Processing NGS data with Sparkhit:</h3>
+        
+        <h3>
+<a id="Step-3" class="anchor" href="#Step-3" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Step 3: mapping metagenomic data using Sparkhit algorithm</h3>
+        <p>
+            <code>cat 01.mapping.sh</code>
+        </p>
+        <pre>
+/vol/spool/sparkhit/software/sparkhit-latest/bin/sparkhit mapper \
+	--master spark://192.168.0.9:7077 \    &lt;----- change IP address. With command: ifconfig
+	--driver-memory 15G \
+	--executor-memory 20G \
+	-fastq "/vol/spool/sparkhit/dataset/ear/SRS*bz2" \
+	-reference /vol/spool/sparkhit/dataset/reference.fa \
+	-outfile ./01.ear_result \
+	-kmer 12
+</pre>
+       <a><img src="images/step3.png" style="width:60%;height:60%;"></a>
+
+        <h3>
+<a id="Step-4" class="anchor" href="#Step-4" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Step 4: using Sparkhit to parallelize Docker tasks (e.g. bwa)</h3>
+        <p>
+            
+            <code>docker run lh3lh3/bwa</code>
+        </p>
+        <pre>
+Unable to find image 'lh3lh3/bwa:latest' locally
+latest: Pulling from lh3lh3/bwa
+d56ac91634e2: Pull complete 
+a3ed95caeb02: Pull complete 
+Digest: sha256:ecb80258bdaebe4d42445eb34adea936c929b3a3439bea154a128939f7cce95d
+Status: Downloaded newer image for lh3lh3/bwa:latest
+
+Program: bwa (alignment via Burrows-Wheeler transformation)
+Version: 0.7.12-r1044
+Contact: Heng Li &lt;lh3@sanger.ac.uk>
+
+Usage:   bwa &lt;command> [options]
+
+Command: index         index sequences in the FASTA format
+         mem           BWA-MEM algorithm
+         fastmap       identify super-maximal exact matches
+         pemerge       merge overlapping paired ends (EXPERIMENTAL)
+         aln           gapped/ungapped alignment
+         samse         generate alignment (single ended)
+         sampe         generate alignment (paired ended)
+         bwasw         BWA-SW for long queries
+
+         shm           manage indices in shared memory
+         fa2pac        convert FASTA to PAC format
+         pac2bwt       generate BWT from PAC
+         pac2bwtgen    alternative algorithm for generating BWT
+         bwtupdate     update .bwt to the new format
+         bwt2sa        generate SA from BWT and Occ
+
+Note: To use BWA, you need to first index the genome with `bwa index'.
+      There are three alignment algorithms in BWA: `mem', `bwasw', and
+      `aln/samse/sampe'. If you are not sure which to use, try `bwa mem'
+      first. Please `man ./bwa.1' for the manual.
+</pre>
+        <p>
+            <code>cat 02.mapping_docker.sh</code>
+        </p>
+        <pre>
+/vol/spool/sparkhit/software/sparkhit-latest/bin/sparkhit piper \
+	--master spark://192.168.0.9:7077 \     &lt;----- change IP address. With command: ifconfig
+	--driver-memory 60G \
+	--executor-memory 30G \
+	-fastq "/vol/spool/sparkhit/dataset/stool/SRS*.tar.bz2" \
+	-filter \
+	-outfile ./02.stool_result \
+	-tool "sh /vol/spool/sparkhit/script/docker.sh"
+</pre>
+        <p>
+            <code>cat docker.sh</code>
+        </p>
+        <pre>
+docker run -iv /vol/spool/sparkhit/dataset:/tmp -w /tmp --rm \
+    lh3lh3/bwa \
+    mem reference.fa /dev/stdin \
+    | perl -ne 'my $seq = $_;next if $seq=~/^\@/; my @a=split /\t/,$seq; next if $a[2] eq "\*";print "$seq"'
+</pre>
+       <a><img src="images/step4.png" style="width:60%;height:60%;"></a>
+        
+ <h3>
+<a id="Step-5" class="anchor" href="#Step-5" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Step 5: summarize mapping results of the two mapping tools</h3>
+        <p>
+            Sparkhit reporter summerizes tabular files by columns, for instance: <br>
+            Use command: <code>less ./01.ear_result/part-00000</code> <br>
+            to view the mapping result.
+        </p>
+        <pre>
+@HWI-EAS324_102408434:3:100:10079:21137/2       91nt    4.26e-31        88      4       91      +       89.01   NC_000913.3     2726600 2726687
+@HWI-EAS324_102408434:3:100:10079:21137/2       91nt    2.30e-29        88      4       91      +       87.91   NC_000913.3     3424199 3424286
+@HWI-EAS324_102408434:3:100:10079:21137/2       91nt    4.26e-31        88      1       88      -       89.01   NC_000913.3     228256  228343
+@HWI-EAS324_102408434:3:100:10079:21137/2       91nt    4.26e-31        88      1       88      -       89.01   NC_000913.3     4040017 4040104
+@HWI-EAS324_102408434:3:100:10079:21137/2       91nt    4.26e-31        88      1       88      -       89.01   NC_000913.3     4171138 4171225
+@HWI-EAS324_102408434:3:100:10079:21137/2       91nt    4.26e-31        88      1       88      -       89.01   NC_000913.3     4212540 4212627
+@HWI-EAS324_102408434:3:100:10079:21137/2       91nt    2.30e-29        88      1       88      -       87.91   NC_000913.3     3946201 3946288
+@HWI-EAS324_102408434:3:100:10083:8631/2        100nt   4.08e-24        88      9       96      +       77.00   NC_000913.3     224064  224151
+@HWI-EAS324_102408434:3:100:10083:8631/2        100nt   4.08e-24        88      9       96      +       77.00   NC_000913.3     3942101 3942188
+@HWI-EAS324_102408434:3:100:10083:8631/2        100nt   4.08e-24        88      9       96      +       77.00   NC_000913.3     4035824 4035911
+@HWI-EAS324_102408434:3:100:10083:8631/2        100nt   4.08e-24        88      9       96      +       77.00   NC_000913.3     4166952 4167039
+</pre>
+        <p>
+            <code>cat 03.report_ear.sh</code>
+        </p>
+        <pre>
+/vol/spool/sparkhit/software/sparkhit-latest/bin/sparkhit reporter \
+	-input "./01.ear_result/part*" \
+	-word 9 \
+	-outfile ./ear.report.txt
+</pre>
+        <p>
+            <code>cat 04.report_stool.sh</code>
+        </p>
+        <pre>
+/vol/spool/sparkhit/software/sparkhit-latest/bin/sparkhit reporter \
+	--driver-memory 60G \
+	--executor-memory 30G \
+	-input "./02.stool_result/part*" \
+	-word 3 \
+	-outfile ./stool.report.txt
+</pre>
+        
+ <h3>
+<a id="Step-6" class="anchor" href="#Step-6" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Step 6: generate and visualize the mapping results</h3>
+        <p>
+            <code>cat 05.plot.krona.sh</code>
+        </p>
+        <pre>
+/vol/spool/sparkhit/software/KronaTools-2.7/bin/ktImportText -o HMP.krona.html ear.report.txt stool.report.txt
+</pre>
+         <p>
+            <code>cat 06.view.sh</code>
+        </p>
+        <pre>
+cp HMP.krona.html /vol/spool/www/index.html
+</pre>
+        <p>
+            After generating the Krona plot, go to http://134.176.27.181/result/ to see the results. <br>
+            Remember to change the IP address to your own IP.
+        </p>
+        <p>Ear sample should have more reads than the Stool sample, as Sparkhit recruiter is more sensitive.</p>
+
+<!--
+<h3>
+<a id="use-case" class="anchor" href="#use-case" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Use case: just a demo :)</h3>
+        <p>
+            We analyzed the entire whole-genome sequencing data (8.6 TB) of <a href="http://hmpdacc.org/">Human Microbiome Project</a> on the cloud in less than 2 hours, including cluster deployment, data downloading, decompressing and analyzing (taxonomy profiling). We used <a href="https://ccb.jhu.edu/software/kraken/">Kraken</a> on Sparkhit platform that profiled the taxonomy abundance of 6 differnt body sites. Here is the result presented in <a href="https://github.com/marbl/Krona/wiki">Krona</a> plot.
+        </p>
+        <iframe
+            id="Example"
+            title="Example"
+            width=100%
+            height=600
+            frameborder="0"
+            scrolling="no"
+            marginheight="0"
+            marginwidth="0"
+            src="./bodysites.reduced.tax.html">
+        </iframe>
+        
+        View more <a href="bodysites.tax.html">results</a>.
+-->
+
+      <footer class="site-footer">
+        <span class="site-footer-owner"><a href="https://github.com/rhinempi/sparkhit">Sparkhit</a> is maintained by <a href="https://github.com/rhinempi">Liren Huang</a>.</span>
+
+        <span class="site-footer-credits">This page was generated based on a template from <a href="https://pages.github.com">GitHub Pages</a> using the <a href="https://github.com/jasonlong/cayman-theme">Cayman theme</a> by <a href="https://twitter.com/jasonlong">Jason Long</a>.</span>
+      </footer>
+
+    </section>
+
+  
+  </body>
+</html>

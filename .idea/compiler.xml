@@ -25,8 +25,8 @@
         <module name="sparkhit (1)" />
         <module name="sparkhit-hadoopDecompresser" />
         <module name="sparkhit-hadoopDecompressor" />
-        <module name="Sparkhit-local" />
         <module name="sparkhit-local" />
+        <module name="Sparkhit-local" />
       </profile>
       <profile default="false" name="Annotation profile for spark-hit" enabled="true">
         <sourceOutputDir name="target/generated-sources/annotations" />
