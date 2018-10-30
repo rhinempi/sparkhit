@@ -28,6 +28,6 @@
     --conf spark.kryoserializer.buffer.max=2000m \
     --driver-memory 8G --executor-memory 8G \
     -vcf ./example/1kgenome.vcf.tar.gz \
-    -outfile ./example/pca
-    -column 10-2500 \
+    -outfile ./example/pca \
+    -column 10-1500 \
     -cache
