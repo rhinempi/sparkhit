@@ -8,22 +8,18 @@
  # Copyright (c) 2015-2015
  #      Liren Huang      <huanglr at cebitec.uni-bielefeld.de>
  #
- # Licensed to the Apache Software Foundation (ASF) under one
- # or more contributor license agreements.  See the NOTICE file
- # distributed with this work for additional information
- # regarding copyright ownership.  The ASF licenses this file
- # to you under the Apache License, Version 2.0 (the
- # "License"); you may not use this file except in compliance
- # with the License.  You may obtain a copy of the License at
+ # SparkHit is free software: you can redistribute it and/or modify it
+ # under the terms of the GNU General Public License as published by the Free
+ # Software Foundation, either version 3 of the License, or (at your option)
+ # any later version.
  #
- # http://www.apache.org/licenses/LICENSE-2.0
+ # This program is distributed in the hope that it will be useful, but WITHOUT
+ # ANY WARRANTY; Without even the implied warranty of MERCHANTABILITY or
+ # FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
+ # more detail.
  #
- # Unless required by applicable law or agreed to in writing,
- # software distributed under the License is distributed on an
- # "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- # KIND, either express or implied.  See the License for the
- # specific language governing permissions and limitations
- # under the License.
+ # You should have received a copy of the GNU General Public License along
+ # with this program. If not, see <http://www.gnu.org/licenses>.
  #-----------------------------------------------------------------------------
 
 name="sparkhit"
@@ -195,9 +191,10 @@ function dump_help() {
     echo "  decompresser   Parallel decompression to splitable compressed files, eg. bzip2"
     echo "  reductioner    Run Principle component analysis"
     echo "  regressioner   Run logistic regression"
+    echo "  classifier     Run Gradient Boosted Tree classifier"
     echo "  statisticer    Run Hardy–Weinberg Equilibrium"
     echo "  variationer    Genotype with samtools mpileup"
-    echo "Type each command to view its options, eg. Usage: ./sparkhit mapper"
+    echo "Type each command to view its options, eg. Usage: ./sparkhit recruiter"
     echo ""
     echo "Spark cluster configuration:"
     echo "  --spark-conf       Spark cluster configuration file or spark input parameters"
@@ -238,7 +235,7 @@ function parse_param() {
             if [[ ${args[$i+1]} == -* ]]; then
                 SH_OPT+="${args[$i]} "
             else
-                SH_OPT+="${args[$i]} \"${args[$i+1]}\" "
+                SH_OPT+="${args[$i]} ${args[$i+1]} "
             fi
         fi
     done
@@ -262,7 +259,7 @@ parse_param
 if [[ ${MODULE} == "recruiter" ]]; then
     mainClass="uni.bielefeld.cmg.sparkhit.main.Main"
 elif [[ ${MODULE} == "mapper" ]]; then
-    mainClass="uni.bielefeld.cmg.sparkhit.main.MainOfMapper"
+    mainClass="uni.bielefeld.cmg.sparkhit.main.Main"
 elif [[ ${MODULE} == "piper" ]]; then
     mainClass="uni.bielefeld.cmg.sparkhit.main.MainOfPiper"
 elif [[ ${MODULE} == "parallelizer" ]]; then
@@ -279,6 +276,8 @@ elif [[ ${MODULE} == "correlationer" ]]; then
     mainClass="uni.bielefeld.cmg.sparkhit.main.MainOfCorrelationer"
 elif [[ ${MODULE} == "decompresser" ]]; then
     mainClass="uni.bielefeld.cmg.sparkhit.main.MainOfDecompresser"
+elif [[ ${MODULE} == "classifier" ]]; then
+    mainClass="uni.bielefeld.cmg.sparkhit.main.MainOfClassifier"
 elif [[ ${MODULE} == "reductioner" ]]; then
     mainClass="uni.bielefeld.cmg.sparkhit.main.MainOfReductioner"
 elif [[ ${MODULE} == "regressioner" ]]; then
