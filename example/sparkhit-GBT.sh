@@ -32,5 +32,5 @@
     -outfile ./example/GBT \
     -label PASS \
     -labelcolumn 7 \
-    -column 10-1500 \
+    -feature 10-1500 \
     -cache
