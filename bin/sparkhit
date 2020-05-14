@@ -292,7 +292,7 @@ else
 fi
 
 # Assemble the command line
-cmdline="$SPARK_CMD $SPARK_OPT --class $mainClass $SH_JAR $SH_OPT"
+cmdline="$SPARK_CMD $SPARK_OPT --jars $SH_LIB/hadoop-openstack-2.7.1.jar --class $mainClass $SH_JAR $SH_OPT"
 
 # launch command
 function launch_sparkhit() {
