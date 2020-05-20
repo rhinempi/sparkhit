@@ -235,7 +235,7 @@ function parse_param() {
             if [[ ${args[$i+1]} == -* ]]; then
                 SH_OPT+="${args[$i]} "
             else
-                SH_OPT+="${args[$i]} ${args[$i+1]} "
+                SH_OPT+="${args[$i]} \"${args[$i+1]}\" "
             fi
         fi
     done
