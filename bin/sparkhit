@@ -24,7 +24,7 @@
 
 name="sparkhit"
 version="1.0"   # change to 0.8 if you are using Spark version under 2.0.0
-spark_version="2.0.0"  # only for auto downloading Spark package
+spark_version="2.4.0"  # only for auto downloading Spark package
 
 readlink -f 1>/dev/null 2>/dev/null
 readlinkReturn=$?
@@ -48,7 +48,7 @@ SH_SBIN=${SH_SBIN:-$SH_HOME/sbin}
 SH_OPT=""
 SH_URL="https://github.com/rhinempi/sparkhit/archive/latest.zip"
 
-SPARK_URL="http://d3kbcqa49mib13.cloudfront.net/spark-$spark_version-bin-hadoop2.6.tgz"  # 1.6.0 version
+SPARK_URL="https://archive.apache.org/dist/spark/spark-$spark_version/spark-$spark_version-bin-hadoop2.6.tgz"  # 1.6.0 version
 SPARK_CMD=""  # in case no spark home was found, please manually paste the "spark-submit" file path
 SPARK_OPT=""
 
