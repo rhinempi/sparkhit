@@ -24,7 +24,7 @@
 
 name="sparkhit"
 version="1.0"   # change to 0.8 if you are using Spark version under 2.0.0
-spark_version="2.4.0"  # only for auto downloading Spark package
+spark_version="3.2.1"  # only for auto downloading Spark package
 
 readlink -f 1>/dev/null 2>/dev/null
 readlinkReturn=$?
@@ -48,7 +48,7 @@ SH_SBIN=${SH_SBIN:-$SH_HOME/sbin}
 SH_OPT=""
 SH_URL="https://github.com/rhinempi/sparkhit/archive/latest.zip"
 
-SPARK_URL="https://archive.apache.org/dist/spark/spark-$spark_version/spark-$spark_version-bin-hadoop2.6.tgz"  # 1.6.0 version
+SPARK_URL="https://archive.apache.org/dist/spark/spark-$spark_version/spark-$spark_version-bin-hadoop3.2.tgz"  # 1.6.0 version
 SPARK_CMD=""  # in case no spark home was found, please manually paste the "spark-submit" file path
 SPARK_OPT=""
 
@@ -137,7 +137,7 @@ fi
 
 # Verify installed Java version
 if [ ! -d "$SH_LAUNCHER" ]; then # <-- only the first time
-    $JAVA_CMD -version 2>&1 | awk '/version/ {print $3}' | grep '"1\.[7|8]\..*"' > /dev/null
+    $JAVA_CMD -version 2>&1 | awk '/version/ {print $3}' > /dev/null
     if [ $? -ne 0 ]; then
          echo_red "Sparkhit initiation error: cannot find Java or it's a wrong version -- please make sure that Java 7 or higher is installed"
          echo_red "Info: Sparkhit is trying to use the Java VM defined by the following environment variables:\n JAVA_CMD: $JAVA_CMD\n JAVA_HOME: $JAVA_HOME\n"
@@ -158,12 +158,12 @@ fi
         SPARK_CMD="$(which spark-submit)"
     elif [ -x "$SPARK_CMD" ]; then
         continue
-    elif [ -x "$SH_PACKAGE/spark-$spark_version-bin-hadoop2.6/bin/spark-submit" ]; then
-            SPARK_CMD="$SH_PACKAGE/spark-$spark_version-bin-hadoop2.6/bin/spark-submit"
+    elif [ -x "$SH_PACKAGE/spark-$spark_version-bin-hadoop3.2/bin/spark-submit" ]; then
+            SPARK_CMD="$SH_PACKAGE/spark-$spark_version-bin-hadoop3.2/bin/spark-submit"
     else
-        get_spark "$SPARK_URL" "$SH_PACKAGE/spark-$spark_version-bin-hadoop2.6.tgz"
-        untar_spark "$SH_PACKAGE/spark-$spark_version-bin-hadoop2.6.tgz" "$SH_PACKAGE"
-        SPARK_CMD= "$SH_PACKAGE/spark-$spark_version-bin-hadoop2.6/bin/spark-submit"
+        get_spark "$SPARK_URL" "$SH_PACKAGE/spark-$spark_version-bin-hadoop3.2.tgz"
+        untar_spark "$SH_PACKAGE/spark-$spark_version-bin-hadoop3.2.tgz" "$SH_PACKAGE"
+        SPARK_CMD= "$SH_PACKAGE/spark-$spark_version-bin-hadoop3.2/bin/spark-submit"
     fi
 
 # Verify sparkhit jar is available
@@ -292,7 +292,8 @@ else
 fi
 
 # Assemble the command line
-cmdline="$SPARK_CMD $SPARK_OPT --jars $SH_LIB/hadoop-openstack-2.7.1.jar --class $mainClass $SH_JAR $SH_OPT"
+cmdline="$SPARK_CMD $SPARK_OPT --jars $SH_LIB/hadoop-aws-3.3.1.jar,$SH_LIB/aws-java-sdk-1.12.215.jar,$SH_LIB/aws-java-sdk-core-1.12.215.jar,$SH_LIB/aws-java-sdk-dynamodb-1.12.215.jar,$SH_LIB/aws-java-sdk-s3-1.12.215.jar,$SH_LIB/commons-configuration2-2.1.1.jar,$SH_LIB/stax2-api-3.1.4.jar,$SH_LIB/woodstox-core-5.0.3.jar,$SH_LIB/re2j-1.1.jar,$SH_LIB/htrace-core4-4.1.0-incubating.jar,$SH_LIB/guava-27.0-jre.jar --class $mainClass $SH_JAR $SH_OPT"
+#cmdline="$SPARK_CMD $SPARK_OPT --class $mainClass $SH_JAR $SH_OPT"
 
 # launch command
 function launch_sparkhit() {
